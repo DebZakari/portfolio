@@ -5,9 +5,9 @@ import { useExperience } from "@/hooks/useExperience";
 import SectionLabel from "@/components/SectionLabel";
 
 const LINKS = [
-  { label: "Email", value: "dave@example.com", icon: "✉", href: "mailto:dave@example.com" },
-  { label: "LinkedIn", value: "linkedin.com/in/dave-zachary-macarayo-002304282", icon: "◈", href: "https://www.linkedin.com/in/dave-zachary-macarayo-002304282/" },
-  { label: "GitHub", value: "github.com/DebZakari", icon: "⎇", href: "https://github.com/DebZakari" },
+  { label: "Email", value: "mdavezachary@gmail.com", icon: "✉", href: "mailto:mdavezachary@gmail.com" },
+  { label: "LinkedIn", value: "Dave Zachary Macarayo", icon: "◈", href: "https://www.linkedin.com/in/dave-zachary-macarayo-002304282/" },
+  { label: "GitHub", value: "DebZakari", icon: "⎇", href: "https://github.com/DebZakari" },
   { label: "Résumé", value: "Download PDF", icon: "↓", href: "#" },
 ];
 
