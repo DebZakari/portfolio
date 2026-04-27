@@ -1,0 +1,183 @@
+@import "tailwindcss";
+
+/* Dark mode via .dark class on <html> (managed by next-themes) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ─── Semantic color tokens ───────────────────────────────────── */
+/* :root = dark (primary design); .dark explicit for next-themes */
+:root,
+.dark {
+  --bg:              #080808;
+  --bg2:             #0f0f0f;
+  --surface:         #141414;
+  --surface2:        #1a1a1a;
+  --border:          #262626;
+  --border-subtle:   rgba(255, 255, 255, 0.06);
+  --text:            #f0f0f0;
+  --text-secondary:  #aaaaaa;
+  --text-muted:      #888888;
+  --text-dim:        #444444;
+  --accent:          #f0f0f0;
+  --accent2:         #aaaaaa;
+  --accent-glow:     rgba(240, 240, 240, 0.06);
+  --accent2-glow:    rgba(240, 240, 240, 0.04);
+  --grad:            linear-gradient(135deg, #ffffff, #aaaaaa);
+}
+
+/* Light mode ("solar") */
+.light {
+  --bg:              #fafafa;
+  --bg2:             #f2f2f2;
+  --surface:         #ffffff;
+  --surface2:        #f7f7f7;
+  --border:          #dddddd;
+  --border-subtle:   rgba(0, 0, 0, 0.06);
+  --text:            #0a0a0a;
+  --text-secondary:  #555555;
+  --text-muted:      #555555;
+  --text-dim:        #aaaaaa;
+  --accent:          #0a0a0a;
+  --accent2:         #555555;
+  --accent-glow:     rgba(10, 10, 10, 0.06);
+  --accent2-glow:    rgba(10, 10, 10, 0.04);
+  --grad:            linear-gradient(135deg, #000000, #555555);
+}
+
+/* ─── Tailwind theme ──────────────────────────────────────────── */
+@theme {
+  /* Fonts — CSS vars injected by next/font */
+  --font-sans: var(--font-space-grotesk);
+  --font-mono: var(--font-jetbrains-mono);
+
+  /* Semantic colors → map to CSS vars */
+  --color-bg:             var(--bg);
+  --color-bg2:            var(--bg2);
+  --color-surface:        var(--surface);
+  --color-surface2:       var(--surface2);
+  --color-border:         var(--border);
+  --color-text:           var(--text);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted:     var(--text-muted);
+  --color-text-dim:       var(--text-dim);
+  --color-accent:         var(--accent);
+  --color-accent2:        var(--accent2);
+
+  /* Animation durations */
+  --duration-fast:        150ms;
+  --duration-base:        250ms;
+  --duration-slow:        400ms;
+  --duration-galaxy:      800ms;
+
+  /* Easing */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ─── Base styles ─────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  min-height: 100vh;
+  font-family: var(--font-space-grotesk, system-ui, sans-serif);
+  background-color: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  transition: background-color 0.4s, color 0.4s;
+}
+
+/* ─── Focus ring ──────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ─── Selection ───────────────────────────────────────────────── */
+::selection {
+  background-color: oklch(66% 0.19 285 / 0.35);
+  color: var(--text);
+}
+
+/* ─── Scrollbar ───────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 9px;
+}
+
+/* ─── Starfield twinkle ───────────────────────────────────────── */
+@keyframes twinkle {
+  0%, 100% { opacity: var(--twinkle-from, 0.4); }
+  50%       { opacity: var(--twinkle-to,   1);   }
+}
+
+.star-twinkle-slow {
+  --twinkle-from: 0.3;
+  --twinkle-to:   0.7;
+  animation: twinkle 5s ease-in-out infinite;
+  animation-delay: var(--twinkle-delay, 0s);
+}
+
+.star-twinkle-mid {
+  --twinkle-from: 0.4;
+  --twinkle-to:   0.9;
+  animation: twinkle 3.5s ease-in-out infinite;
+  animation-delay: var(--twinkle-delay, 0s);
+}
+
+.star-twinkle-fast {
+  --twinkle-from: 0.5;
+  --twinkle-to:   1;
+  animation: twinkle 2s ease-in-out infinite;
+  animation-delay: var(--twinkle-delay, 0s);
+}
+
+/* ─── Bob animation for scroll indicator ──────────────────────── */
+@keyframes bob {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%       { transform: translateX(-50%) translateY(6px); }
+}
+
+.animate-bob {
+  animation: bob 2s ease-in-out infinite;
+}
+
+/* ─── Pulse animation for status dot ──────────────────────────── */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+.animate-pulse-soft {
+  animation: pulse 2s ease-in-out infinite;
+}
