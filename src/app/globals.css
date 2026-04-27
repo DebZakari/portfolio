@@ -132,3 +132,30 @@ body {
   background-color: var(--accent-glow);
   color: var(--text);
 }
+
+/* ─── Starfield twinkle ───────────────────────────────────────── */
+@keyframes twinkle {
+  0%, 100% { opacity: var(--twinkle-from, 0.4); }
+  50%       { opacity: var(--twinkle-to,   1);   }
+}
+
+.star-twinkle-slow {
+  --twinkle-from: 0.3;
+  --twinkle-to:   0.7;
+  animation: twinkle 5s ease-in-out infinite;
+  animation-delay: var(--twinkle-delay, 0s);
+}
+
+.star-twinkle-mid {
+  --twinkle-from: 0.4;
+  --twinkle-to:   0.9;
+  animation: twinkle 3.5s ease-in-out infinite;
+  animation-delay: var(--twinkle-delay, 0s);
+}
+
+.star-twinkle-fast {
+  --twinkle-from: 0.5;
+  --twinkle-to:   1;
+  animation: twinkle 2s ease-in-out infinite;
+  animation-delay: var(--twinkle-delay, 0s);
+}

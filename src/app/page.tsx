@@ -1,49 +1,81 @@
+import HeroSection from "@/components/hero/HeroSection";
+
 export default function Home() {
   return (
     <>
-      {/* Hero — Phase 03 */}
-      <section
-        id="hero"
-        className="flex min-h-screen items-center justify-center bg-bg"
-        aria-label="Hero"
-      >
-        <p className="text-text-muted text-sm font-mono">Hero — Phase 03</p>
-      </section>
+      <HeroSection />
 
-      {/* About — placeholder */}
       <section
         id="about"
-        className="min-h-screen py-20 px-6"
         aria-label="About"
+        className="scroll-mt-20 py-24 px-6"
       >
-        <h2 className="text-3xl font-bold text-text">About</h2>
+        <div className="mx-auto max-w-4xl">
+          <p className="text-xs font-mono uppercase tracking-[0.2em] text-accent mb-3">
+            About
+          </p>
+          <h2 className="text-3xl sm:text-4xl font-bold text-text mb-6">
+            Who I Am
+          </h2>
+          <p className="text-text-secondary text-lg leading-relaxed max-w-2xl">
+            Content coming soon.
+          </p>
+        </div>
       </section>
 
-      {/* Skills — placeholder */}
       <section
         id="skills"
-        className="min-h-screen py-20 px-6"
         aria-label="Skills"
+        className="scroll-mt-20 py-24 px-6 bg-surface"
       >
-        <h2 className="text-3xl font-bold text-text">Skills</h2>
+        <div className="mx-auto max-w-4xl">
+          <p className="text-xs font-mono uppercase tracking-[0.2em] text-accent mb-3">
+            Skills
+          </p>
+          <h2 className="text-3xl sm:text-4xl font-bold text-text mb-6">
+            What I Build With
+          </h2>
+          <p className="text-text-secondary text-lg leading-relaxed max-w-2xl">
+            Content coming soon.
+          </p>
+        </div>
       </section>
 
       {/* Projects — Phase 06 */}
       <section
         id="projects"
-        className="min-h-screen py-20 px-6"
         aria-label="Projects"
+        className="scroll-mt-20 py-24 px-6"
       >
-        <h2 className="text-3xl font-bold text-text">Projects — Phase 06</h2>
+        <div className="mx-auto max-w-4xl">
+          <p className="text-xs font-mono uppercase tracking-[0.2em] text-accent mb-3">
+            Projects
+          </p>
+          <h2 className="text-3xl sm:text-4xl font-bold text-text mb-6">
+            Selected Work
+          </h2>
+          <p className="text-text-secondary text-lg leading-relaxed max-w-2xl">
+            Content coming soon — Phase 06.
+          </p>
+        </div>
       </section>
 
-      {/* Contact — placeholder */}
       <section
         id="contact"
-        className="min-h-screen py-20 px-6"
         aria-label="Contact"
+        className="scroll-mt-20 py-24 px-6 bg-surface"
       >
-        <h2 className="text-3xl font-bold text-text">Contact</h2>
+        <div className="mx-auto max-w-4xl">
+          <p className="text-xs font-mono uppercase tracking-[0.2em] text-accent mb-3">
+            Contact
+          </p>
+          <h2 className="text-3xl sm:text-4xl font-bold text-text mb-6">
+            Get in Touch
+          </h2>
+          <p className="text-text-secondary text-lg leading-relaxed max-w-2xl">
+            Content coming soon.
+          </p>
+        </div>
       </section>
     </>
   );

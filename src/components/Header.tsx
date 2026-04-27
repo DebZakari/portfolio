@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useTheme } from "next-themes";
 import {
   Sun,
@@ -129,6 +129,7 @@ function ExperienceToggle() {
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>("");
   const toggleRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -136,6 +137,24 @@ export default function Header() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Active section via IntersectionObserver — rootMargin centres detection band
+  const setActive = useCallback((id: string) => setActiveSection(id), []);
+  useEffect(() => {
+    const ids = NAV_LINKS.map((l) => l.href.slice(1));
+    const observers: IntersectionObserver[] = [];
+    ids.forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const obs = new IntersectionObserver(
+        ([entry]) => { if (entry.isIntersecting) setActive(id); },
+        { rootMargin: "-40% 0px -55% 0px", threshold: 0 }
+      );
+      obs.observe(el);
+      observers.push(obs);
+    });
+    return () => observers.forEach((o) => o.disconnect());
+  }, [setActive]);
 
   useEffect(() => {
     if (!drawerOpen) return;
@@ -181,16 +200,23 @@ export default function Header() {
 
           {/* Desktop nav links */}
           <ul className="hidden md:flex items-center gap-6" role="list">
-            {NAV_LINKS.map(({ href, label }) => (
-              <li key={href}>
-                <a
-                  href={href}
-                  className="text-sm font-medium text-text-secondary hover:text-text transition-colors duration-[--duration-base]"
-                >
-                  {label}
-                </a>
-              </li>
-            ))}
+            {NAV_LINKS.map(({ href, label }) => {
+              const active = activeSection === href.slice(1);
+              return (
+                <li key={href}>
+                  <a
+                    href={href}
+                    aria-current={active ? "page" : undefined}
+                    className={[
+                      "text-sm font-medium transition-colors duration-[--duration-base]",
+                      active ? "text-accent" : "text-text-secondary hover:text-text",
+                    ].join(" ")}
+                  >
+                    {label}
+                  </a>
+                </li>
+              );
+            })}
           </ul>
 
           {/* Desktop toggles */}
@@ -236,17 +262,26 @@ export default function Header() {
       >
         <nav aria-label="Mobile navigation">
           <ul className="flex flex-col gap-1" role="list">
-            {NAV_LINKS.map(({ href, label }) => (
-              <li key={href}>
-                <a
-                  href={href}
-                  className="block rounded-md px-3 py-2.5 text-base font-medium text-text-secondary hover:text-text hover:bg-surface-raised transition-colors duration-[--duration-base]"
-                  onClick={() => setDrawerOpen(false)}
-                >
-                  {label}
-                </a>
-              </li>
-            ))}
+            {NAV_LINKS.map(({ href, label }) => {
+              const active = activeSection === href.slice(1);
+              return (
+                <li key={href}>
+                  <a
+                    href={href}
+                    aria-current={active ? "page" : undefined}
+                    className={[
+                      "block rounded-md px-3 py-2.5 text-base font-medium transition-colors duration-[--duration-base]",
+                      active
+                        ? "text-accent bg-accent/10"
+                        : "text-text-secondary hover:text-text hover:bg-surface-raised",
+                    ].join(" ")}
+                    onClick={() => setDrawerOpen(false)}
+                  >
+                    {label}
+                  </a>
+                </li>
+              );
+            })}
           </ul>
         </nav>
 
