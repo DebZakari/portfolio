@@ -102,7 +102,10 @@ export default function Header() {
   const isDark = resolvedTheme !== "light";
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 40);
+      if (window.scrollY < 80) setActiveSection("");
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -116,7 +119,7 @@ export default function Header() {
       if (!el) return;
       const obs = new IntersectionObserver(
         ([entry]) => { if (entry.isIntersecting) setActive(id); },
-        { rootMargin: "-40% 0px -55% 0px", threshold: 0 }
+        { rootMargin: "-20% 0px -60% 0px", threshold: 0 }
       );
       obs.observe(el);
       observers.push(obs);
@@ -174,6 +177,7 @@ export default function Header() {
           <a
             href="#"
             aria-label="Back to top"
+            onClick={() => setActiveSection("")}
             style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}
           >
             <div
