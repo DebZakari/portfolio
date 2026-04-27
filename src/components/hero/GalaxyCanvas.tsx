@@ -147,17 +147,24 @@ export default function GalaxyCanvas({ theme }: GalaxyCanvasProps) {
     };
     draw();
 
-    const onMove = (e: MouseEvent) => {
+    const onMove = (e: PointerEvent) => {
       const rect = canvas.getBoundingClientRect();
-      S.mouse.x = e.clientX - rect.left;
-      S.mouse.y = e.clientY - rect.top;
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
+        S.mouse.x = x;
+        S.mouse.y = y;
+      } else {
+        S.mouse.x = -9999;
+        S.mouse.y = -9999;
+      }
     };
     const onLeave = () => {
       S.mouse.x = -9999;
       S.mouse.y = -9999;
     };
-    canvas.addEventListener("mousemove", onMove);
-    canvas.addEventListener("mouseleave", onLeave);
+    window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("pointerleave", onLeave);
 
     const ro = new ResizeObserver(() => {
       canvas.width = canvas.offsetWidth;
@@ -167,8 +174,8 @@ export default function GalaxyCanvas({ theme }: GalaxyCanvasProps) {
 
     return () => {
       if (S.animId) cancelAnimationFrame(S.animId);
-      canvas.removeEventListener("mousemove", onMove);
-      canvas.removeEventListener("mouseleave", onLeave);
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerleave", onLeave);
       ro.disconnect();
     };
   }, [theme]);

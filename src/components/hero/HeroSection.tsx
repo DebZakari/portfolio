@@ -84,7 +84,7 @@ export default function HeroSection() {
               display: "inline-block",
             }}
           />
-          Computer Engineering Graduate · Web Developer · AI Engineer
+          Computer Engineering Graduate · Web Developer · AI Engineer · IoT · SQA
         </div>
 
         <h1
@@ -110,9 +110,10 @@ export default function HeroSection() {
             marginBottom: 40,
           }}
         >
-          I&apos;m Dave Zachary Macarayo — a developer specialising in
-          AI-integrated applications: LLM workflows, RAG systems, speech
-          synthesis, biometrics, and computer vision.
+          I&apos;m Dave Zachary Macarayo — a developer working across web
+          engineering, AI systems, IoT edge devices, and software quality
+          assurance. From full-stack platforms to biometric pipelines and
+          embedded vision systems.
         </p>
 
         <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
@@ -136,7 +137,7 @@ export default function HeroSection() {
                   ? "var(--font-jetbrains-mono), monospace"
                   : "inherit",
                 background: btn.primary ? "var(--grad)" : "transparent",
-                color: btn.primary ? "white" : "var(--text)",
+                color: btn.primary ? "var(--bg)" : "var(--text)",
                 border: btn.primary ? "none" : "1px solid var(--border)",
                 transition: "all 0.2s",
                 display: "inline-flex",

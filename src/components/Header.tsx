@@ -171,7 +171,11 @@ export default function Header() {
           aria-label="Primary"
         >
           {/* Logo */}
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <a
+            href="#"
+            aria-label="Back to top"
+            style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}
+          >
             <div
               style={{
                 width: 28,
@@ -183,7 +187,7 @@ export default function Header() {
                 justifyContent: "center",
                 fontSize: 12,
                 fontWeight: 700,
-                color: "white",
+                color: "var(--bg)",
                 flexShrink: 0,
               }}
             >
@@ -199,7 +203,7 @@ export default function Header() {
             >
               DZM
             </span>
-          </div>
+          </a>
 
           {/* Desktop nav */}
           <div className="hidden md:flex items-center" style={{ gap: 8 }}>
@@ -246,7 +250,7 @@ export default function Header() {
                 padding: "8px 18px",
                 borderRadius: 24,
                 background: "var(--grad)",
-                color: "white",
+                color: "var(--bg)",
                 textDecoration: "none",
                 fontSize: 13,
                 fontWeight: 600,
@@ -336,7 +340,7 @@ export default function Header() {
               padding: "10px 18px",
               borderRadius: 24,
               background: "var(--grad)",
-              color: "white",
+              color: "var(--bg)",
               textDecoration: "none",
               fontSize: 14,
               fontWeight: 600,

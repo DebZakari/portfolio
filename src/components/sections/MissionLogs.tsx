@@ -5,31 +5,31 @@ import SectionLabel from "@/components/SectionLabel";
 const LOGS = [
   {
     date: "2025·04",
-    tag: "Systems",
-    title: "Building a RAG Pipeline from Scratch",
+    tag: "NovelVerse",
+    title: "Building a Multi-Modal AI Reading Platform",
     excerpt:
-      "Notes on chunking strategy, embedding models, and why naive similarity search fails at scale — and what to do instead.",
+      "Architecting a full-stack web novel platform with LangGraph agents, vLLM inference, RAG semantic search via pgvector, and SOTA TTS with voice cloning.",
   },
   {
     date: "2025·02",
     tag: "Speech AI",
-    title: "XTTS vs ElevenLabs: A Practical Comparison",
+    title: "Kokoro + Fish Speech: Local TTS Pipeline",
     excerpt:
-      "Running SOTA TTS locally versus API. Latency tradeoffs, voice cloning accuracy, and integration patterns for production.",
+      "Integrating ONNX Runtime TTS with Fish Speech S2 Pro for voice cloning. Latency optimization, audio caching via R2, and Redis-backed semantic caching.",
   },
   {
-    date: "2025·01",
+    date: "2024·12",
     tag: "Computer Vision",
-    title: "Liveness Detection Anti-Spoofing Techniques",
+    title: "Fine-Tuning YOLOv8 for PCB Detection",
     excerpt:
-      "How passive liveness models work, common attack vectors, and the architectural patterns that hold up under adversarial conditions.",
+      "Training YOLOv8 on custom PCB datasets, optimizing for Coral Edge TPU deployment, and building a Tkinter UI for real-time manufacturing inspection.",
   },
   {
-    date: "2024·11",
-    tag: "Frontend",
-    title: "Framer Motion Performance at Scale",
+    date: "2024·09",
+    tag: "Biometrics",
+    title: "Iris Detection: YOLO + UNet Pipeline",
     excerpt:
-      "Layout animations, exit animations, and the subtle reasons large motion trees cause paint storms. Profiling and fixes.",
+      "End-to-end iris biometric system combining YOLO-based detection with UNet segmentation. PyTorch implementation with precision-focused post-processing.",
   },
 ];
 

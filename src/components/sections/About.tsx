@@ -4,17 +4,17 @@ import { useExperience } from "@/hooks/useExperience";
 import SectionLabel from "@/components/SectionLabel";
 
 const STATS = [
-  { v: "4+", l: "Years Building" },
-  { v: "10+", l: "AI Projects" },
-  { v: "8", l: "Skill Domains" },
+  { v: "3+", l: "Years Building" },
+  { v: "9+", l: "Public Repos" },
+  { v: "4", l: "Core Domains" },
 ];
 
 const PROFILE_ROWS = [
   ["name", "Dave Zachary Macarayo"],
-  ["role", "Web Developer + AI Engineer"],
+  ["role", "Web Developer · AI Engineer · IoT · SQA"],
   ["degree", "BSc Computer Engineering"],
-  ["focus", "LLMs · RAG · TTS · Vision · Biometrics"],
-  ["stack", "React, Next.js, Node, Python"],
+  ["focus", "LLMs · RAG · TTS · Vision · Biometrics · Edge AI"],
+  ["stack", "Next.js, NestJS, Laravel, FastAPI, Python, Docker"],
   ["status", "Open to opportunities ✦"],
 ];
 
@@ -59,10 +59,11 @@ export default function About() {
                 marginBottom: 20,
               }}
             >
-              My engineering background gives me a systems-level perspective on
-              software. I don&apos;t just wire APIs together — I understand the
-              models, the infrastructure, and the trade-offs, which lets me
-              build AI features that are genuinely reliable in production.
+              My engineering background gives me a systems-level perspective
+              across the full stack. I&apos;ve built production web platforms
+              with Next.js and NestJS, designed AI microservices with FastAPI
+              and LangGraph, and deployed edge computer vision on Raspberry Pi
+              with Coral TPU accelerators.
             </p>
             <p
               style={{
@@ -71,10 +72,10 @@ export default function About() {
                 fontSize: 15,
               }}
             >
-              Currently focused on AI-integrated web applications, with deep
-              experience in LLMs, RAG architectures, speech AI, biometrics, and
-              computer vision — always with a strong frontend engineering layer
-              on top.
+              Whether it&apos;s orchestrating vLLM inference with RAG pipelines,
+              implementing SOTA TTS with voice cloning, or fine-tuning YOLO for
+              PCB component detection — I bring the same rigorous approach to
+              software quality and system design.
             </p>
             <div
               style={{ marginTop: 32, display: "flex", gap: 32 }}

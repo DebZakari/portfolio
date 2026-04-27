@@ -5,14 +5,14 @@ import { useExperience } from "@/hooks/useExperience";
 import SectionLabel from "@/components/SectionLabel";
 
 const SKILLS = [
-  { cat: "Web Development", icon: "⬡", items: ["React", "Next.js", "TypeScript", "JavaScript", "HTML & CSS", "Tailwind CSS"] },
-  { cat: "AI Integration", icon: "◈", items: ["OpenAI API", "LangChain", "Ollama", "Hugging Face", "Prompt Engineering"] },
-  { cat: "LLM / RAG Systems", icon: "◎", items: ["Retrieval-Augmented Generation", "Vector Databases", "Embeddings", "Fine-tuning", "Context Windows"] },
-  { cat: "Speech & Audio AI", icon: "◉", items: ["SOTA TTS Systems", "XTTS / Coqui", "Whisper STT", "Audio Pipeline Design"] },
-  { cat: "Biometrics", icon: "◇", items: ["Face Recognition", "Liveness Detection", "Fingerprint Auth", "Anti-Spoofing"] },
-  { cat: "Computer Vision", icon: "○", items: ["OpenCV", "YOLO Object Detection", "Image Classification", "Video Analysis"] },
-  { cat: "UI/UX Engineering", icon: "▣", items: ["Figma", "Framer Motion", "Design Systems", "Accessibility", "Responsive Design"] },
-  { cat: "Backend & APIs", icon: "▧", items: ["Node.js", "FastAPI", "REST APIs", "PostgreSQL", "Docker", "Redis"] },
+  { cat: "Web Development", icon: "⬡", items: ["Next.js", "NestJS", "Laravel", "React", "TypeScript", "Tailwind CSS", "shadcn/ui"] },
+  { cat: "AI / ML Engineering", icon: "◈", items: ["FastAPI", "LangGraph", "PyTorch", "TensorFlow", "vLLM", "Ollama", "ONNX Runtime"] },
+  { cat: "LLM & RAG Systems", icon: "◎", items: ["RAG Pipelines", "pgvector", "Neo4j", "Embeddings", "Qwen Models", "Semantic Search"] },
+  { cat: "Speech & Audio AI", icon: "◉", items: ["Kokoro TTS", "Fish Speech", "faster-whisper", "Voice Cloning", "Audio Pipelines"] },
+  { cat: "Biometrics", icon: "◇", items: ["Face Recognition", "ArcFace", "RetinaFace", "Iris Detection", "Iris Segmentation"] },
+  { cat: "Computer Vision", icon: "○", items: ["YOLOv8", "UNet", "OpenCV", "Raspberry Pi", "Coral Edge TPU", "Tkinter"] },
+  { cat: "DevOps & Infra", icon: "▣", items: ["Docker", "Turborepo", "pnpm", "BullMQ", "Cloudflare R2", "MinIO", "Redis"] },
+  { cat: "Databases & ORM", icon: "▧", items: ["PostgreSQL", "pgvector", "Neo4j", "MySQL", "Drizzle ORM", "Eloquent ORM", "Redis"] },
 ];
 
 export default function Skills() {

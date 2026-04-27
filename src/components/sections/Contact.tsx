@@ -5,10 +5,10 @@ import { useExperience } from "@/hooks/useExperience";
 import SectionLabel from "@/components/SectionLabel";
 
 const LINKS = [
-  { label: "Email", value: "dave@example.com", icon: "✉" },
-  { label: "LinkedIn", value: "/in/davemacarayo", icon: "◈" },
-  { label: "GitHub", value: "github.com/davemacarayo", icon: "⎇" },
-  { label: "Résumé", value: "Download PDF", icon: "↓" },
+  { label: "Email", value: "dave@example.com", icon: "✉", href: "mailto:dave@example.com" },
+  { label: "LinkedIn", value: "linkedin.com/in/dave-zachary-macarayo-002304282", icon: "◈", href: "https://www.linkedin.com/in/dave-zachary-macarayo-002304282/" },
+  { label: "GitHub", value: "github.com/DebZakari", icon: "⎇", href: "https://github.com/DebZakari" },
+  { label: "Résumé", value: "Download PDF", icon: "↓", href: "#" },
 ];
 
 export default function Contact() {
@@ -60,8 +60,11 @@ export default function Contact() {
             />
             <div style={{ display: "grid", gap: 12, marginTop: 8 }}>
               {LINKS.map((l) => (
-                <div
+                <a
                   key={l.label}
+                  href={l.href}
+                  target={l.href.startsWith("http") ? "_blank" : undefined}
+                  rel={l.href.startsWith("http") ? "noopener noreferrer" : undefined}
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -72,6 +75,7 @@ export default function Contact() {
                     borderRadius: 12,
                     transition: "border-color 0.2s",
                     cursor: "pointer",
+                    textDecoration: "none",
                   }}
                   onMouseEnter={(e) =>
                     (e.currentTarget.style.borderColor = "var(--accent)")
@@ -115,7 +119,7 @@ export default function Contact() {
                       {l.value}
                     </div>
                   </div>
-                </div>
+                </a>
               ))}
             </div>
 
@@ -268,7 +272,7 @@ export default function Contact() {
                     borderRadius: 12,
                     border: "none",
                     background: "var(--grad)",
-                    color: "white",
+                    color: "var(--bg)",
                     fontFamily: "inherit",
                     fontSize: 14,
                     fontWeight: 600,
