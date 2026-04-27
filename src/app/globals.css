@@ -7,72 +7,60 @@
 /* :root = dark (primary design); .dark explicit for next-themes */
 :root,
 .dark {
-  --bg:              #000000;
-  --surface:         #0A0A12;
-  --surface-raised:  #12121E;
-  --border:          #1C1C2E;
+  --bg:              #080808;
+  --bg2:             #0f0f0f;
+  --surface:         #141414;
+  --surface2:        #1a1a1a;
+  --border:          #262626;
   --border-subtle:   rgba(255, 255, 255, 0.06);
-  --text:            #F4F4F8;
-  --text-secondary:  #9898B0;
-  --text-muted:      #5A5A72;
-  --accent:          #6366F1;
-  --accent-hover:    #818CF8;
-  --accent-glow:     rgba(99, 102, 241, 0.25);
-  --nebula:          #A78BFA;
-  --star:            #E0E7FF;
-  --cosmic-blue:     #38BDF8;
-  --error:           #F87171;
-  --success:         #34D399;
+  --text:            #f0f0f0;
+  --text-secondary:  #aaaaaa;
+  --text-muted:      #888888;
+  --text-dim:        #444444;
+  --accent:          #f0f0f0;
+  --accent2:         #aaaaaa;
+  --accent-glow:     rgba(240, 240, 240, 0.06);
+  --accent2-glow:    rgba(240, 240, 240, 0.04);
+  --grad:            linear-gradient(135deg, #ffffff, #aaaaaa);
 }
 
 /* Light mode ("solar") */
 .light {
-  --bg:              #FAFAFA;
-  --surface:         #F0F0F8;
-  --surface-raised:  #FFFFFF;
-  --border:          #E2E2F0;
+  --bg:              #fafafa;
+  --bg2:             #f2f2f2;
+  --surface:         #ffffff;
+  --surface2:        #f7f7f7;
+  --border:          #dddddd;
   --border-subtle:   rgba(0, 0, 0, 0.06);
-  --text:            #0A0A1A;
-  --text-secondary:  #4A4A6A;
-  --text-muted:      #8A8AAA;
-  --accent:          #4F46E5;
-  --accent-hover:    #4338CA;
-  --accent-glow:     rgba(79, 70, 229, 0.18);
-  --nebula:          #7C3AED;
-  --star:            #312E81;
-  --cosmic-blue:     #0284C7;
-  --error:           #DC2626;
-  --success:         #059669;
+  --text:            #0a0a0a;
+  --text-secondary:  #555555;
+  --text-muted:      #555555;
+  --text-dim:        #aaaaaa;
+  --accent:          #0a0a0a;
+  --accent2:         #555555;
+  --accent-glow:     rgba(10, 10, 10, 0.06);
+  --accent2-glow:    rgba(10, 10, 10, 0.04);
+  --grad:            linear-gradient(135deg, #000000, #555555);
 }
 
 /* ─── Tailwind theme ──────────────────────────────────────────── */
 @theme {
   /* Fonts — CSS vars injected by next/font */
   --font-sans: var(--font-space-grotesk);
-  --font-mono: var(--font-geist-mono);
+  --font-mono: var(--font-jetbrains-mono);
 
   /* Semantic colors → map to CSS vars */
   --color-bg:             var(--bg);
+  --color-bg2:            var(--bg2);
   --color-surface:        var(--surface);
-  --color-surface-raised: var(--surface-raised);
+  --color-surface2:       var(--surface2);
   --color-border:         var(--border);
   --color-text:           var(--text);
   --color-text-secondary: var(--text-secondary);
   --color-text-muted:     var(--text-muted);
+  --color-text-dim:       var(--text-dim);
   --color-accent:         var(--accent);
-  --color-accent-hover:   var(--accent-hover);
-  --color-nebula:         var(--nebula);
-  --color-star:           var(--star);
-  --color-cosmic-blue:    var(--cosmic-blue);
-  --color-error:          var(--error);
-  --color-success:        var(--success);
-
-  /* Raw palette (non-themeable) */
-  --color-space-black:    #000000;
-  --color-indigo-500:     #6366F1;
-  --color-indigo-400:     #818CF8;
-  --color-violet-400:     #A78BFA;
-  --color-sky-400:        #38BDF8;
+  --color-accent2:        var(--accent2);
 
   /* Animation durations */
   --duration-fast:        150ms;
@@ -118,19 +106,33 @@ body {
   color: var(--text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  transition: background-color 0.4s, color 0.4s;
 }
 
 /* ─── Focus ring ──────────────────────────────────────────────── */
 :focus-visible {
   outline: 2px solid var(--accent);
-  outline-offset: 2px;
-  border-radius: 2px;
+  outline-offset: 3px;
+  border-radius: 4px;
 }
 
 /* ─── Selection ───────────────────────────────────────────────── */
 ::selection {
-  background-color: var(--accent-glow);
+  background-color: oklch(66% 0.19 285 / 0.35);
   color: var(--text);
+}
+
+/* ─── Scrollbar ───────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 9px;
 }
 
 /* ─── Starfield twinkle ───────────────────────────────────────── */
@@ -158,4 +160,24 @@ body {
   --twinkle-to:   1;
   animation: twinkle 2s ease-in-out infinite;
   animation-delay: var(--twinkle-delay, 0s);
+}
+
+/* ─── Bob animation for scroll indicator ──────────────────────── */
+@keyframes bob {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%       { transform: translateX(-50%) translateY(6px); }
+}
+
+.animate-bob {
+  animation: bob 2s ease-in-out infinite;
+}
+
+/* ─── Pulse animation for status dot ──────────────────────────── */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+.animate-pulse-soft {
+  animation: pulse 2s ease-in-out infinite;
 }

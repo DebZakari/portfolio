@@ -1,11 +1,36 @@
 export default function Footer() {
   return (
-    <footer className="border-t border-border py-8 px-6">
-      <div className="mx-auto max-w-7xl">
-        <p className="text-sm text-text-muted text-center">
-          &copy; {new Date().getFullYear()} Dave Macarayo
-        </p>
-      </div>
+    <footer
+      style={{
+        borderTop: "1px solid var(--border)",
+        padding: "24px clamp(1.5rem, 5vw, 4rem)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        flexWrap: "wrap",
+        gap: 12,
+      }}
+    >
+      <span
+        className="font-mono"
+        style={{
+          fontSize: 11,
+          color: "var(--text-dim)",
+          letterSpacing: "0.06em",
+        }}
+      >
+        © {new Date().getFullYear()} Dave Zachary Macarayo
+      </span>
+      <span
+        className="font-mono"
+        style={{
+          fontSize: 11,
+          color: "var(--text-dim)",
+          letterSpacing: "0.06em",
+        }}
+      >
+        Built with precision · Deployed with intent
+      </span>
     </footer>
   );
 }
