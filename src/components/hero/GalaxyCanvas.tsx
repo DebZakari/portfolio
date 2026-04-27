@@ -44,10 +44,15 @@ export default function GalaxyCanvas({ theme }: GalaxyCanvasProps) {
       };
     });
 
-    // Orbital rings data
+    // Orbital rings + planets (pvx/pvy = black-hole displacement velocity)
+    // starA/starB: [glowColor, coreColor] for [dark, light] mode
     const rings = [
-      { cx: W * 0.72, cy: H * 0.38, rx: 120, ry: 40, angle: -0.3, opacity: 0.18 },
-      { cx: W * 0.25, cy: H * 0.65, rx: 80, ry: 25, angle: 0.5, opacity: 0.12 },
+      { cx: W * 0.72, cy: H * 0.38, rx: 120, ry: 40, angle: -0.3, opacity: 0.18, pa: 0.8,  ps: 0.004, pr: 3.2, pvx: 0, pvy: 0,
+        starGlow: ["rgba(120,160,255,0.6)",  "rgba(60,100,220,0.45)"],
+        starCore: ["rgba(180,210,255,0.98)", "rgba(50,90,210,0.92)"] },
+      { cx: W * 0.25, cy: H * 0.65, rx: 80,  ry: 25, angle: 0.5,  opacity: 0.12, pa: 3.2,  ps: 0.006, pr: 2.4, pvx: 0, pvy: 0,
+        starGlow: ["rgba(255,245,200,0.55)", "rgba(200,140,0,0.4)"],
+        starCore: ["rgba(255,250,220,0.95)", "rgba(220,160,20,0.9)"] },
     ];
 
     // Nebula blobs
@@ -72,27 +77,108 @@ export default function GalaxyCanvas({ theme }: GalaxyCanvasProps) {
         ctx.fillRect(0, 0, W, H);
       });
 
-      // Orbital rings
-      rings.forEach((ring) => {
-        ctx.save();
-        ctx.translate(ring.cx, ring.cy);
-        ctx.rotate(ring.angle);
-        ctx.beginPath();
-        ctx.ellipse(0, 0, ring.rx, ring.ry, 0, 0, Math.PI * 2);
-        ctx.strokeStyle = isDark
-          ? `rgba(255,255,255,${ring.opacity})`
-          : `rgba(0,0,0,${ring.opacity})`;
-        ctx.lineWidth = 1;
-        ctx.stroke();
-        ctx.restore();
-      });
-
-      // Stars
+      // Cursor + gravity constants (shared by rings and stars)
       const mx = S.mouse.x;
       const my = S.mouse.y;
       const BH_RADIUS = 180;
       const BH_FORCE = 45;
 
+      // Orbital rings + planets (layered: back arc → back planet → front arc → front planet)
+      rings.forEach((ring) => {
+        ring.pa += ring.ps;
+        const cp = Math.cos(ring.pa);
+        const sp = Math.sin(ring.pa);
+
+        // Orbital position (the "home" the planet springs back to)
+        const ox = ring.cx + ring.rx * cp * Math.cos(ring.angle) - ring.ry * sp * Math.sin(ring.angle);
+        const oy = ring.cy + ring.rx * cp * Math.sin(ring.angle) + ring.ry * sp * Math.cos(ring.angle);
+
+        // Black-hole gravity on planet
+        const curX = ox + ring.pvx;
+        const curY = oy + ring.pvy;
+        const dx = mx - curX;
+        const dy = my - curY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < BH_RADIUS && dist > 1) {
+          const f = (1 - dist / BH_RADIUS) ** 2 * BH_FORCE;
+          ring.pvx += (dx / dist) * f * 0.04;
+          ring.pvy += (dy / dist) * f * 0.04;
+        }
+        // Spring back toward orbital path + damping
+        ring.pvx += -ring.pvx * 0.05;
+        ring.pvy += -ring.pvy * 0.05;
+        ring.pvx *= 0.82;
+        ring.pvy *= 0.82;
+
+        const px = ox + ring.pvx;
+        const py = oy + ring.pvy;
+        const isFront = sp > 0; // positive local-y = near side
+
+        const ringColor = isDark
+          ? `rgba(255,255,255,${ring.opacity})`
+          : `rgba(0,0,0,${ring.opacity})`;
+
+        const drawPlanet = () => {
+          // Atmospheric glow
+          const glow = ctx.createRadialGradient(px, py, 0, px, py, ring.pr * 3.5);
+          glow.addColorStop(0, isDark ? "rgba(200,210,255,0.22)" : "rgba(0,0,40,0.18)");
+          glow.addColorStop(1, "transparent");
+          ctx.fillStyle = glow;
+          ctx.beginPath();
+          ctx.arc(px, py, ring.pr * 3.5, 0, Math.PI * 2);
+          ctx.fill();
+          // Core
+          ctx.beginPath();
+          ctx.arc(px, py, ring.pr, 0, Math.PI * 2);
+          ctx.fillStyle = isDark ? "rgba(205,215,230,0.95)" : "rgba(20,20,35,0.88)";
+          ctx.fill();
+        };
+
+        // Central star (drawn first — below ring and planet)
+        const starR = ring.pr * 1.4;
+        const sGlow = ctx.createRadialGradient(ring.cx, ring.cy, 0, ring.cx, ring.cy, starR * 5);
+        sGlow.addColorStop(0, isDark ? ring.starGlow[0] : ring.starGlow[1]);
+        sGlow.addColorStop(0.4, isDark ? ring.starGlow[0].replace(/[\d.]+\)$/, "0.1)") : ring.starGlow[1].replace(/[\d.]+\)$/, "0.07)"));
+        sGlow.addColorStop(1, "transparent");
+        ctx.fillStyle = sGlow;
+        ctx.beginPath();
+        ctx.arc(ring.cx, ring.cy, starR * 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(ring.cx, ring.cy, starR, 0, Math.PI * 2);
+        ctx.fillStyle = isDark ? ring.starCore[0] : ring.starCore[1];
+        ctx.fill();
+
+        // Back arc (far side: sin < 0, angles π → 2π)
+        ctx.save();
+        ctx.translate(ring.cx, ring.cy);
+        ctx.rotate(ring.angle);
+        ctx.beginPath();
+        ctx.ellipse(0, 0, ring.rx, ring.ry, 0, Math.PI, Math.PI * 2);
+        ctx.strokeStyle = ringColor;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        ctx.restore();
+
+        // Planet behind ring
+        if (!isFront) drawPlanet();
+
+        // Front arc (near side: sin > 0, angles 0 → π)
+        ctx.save();
+        ctx.translate(ring.cx, ring.cy);
+        ctx.rotate(ring.angle);
+        ctx.beginPath();
+        ctx.ellipse(0, 0, ring.rx, ring.ry, 0, 0, Math.PI);
+        ctx.strokeStyle = ringColor;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        ctx.restore();
+
+        // Planet in front of ring
+        if (isFront) drawPlanet();
+      });
+
+      // Stars
       S.stars.forEach((star) => {
         const twinkle = star.opacity + Math.sin(t * star.twinkleSpeed * 60 + star.twinklePhase) * 0.12;
         const dx = mx - star.x;
