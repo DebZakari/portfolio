@@ -27,7 +27,7 @@ type ThemeValue = "light" | "dark" | "system";
 const THEME_OPTIONS: {
   value: ThemeValue;
   label: string;
-  Icon: React.ElementType;
+  Icon: React.ComponentType<{ size?: number }>;
 }[] = [
   { value: "light", label: "Light", Icon: Sun },
   { value: "dark", label: "Dark", Icon: Moon },
@@ -38,7 +38,7 @@ const EXPERIENCE_OPTIONS: {
   value: ExperienceMode;
   label: string;
   description: string;
-  Icon: React.ElementType;
+  Icon: React.ComponentType<{ size?: number }>;
 }[] = [
   {
     value: "immersive",

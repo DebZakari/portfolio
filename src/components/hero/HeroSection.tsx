@@ -1,8 +1,7 @@
 import StaticStarfield from "./StaticStarfield";
 import HeroContent from "./HeroContent";
 import ScrollIndicator from "./ScrollIndicator";
-
-// GalaxyScene imported here in Phase 04 (dynamic, ssr: false)
+import GalaxyMount from "./GalaxyMount";
 
 export default function HeroSection() {
   return (
@@ -11,8 +10,11 @@ export default function HeroSection() {
       aria-label="Hero"
       className="relative flex min-h-screen items-center justify-center overflow-hidden bg-bg"
     >
-      {/* Layer 0: static starfield (always rendered; replaced by galaxy in phase 04 immersive) */}
+      {/* Layer 0: static starfield — SSR, always visible; galaxy fades in on top in immersive mode */}
       <StaticStarfield />
+
+      {/* Layer 1 (dynamic): galaxy canvas, immersive + no reduced-motion only */}
+      <GalaxyMount />
 
       {/* Layer 1: radial vignette — transparent center, dark edges */}
       <div

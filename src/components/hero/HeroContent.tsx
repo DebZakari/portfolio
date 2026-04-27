@@ -1,6 +1,6 @@
 export default function HeroContent() {
   return (
-    <div className="relative z-20 flex flex-col items-center text-center px-6 max-w-4xl mx-auto">
+    <div className="relative z-20 flex flex-col items-center text-center px-6 max-w-4xl mx-auto pointer-events-none">
       <p className="text-xs font-mono uppercase tracking-[0.2em] text-accent mb-4">
         Web Developer &amp; AI Engineer
       </p>
@@ -18,7 +18,7 @@ export default function HeroContent() {
         vision.
       </p>
 
-      <div className="flex flex-col sm:flex-row gap-4">
+      <div className="flex flex-col sm:flex-row gap-4 pointer-events-auto">
         <a
           href="#projects"
           className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white shadow-[0_0_24px_rgba(99,102,241,0.35)] transition-all duration-[--duration-base] hover:bg-accent-hover hover:shadow-[0_0_32px_rgba(99,102,241,0.5)] focus-visible:outline-2 focus-visible:outline-offset-2"

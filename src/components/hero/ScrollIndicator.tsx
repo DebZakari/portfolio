@@ -24,9 +24,9 @@ export default function ScrollIndicator() {
       ref={ref}
       aria-hidden="true"
       className={[
-        "absolute bottom-8 left-1/2 -translate-x-1/2 z-20",
+        "absolute bottom-8 left-1/2 -translate-x-1/2 z-20 pointer-events-none",
         "transition-opacity duration-[--duration-slow]",
-        visible ? "opacity-100" : "opacity-0 pointer-events-none",
+        visible ? "opacity-100" : "opacity-0",
       ].join(" ")}
     >
       <ChevronDown
