@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Geist_Mono } from "next/font/google";
+import { ThemeProvider } from "next-themes";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { ExperienceProvider } from "@/contexts/ExperienceContext";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -43,14 +45,17 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${spaceGrotesk.variable} ${geistMono.variable} dark`}
+      className={`${spaceGrotesk.variable} ${geistMono.variable}`}
       suppressHydrationWarning
     >
       <body className="flex min-h-screen flex-col bg-bg text-text antialiased">
-        {/* ThemeProvider added in Phase 02 */}
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+          <ExperienceProvider>
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </ExperienceProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

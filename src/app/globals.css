@@ -1,11 +1,12 @@
 @import "tailwindcss";
 
-/* Dark mode via .dark class on <html> */
+/* Dark mode via .dark class on <html> (managed by next-themes) */
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ─── Semantic color tokens ───────────────────────────────────── */
-/* Default = dark (primary design) */
-:root {
+/* :root = dark (primary design); .dark explicit for next-themes */
+:root,
+.dark {
   --bg:              #000000;
   --surface:         #0A0A12;
   --surface-raised:  #12121E;
