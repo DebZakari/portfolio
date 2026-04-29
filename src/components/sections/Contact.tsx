@@ -5,18 +5,42 @@ import { useExperience } from "@/hooks/useExperience";
 import SectionLabel from "@/components/SectionLabel";
 import RevealBlock from "@/components/RevealBlock";
 
+// Set to a public path (e.g. "/resume.pdf") when the file is ready.
+const RESUME_URL: string | null = null;
+
 const LINKS = [
-  { label: "Email", value: "mdavezachary@gmail.com", icon: "✉", href: "mailto:mdavezachary@gmail.com" },
-  { label: "LinkedIn", value: "Dave Zachary Macarayo", icon: "◈", href: "https://www.linkedin.com/in/dave-zachary-macarayo-002304282/" },
-  { label: "GitHub", value: "DebZakari", icon: "⎇", href: "https://github.com/DebZakari" },
-  { label: "Résumé", value: "Download PDF", icon: "↓", href: "#" },
+  {
+    label: "Email",
+    value: "mdavezachary@gmail.com",
+    icon: "✉",
+    href: "mailto:mdavezachary@gmail.com",
+  },
+  {
+    label: "LinkedIn",
+    value: "Dave Zachary Macarayo",
+    icon: "◈",
+    href: "https://www.linkedin.com/in/dave-zachary-macarayo-002304282/",
+  },
+  {
+    label: "GitHub",
+    value: "DebZakari",
+    icon: "⎇",
+    href: "https://github.com/DebZakari",
+  },
+  ...(RESUME_URL
+    ? [{ label: "Résumé", value: "Download PDF", icon: "↓", href: RESUME_URL }]
+    : []),
 ];
+
+type FormState = { name: string; email: string; message: string };
+type Status = "idle" | "loading" | "success" | "error";
 
 export default function Contact() {
   const { mode } = useExperience();
   const immersive = mode === "immersive";
-  const [sent, setSent] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [status, setStatus] = useState<Status>("idle");
+  const [errorMsg, setErrorMsg] = useState("");
+  const [form, setForm] = useState<FormState>({ name: "", email: "", message: "" });
 
   const inputStyle: React.CSSProperties = {
     width: "100%",
@@ -30,6 +54,35 @@ export default function Contact() {
     transition: "border-color 0.2s",
     outline: "none",
   };
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (status === "loading") return;
+
+    setStatus("loading");
+    setErrorMsg("");
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      if (res.ok) {
+        setStatus("success");
+      } else {
+        const data = await res.json().catch(() => ({}));
+        setErrorMsg(
+          (data as { error?: string }).error || "Something went wrong. Please try again."
+        );
+        setStatus("error");
+      }
+    } catch {
+      setErrorMsg("Network error. Check your connection and try again.");
+      setStatus("error");
+    }
+  }
 
   return (
     <div
@@ -48,188 +101,241 @@ export default function Contact() {
       >
         <div
           className="grid grid-cols-1 md:grid-cols-2"
-          style={{
-            gap: "clamp(2rem, 5vw, 5rem)",
-            alignItems: "start",
-          }}
+          style={{ gap: "clamp(2rem, 5vw, 5rem)", alignItems: "start" }}
         >
           <RevealBlock direction="left" delay={0}>
-          <div>
-            <SectionLabel
-              tag="05 · Transmission Dock"
-              title="Let's build something."
-              subtitle="Open to full-time roles, freelance projects, and AI-focused collaborations."
-            />
-            <div style={{ display: "grid", gap: 12, marginTop: 8 }}>
-              {LINKS.map((l) => (
-                <a
-                  key={l.label}
-                  href={l.href}
-                  target={l.href.startsWith("http") ? "_blank" : undefined}
-                  rel={l.href.startsWith("http") ? "noopener noreferrer" : undefined}
+            <div>
+              <SectionLabel
+                tag="05 · Transmission Dock"
+                title="Let's build something."
+                subtitle="Open to full-time roles, freelance projects, and AI-focused collaborations."
+              />
+              <div style={{ display: "grid", gap: 12, marginTop: 8 }}>
+                {LINKS.map((l) => (
+                  <a
+                    key={l.label}
+                    href={l.href}
+                    target={l.href.startsWith("http") ? "_blank" : undefined}
+                    rel={
+                      l.href.startsWith("http")
+                        ? "noopener noreferrer"
+                        : undefined
+                    }
+                    download={l.label === "Résumé" ? true : undefined}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 14,
+                      padding: "14px 18px",
+                      background: "var(--surface)",
+                      border: "1px solid var(--border)",
+                      borderRadius: 12,
+                      transition: "border-color 0.2s",
+                      cursor: "pointer",
+                      textDecoration: "none",
+                    }}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.borderColor = "var(--accent)")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.borderColor = "var(--border)")
+                    }
+                  >
+                    <span
+                      style={{
+                        width: 34,
+                        height: 34,
+                        borderRadius: 10,
+                        background: "var(--surface2)",
+                        border: "1px solid var(--border)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: 14,
+                        color: "var(--text-muted)",
+                        flexShrink: 0,
+                      }}
+                    >
+                      {l.icon}
+                    </span>
+                    <div>
+                      <div
+                        className="font-mono"
+                        style={{
+                          fontSize: 10,
+                          color: "var(--text-dim)",
+                          letterSpacing: "0.08em",
+                          marginBottom: 2,
+                        }}
+                      >
+                        {l.label}
+                      </div>
+                      <div style={{ fontSize: 13, color: "var(--text-muted)" }}>
+                        {l.value}
+                      </div>
+                    </div>
+                  </a>
+                ))}
+              </div>
+
+              {immersive && (
+                <div
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 14,
-                    padding: "14px 18px",
+                    marginTop: 32,
+                    padding: 20,
                     background: "var(--surface)",
                     border: "1px solid var(--border)",
                     borderRadius: 12,
-                    transition: "border-color 0.2s",
-                    cursor: "pointer",
-                    textDecoration: "none",
                   }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.borderColor = "var(--accent)")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.borderColor = "var(--border)")
-                  }
                 >
-                  <span
+                  <div
+                    className="font-mono"
                     style={{
-                      width: 34,
-                      height: 34,
-                      borderRadius: 10,
-                      background: "var(--surface2)",
-                      border: "1px solid var(--border)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: 14,
-                      color: "var(--text-muted)",
-                      flexShrink: 0,
+                      fontSize: 10,
+                      color: "var(--text-dim)",
+                      letterSpacing: "0.08em",
+                      marginBottom: 10,
                     }}
                   >
-                    {l.icon}
-                  </span>
-                  <div>
-                    <div
-                      className="font-mono"
-                      style={{
-                        fontSize: 10,
-                        color: "var(--text-dim)",
-                        letterSpacing: "0.08em",
-                        marginBottom: 2,
-                      }}
-                    >
-                      {l.label}
-                    </div>
-                    <div
-                      style={{ fontSize: 13, color: "var(--text-muted)" }}
-                    >
-                      {l.value}
-                    </div>
+                    {"// current status"}
                   </div>
-                </a>
-              ))}
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <span
+                      className="animate-pulse-soft"
+                      style={{
+                        width: 8,
+                        height: 8,
+                        borderRadius: "50%",
+                        background: "var(--accent2)",
+                        display: "inline-block",
+                      }}
+                    />
+                    <span style={{ fontSize: 14, color: "var(--text-muted)" }}>
+                      Available for opportunities
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
-
-            {immersive && (
-              <div
-                style={{
-                  marginTop: 32,
-                  padding: 20,
-                  background: "var(--surface)",
-                  border: "1px solid var(--border)",
-                  borderRadius: 12,
-                }}
-              >
-                <div
-                  className="font-mono"
-                  style={{
-                    fontSize: 10,
-                    color: "var(--text-dim)",
-                    letterSpacing: "0.08em",
-                    marginBottom: 10,
-                  }}
-                >
-                  {"// current status"}
-                </div>
-                <div
-                  style={{ display: "flex", alignItems: "center", gap: 8 }}
-                >
-                  <span
-                    className="animate-pulse-soft"
-                    style={{
-                      width: 8,
-                      height: 8,
-                      borderRadius: "50%",
-                      background: "oklch(70% 0.18 145)",
-                      display: "inline-block",
-                    }}
-                  />
-                  <span style={{ fontSize: 14, color: "var(--text-muted)" }}>
-                    Available for opportunities
-                  </span>
-                </div>
-              </div>
-            )}
-          </div>
           </RevealBlock>
 
           {/* Form */}
           <RevealBlock direction="right" delay={0}>
-          <div
-            style={{
-              background: "var(--surface)",
-              border: "1px solid var(--border)",
-              borderRadius: 20,
-              padding: 32,
-            }}
-          >
-            <h3
+            <div
               style={{
-                fontSize: 18,
-                fontWeight: 600,
-                marginBottom: 24,
-                letterSpacing: "-0.02em",
-                color: "var(--text)",
+                background: "var(--surface)",
+                border: "1px solid var(--border)",
+                borderRadius: 20,
+                padding: 32,
               }}
             >
-              Send a message
-            </h3>
-            {sent ? (
-              <div style={{ textAlign: "center", padding: "40px 0" }}>
-                <div style={{ fontSize: 32, marginBottom: 12 }}>✦</div>
-                <p style={{ color: "var(--text-muted)", fontSize: 15 }}>
-                  Message received. I&apos;ll be in touch soon.
-                </p>
-              </div>
-            ) : (
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  setSent(true);
+              <h3
+                style={{
+                  fontSize: 18,
+                  fontWeight: 600,
+                  marginBottom: 24,
+                  letterSpacing: "-0.02em",
+                  color: "var(--text)",
                 }}
-                style={{ display: "grid", gap: 16 }}
               >
-                {[
-                  ["name", "Name", "Your name"],
-                  ["email", "Email", "your@email.com"],
-                ].map(([k, label, ph]) => (
-                  <div key={k}>
-                    <label
-                      className="font-mono"
+                Send a message
+              </h3>
+
+              {status === "success" ? (
+                <div style={{ textAlign: "center", padding: "40px 0" }}>
+                  <div style={{ fontSize: 32, marginBottom: 12 }}>✦</div>
+                  <p style={{ color: "var(--text-muted)", fontSize: 15 }}>
+                    Message received. I&apos;ll be in touch soon.
+                  </p>
+                </div>
+              ) : (
+                <form
+                  onSubmit={handleSubmit}
+                  style={{ display: "grid", gap: 16 }}
+                >
+                  {(
+                    [
+                      ["name", "Name", "Your name", 100, "text"],
+                      ["email", "Email", "your@email.com", 320, "email"],
+                    ] as [keyof FormState, string, string, number, string][]
+                  ).map(([k, label, ph, maxLen, type]) => (
+                    <div key={k}>
+                      <label
+                        className="font-mono"
+                        style={{
+                          fontSize: 11,
+                          color: "var(--text-dim)",
+                          letterSpacing: "0.08em",
+                          display: "block",
+                          marginBottom: 6,
+                        }}
+                      >
+                        {label}
+                      </label>
+                      <input
+                        type={type}
+                        placeholder={ph}
+                        required
+                        maxLength={maxLen}
+                        value={form[k]}
+                        onChange={(e) =>
+                          setForm((f) => ({ ...f, [k]: e.target.value }))
+                        }
+                        style={inputStyle}
+                        onFocus={(e) =>
+                          (e.currentTarget.style.borderColor = "var(--accent)")
+                        }
+                        onBlur={(e) =>
+                          (e.currentTarget.style.borderColor = "var(--border)")
+                        }
+                      />
+                    </div>
+                  ))}
+
+                  <div>
+                    <div
                       style={{
-                        fontSize: 11,
-                        color: "var(--text-dim)",
-                        letterSpacing: "0.08em",
-                        display: "block",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "baseline",
                         marginBottom: 6,
                       }}
                     >
-                      {label}
-                    </label>
-                    <input
-                      type={k === "email" ? "email" : "text"}
-                      placeholder={ph}
+                      <label
+                        className="font-mono"
+                        style={{
+                          fontSize: 11,
+                          color: "var(--text-dim)",
+                          letterSpacing: "0.08em",
+                        }}
+                      >
+                        Message
+                      </label>
+                      <span
+                        className="font-mono"
+                        style={{
+                          fontSize: 10,
+                          color:
+                            form.message.length > 1800
+                              ? "var(--accent-vivid)"
+                              : "var(--text-dim)",
+                          letterSpacing: "0.04em",
+                          transition: "color 0.2s",
+                        }}
+                      >
+                        {form.message.length}/2000
+                      </span>
+                    </div>
+                    <textarea
+                      placeholder="Tell me about your project..."
                       required
-                      value={form[k as keyof typeof form]}
+                      rows={5}
+                      maxLength={2000}
+                      value={form.message}
                       onChange={(e) =>
-                        setForm((f) => ({ ...f, [k]: e.target.value }))
+                        setForm((f) => ({ ...f, message: e.target.value }))
                       }
-                      style={inputStyle}
+                      style={{ ...inputStyle, resize: "vertical" }}
                       onFocus={(e) =>
                         (e.currentTarget.style.borderColor = "var(--accent)")
                       }
@@ -238,66 +344,97 @@ export default function Contact() {
                       }
                     />
                   </div>
-                ))}
-                <div>
-                  <label
-                    className="font-mono"
+
+                  {status === "error" && errorMsg && (
+                    <p
+                      className="font-mono"
+                      style={{
+                        fontSize: 11,
+                        color: "var(--accent-vivid)",
+                        letterSpacing: "0.04em",
+                        padding: "8px 12px",
+                        background: "var(--accent-vivid-glow)",
+                        border: "1px solid var(--accent-vivid-muted)",
+                        borderRadius: 8,
+                      }}
+                    >
+                      {errorMsg}
+                    </p>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={status === "loading"}
                     style={{
-                      fontSize: 11,
-                      color: "var(--text-dim)",
-                      letterSpacing: "0.08em",
-                      display: "block",
-                      marginBottom: 6,
+                      padding: "13px 22px",
+                      borderRadius: 28,
+                      border: "none",
+                      background:
+                        status === "loading"
+                          ? "var(--surface2)"
+                          : "var(--grad)",
+                      color: status === "loading" ? "var(--text-muted)" : "var(--bg)",
+                      fontFamily: "inherit",
+                      fontSize: 14,
+                      fontWeight: 600,
+                      cursor: status === "loading" ? "not-allowed" : "pointer",
+                      transition: "opacity 0.2s, background 0.2s",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 8,
+                    }}
+                    onMouseEnter={(e) => {
+                      if (status !== "loading")
+                        e.currentTarget.style.opacity = "0.85";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.opacity = "1";
                     }}
                   >
-                    Message
-                  </label>
-                  <textarea
-                    placeholder="Tell me about your project..."
-                    required
-                    rows={5}
-                    value={form.message}
-                    onChange={(e) =>
-                      setForm((f) => ({ ...f, message: e.target.value }))
-                    }
-                    style={{ ...inputStyle, resize: "vertical" }}
-                    onFocus={(e) =>
-                      (e.currentTarget.style.borderColor = "var(--accent)")
-                    }
-                    onBlur={(e) =>
-                      (e.currentTarget.style.borderColor = "var(--border)")
-                    }
-                  />
-                </div>
-                <button
-                  type="submit"
-                  style={{
-                    padding: 13,
-                    borderRadius: 12,
-                    border: "none",
-                    background: "var(--grad)",
-                    color: "var(--bg)",
-                    fontFamily: "inherit",
-                    fontSize: 14,
-                    fontWeight: 600,
-                    cursor: "pointer",
-                    transition: "opacity 0.2s",
-                  }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.opacity = "0.85")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.opacity = "1")
-                  }
-                >
-                  Transmit →
-                </button>
-              </form>
-            )}
-          </div>
+                    {status === "loading" ? (
+                      <>
+                        <Spinner />
+                        Transmitting...
+                      </>
+                    ) : (
+                      "Transmit →"
+                    )}
+                  </button>
+                </form>
+              )}
+            </div>
           </RevealBlock>
         </div>
       </section>
     </div>
+  );
+}
+
+function Spinner() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 14 14"
+      fill="none"
+      aria-hidden="true"
+      style={{ animation: "spin 0.8s linear infinite", flexShrink: 0 }}
+    >
+      <circle
+        cx="7"
+        cy="7"
+        r="5.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeOpacity="0.25"
+      />
+      <path
+        d="M7 1.5A5.5 5.5 0 0 1 12.5 7"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
   );
 }

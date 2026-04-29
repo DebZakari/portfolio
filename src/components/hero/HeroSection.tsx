@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { useExperience } from "@/hooks/useExperience";
 import { useTheme } from "next-themes";
+import { useIsMounted } from "@/hooks/useIsMounted";
 
 const GalaxyCanvas = dynamic(() => import("./GalaxyCanvas"), { ssr: false });
 
@@ -11,9 +12,8 @@ export default function HeroSection() {
   const { mode } = useExperience();
   const { resolvedTheme } = useTheme();
   const immersive = mode === "immersive";
-  const [mounted, setMounted] = useState(false);
+  const mounted = useIsMounted();
   const [scrolled, setScrolled] = useState(false);
-  useEffect(() => { setMounted(true); }, []);
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -128,9 +128,7 @@ export default function HeroSection() {
         <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
           {[
             { label: "View Projects", href: "#projects", primary: true },
-            { label: "Explore AI Work", href: "#skills", primary: false },
             { label: "Contact Me", href: "#contact", primary: false },
-            { label: "Download Résumé", href: "#", primary: false, mono: true },
           ].map((btn) => (
             <a
               key={btn.label}
@@ -142,9 +140,6 @@ export default function HeroSection() {
                 fontWeight: 600,
                 fontSize: 14,
                 letterSpacing: "-0.01em",
-                fontFamily: btn.mono
-                  ? "var(--font-jetbrains-mono), monospace"
-                  : "inherit",
                 background: btn.primary ? "var(--grad)" : "transparent",
                 color: btn.primary ? "var(--bg)" : "var(--text)",
                 border: btn.primary ? "none" : "1px solid var(--border)",

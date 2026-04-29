@@ -187,3 +187,8 @@ body {
 .animate-pulse-soft {
   animation: pulse 2s ease-in-out infinite;
 }
+
+/* ─── Spinner for loading states ──────────────────────────────── */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

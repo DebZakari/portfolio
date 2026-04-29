@@ -91,15 +91,7 @@ export default function MissionLogs() {
                 background: "var(--surface)",
                 padding: "20px 24px",
                 borderBottom: i < LOGS.length - 1 ? "1px solid var(--border)" : "none",
-                cursor: "pointer",
-                transition: "background 0.2s",
               }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.background = "var(--surface2)")
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.background = "var(--surface)")
-              }
             >
               {/* Prompt row */}
               <div
@@ -159,19 +151,16 @@ export default function MissionLogs() {
                   </span>
                 </div>
 
-                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <span
-                    style={{
-                      ...MONO,
-                      fontSize: 10,
-                      color: "var(--text-dim)",
-                      letterSpacing: "0.06em",
-                    }}
-                  >
-                    {log.date}
-                  </span>
-                  <span style={{ color: "var(--text-dim)", fontSize: 14 }}>→</span>
-                </div>
+                <span
+                  style={{
+                    ...MONO,
+                    fontSize: 10,
+                    color: "var(--text-dim)",
+                    letterSpacing: "0.06em",
+                  }}
+                >
+                  {log.date}
+                </span>
               </div>
 
               {/* Title */}
