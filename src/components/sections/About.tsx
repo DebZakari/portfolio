@@ -136,6 +136,7 @@ export default function About() {
         <section
           id="about"
           style={{
+            minHeight: "100svh",
             padding: "clamp(5rem, 10vw, 8rem) clamp(1.5rem, 5vw, 4rem)",
             maxWidth: 1200,
             margin: "0 auto",
@@ -173,25 +174,26 @@ export default function About() {
               </RevealBlock>
               <RevealBlock direction="up" delay={260}>
                 <div
-                  className="font-mono"
                   style={{
                     marginTop: 32,
                     display: "flex",
-                    flexWrap: "wrap",
-                    gap: "6px 20px",
-                    fontSize: 11,
-                    color: "var(--text-dim)",
-                    letterSpacing: "0.06em",
+                    gap: 32,
                   }}
                 >
                   {STATS.map((s, i) => (
-                    <span key={s.l}>
-                      <span style={{ color: "var(--text-muted)", fontWeight: 600 }}>{s.v}</span>
-                      {" "}{s.l}
-                      {i < STATS.length - 1 && (
-                        <span style={{ marginLeft: 20, opacity: 0.3 }}>·</span>
-                      )}
-                    </span>
+                    <RevealBlock key={s.l} direction="up" delay={200 + i * 60}>
+                      <div>
+                        <div style={{ fontSize: "clamp(1.6rem, 3vw, 2.2rem)", fontWeight: 700, color: "var(--text)" }}>
+                          {s.v}
+                        </div>
+                        <div
+                          className="font-mono"
+                          style={{ fontSize: 11, color: "var(--text-dim)", letterSpacing: "0.06em", marginTop: 4 }}
+                        >
+                          {s.l}
+                        </div>
+                      </div>
+                    </RevealBlock>
                   ))}
                 </div>
               </RevealBlock>

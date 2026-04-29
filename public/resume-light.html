@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dave Zachary Macarayo — Resume</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg:                 oklch(97% 0.012 95);
+    --bg2:                oklch(93.5% 0.02 92);
+    --border:             oklch(83% 0.02 90);
+    --border-subtle:      oklch(78% 0.015 92 / 0.45);
+    --text:               oklch(22% 0.02 258);
+    --text-secondary:     oklch(38% 0.016 250);
+    --text-muted:         oklch(52% 0.015 248);
+    --accent-vivid:       oklch(54% 0.16 252);
+    --accent-vivid-muted: oklch(54% 0.16 252 / 0.16);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 210mm;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: 9pt;
+    line-height: 1.5;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  @page { size: A4; margin: 0; }
+
+  .page {
+    width: 210mm;
+    height: 297mm;
+    display: grid;
+    grid-template-columns: 60mm 1fr;
+    overflow: hidden;
+  }
+
+  /* ─── Sidebar ─────────────────────────────────────────────── */
+  .sidebar {
+    background: var(--bg2);
+    padding: 7mm 5.8mm 7mm 5.8mm;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 4.4mm;
+    overflow: hidden;
+  }
+
+  /* Portrait + name hero */
+  .hero {
+    display: flex;
+    flex-direction: column;
+    gap: 2.8mm;
+    align-items: center;
+  }
+
+  .portrait {
+    width: 20mm;
+    height: 20mm;
+    min-width: 20mm;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1.5px solid var(--accent-vivid-muted);
+  }
+
+  .portrait img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 12%;
+  }
+
+  .hero-text {
+    display: flex;
+    flex-direction: column;
+    gap: 1mm;
+    align-items: center;
+    text-align: center;
+  }
+
+  .sidebar-name {
+    font-size: 11pt;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    white-space: nowrap;
+  }
+
+  .sidebar-title {
+    font-size: 7pt;
+    font-weight: 500;
+    color: var(--accent-vivid);
+    letter-spacing: 0.01em;
+    line-height: 1.35;
+  }
+
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: oklch(76% 0.018 92 / 0.55);
+    flex-shrink: 0;
+  }
+
+  .label {
+    font-size: 7pt;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 2.2mm;
+  }
+
+  /* Contact with SVG icons */
+  .contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 2mm;
+    margin-bottom: 1.8mm;
+    color: var(--text-secondary);
+    font-size: 7.8pt;
+    line-height: 1.35;
+  }
+
+  .contact-icon {
+    width: 9px;
+    height: 9px;
+    min-width: 9px;
+    margin-top: 1.5pt;
+    flex-shrink: 0;
+  }
+
+  .contact-item a { color: var(--text-secondary); text-decoration: none; overflow-wrap: anywhere; }
+
+  /* Skills */
+  .skill-group { margin-bottom: 2.2mm; }
+  .skill-group-label {
+    font-size: 6.6pt; font-weight: 500; color: var(--text-muted);
+    letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 1.1mm;
+  }
+  .tags { display: flex; flex-wrap: wrap; gap: 1.15mm; }
+  .tag {
+    font-size: 7.2pt; color: var(--text-secondary);
+    background: oklch(98% 0.008 95); border: 1px solid var(--border);
+    border-radius: 2px; padding: 2px 4.5px;
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1.3;
+  }
+  .tag.v {
+    color: var(--accent-vivid);
+    border-color: var(--accent-vivid-muted);
+    background: oklch(54% 0.16 252 / 0.08);
+  }
+
+  /* Strengths */
+  .strength {
+    font-size: 7pt; color: var(--text-secondary);
+    padding: 1mm 0;
+    border-bottom: 1px solid var(--border-subtle);
+    line-height: 1.3;
+  }
+  .strength:last-child { border-bottom: none; }
+
+  /* Education sidebar */
+  .edu-s-degree { font-size: 8.1pt; font-weight: 600; color: var(--text); line-height: 1.24; }
+  .edu-s-inst   { font-size: 7.5pt; color: var(--text-secondary); margin-top: 0.8mm; line-height: 1.35; }
+  .edu-s-date   { font-size: 7.1pt; font-family: 'JetBrains Mono', monospace; color: var(--accent-vivid); margin-top: 0.8mm; }
+  .edu-s-note   { font-size: 6.8pt; color: var(--text-muted); margin-top: 1mm; font-style: italic; line-height: 1.42; }
+
+  /* ─── Main ────────────────────────────────────────────────── */
+  .main {
+    padding: 7mm 8mm 7mm 7.5mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+  }
+
+  .main > section {
+    flex-shrink: 0;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 2.5mm;
+    margin-bottom: 4mm;
+  }
+
+  .section-title {
+    font-size: 8.5pt; font-weight: 600; color: var(--text);
+    letter-spacing: 0.1em; text-transform: uppercase; white-space: nowrap;
+  }
+
+  .section-line { flex: 1; height: 1px; background: var(--border); }
+
+  .summary-text {
+    font-size: 9.3pt; color: var(--text-secondary); line-height: 1.62;
+    max-width: 64ch;
+  }
+
+  /* Experience */
+  .exp {
+    margin-bottom: 3.9mm;
+    padding-bottom: 3.9mm;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .exp:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+  .exp-head {
+    display: flex; justify-content: space-between;
+    align-items: flex-start; gap: 3mm; margin-bottom: 0.4mm;
+  }
+  .exp-role  { font-size: 9.6pt; font-weight: 600; color: var(--text); line-height: 1.22; }
+  .exp-date  { font-size: 7.1pt; font-family: 'JetBrains Mono', monospace; color: var(--accent-vivid); white-space: nowrap; padding-top: 1pt; }
+  .exp-co    { font-size: 8.3pt; font-weight: 500; color: var(--text-secondary); margin-bottom: 1.9mm; }
+  .exp-loc   { font-size: 7pt; color: var(--text-muted); font-style: italic; }
+
+  .bullets { list-style: none; }
+  .bullets li {
+    font-size: 8.5pt; color: var(--text-secondary);
+    padding-left: 3.5mm; position: relative;
+    margin-bottom: 1.1mm; line-height: 1.5;
+  }
+  .bullets li::before {
+    content: '';
+    position: absolute; left: 0; top: 5.5pt;
+    width: 1.8mm; height: 1px;
+    background: var(--accent-vivid);
+  }
+
+  /* Achievements */
+  .ach {
+    display: flex; gap: 2.5mm; margin-bottom: 2.1mm; align-items: flex-start;
+  }
+  .ach-dot {
+    width: 3.5mm; height: 3.5mm; min-width: 3.5mm;
+    border-radius: 50%;
+    border: 1px solid var(--accent-vivid);
+    background: oklch(62% 0.18 275 / 0.07);
+    margin-top: 1.5pt;
+  }
+  .ach-title { font-size: 8.8pt; font-weight: 500; color: var(--text); line-height: 1.28; }
+  .ach-sub   { font-size: 7.3pt; color: var(--text-muted); margin-top: 0.45mm; line-height: 1.38; }
+  .ach-date  { font-size: 7.1pt; font-family: 'JetBrains Mono', monospace; color: var(--accent-vivid); }
+  .ach-award {
+    display: inline-block;
+    font-size: 6.4pt; font-weight: 600;
+    color: oklch(58% 0.14 68);
+    border: 1px solid oklch(58% 0.14 68 / 0.28);
+    background: oklch(58% 0.14 68 / 0.12);
+    border-radius: 2px; padding: 0.7px 3px;
+    margin-left: 2mm;
+    font-family: 'JetBrains Mono', monospace;
+    vertical-align: middle;
+  }
+
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ─── Sidebar ────────────────────────────────────────────── -->
+  <aside class="sidebar">
+
+    <!-- Hero: portrait + name -->
+    <div class="hero">
+      <div class="portrait">
+        <img src="__PORTRAIT_DATA__" alt="Dave Zachary Macarayo" />
+      </div>
+      <div class="hero-text">
+        <div class="sidebar-name">Dave Zachary Macarayo</div>
+        <div class="sidebar-title">Full-Stack Developer · AI Engineer</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Contact -->
+    <div>
+      <div class="label">Contact</div>
+
+      <div class="contact-item">
+        <svg class="contact-icon" viewBox="0 0 24 24" fill="var(--accent-vivid)" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+        </svg>
+        <span>Tablon, Cagayan de Oro City, Philippines</span>
+      </div>
+
+      <div class="contact-item">
+        <svg class="contact-icon" viewBox="0 0 24 24" fill="var(--accent-vivid)" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+        </svg>
+        <a href="tel:+639272710443">+63 927 271 0443</a>
+      </div>
+
+      <div class="contact-item">
+        <svg class="contact-icon" viewBox="0 0 24 24" fill="var(--accent-vivid)" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+        </svg>
+        <a href="mailto:mdavezachary@gmail.com">mdavezachary@gmail.com</a>
+      </div>
+
+      <div class="contact-item">
+        <svg class="contact-icon" viewBox="0 0 24 24" fill="var(--accent-vivid)" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+        </svg>
+        <a href="https://dz-macarayo.vercel.app">dz-macarayo.vercel.app</a>
+      </div>
+
+      <div class="contact-item">
+        <svg class="contact-icon" viewBox="0 0 24 24" fill="var(--accent-vivid)" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19 3a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14m-.5 15.5v-5.3a3.26 3.26 0 00-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 011.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 001.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 00-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+        </svg>
+        <a href="https://linkedin.com/in/dave-zachary-macarayo-002304282">linkedin.com/in/dave-zachary-macarayo</a>
+      </div>
+
+      <div class="contact-item">
+        <svg class="contact-icon" viewBox="0 0 24 24" fill="var(--accent-vivid)" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 .5C5.65.5.5 5.65.5 12A11.5 11.5 0 008.36 22.93c.58.11.79-.25.79-.56v-2.16c-3.19.69-3.86-1.35-3.86-1.35-.52-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.71.08-.71 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.54-.29-5.22-1.27-5.22-5.66 0-1.25.45-2.27 1.18-3.07-.12-.29-.51-1.47.11-3.06 0 0 .97-.31 3.19 1.17A11 11 0 0112 6.32c.98 0 1.97.13 2.89.38 2.22-1.48 3.18-1.17 3.18-1.17.63 1.59.24 2.77.12 3.06.73.8 1.18 1.82 1.18 3.07 0 4.4-2.69 5.37-5.25 5.65.41.35.78 1.04.78 2.1v3.12c0 .31.21.68.8.56A11.5 11.5 0 0023.5 12C23.5 5.65 18.35.5 12 .5z"/>
+        </svg>
+        <a href="https://github.com/DebZakari">github.com/DebZakari</a>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Technical -->
+    <div>
+      <div class="label">Technical</div>
+
+      <div class="skill-group">
+        <div class="skill-group-label">Core Stack</div>
+        <div class="tags">
+          <span class="tag v">Next.js</span><span class="tag v">React</span>
+          <span class="tag v">TypeScript</span><span class="tag">Node.js</span>
+          <span class="tag">NestJS</span><span class="tag">Laravel</span>
+          <span class="tag">CodeIgniter</span><span class="tag">PHP</span>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <div class="skill-group-label">AI Systems</div>
+        <div class="tags">
+          <span class="tag v">LLM Apps</span><span class="tag v">RAG Systems</span>
+          <span class="tag v">Text-to-Speech</span><span class="tag">LangGraph</span>
+          <span class="tag">Computer Vision</span><span class="tag">YOLO (v5/8/11)</span>
+          <span class="tag">Biometrics</span>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <div class="skill-group-label">Tools &amp; Hardware</div>
+        <div class="tags">
+          <span class="tag">Docker</span><span class="tag">Git</span>
+          <span class="tag">Selenium</span><span class="tag">JIRA</span>
+          <span class="tag">Raspberry Pi</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Education -->
+    <div>
+      <div class="label">Education</div>
+      <div class="edu-s-degree">BS Computer Engineering</div>
+      <div class="edu-s-inst">Univ. of Science &amp; Technology of Southern Philippines</div>
+      <div class="edu-s-date">2019 – 2023</div>
+      <div class="edu-s-note">Thesis: Customer Counting &amp; Mapping for Intelligent Retail Environment using Computer Vision</div>
+      <div style="height:2mm;"></div>
+      <div class="edu-s-degree">Senior High School — STEM</div>
+      <div class="edu-s-inst">USTP – CDO</div>
+      <div class="edu-s-date">2017 – 2019</div>
+    </div>
+
+  </aside>
+
+  <!-- ─── Main ─────────────────────────────────────────────────── -->
+  <main class="main">
+
+    <!-- Profile -->
+    <section>
+      <div class="section-header">
+        <span class="section-title">Profile</span>
+        <div class="section-line"></div>
+      </div>
+      <p class="summary-text">
+        Full-Stack Developer and AI Engineer with a Computer Engineering degree and 3+ years of professional experience building web applications, AI integrations, and IoT solutions. Strong in delivery, quality assurance, and startup execution.
+      </p>
+    </section>
+
+    <!-- Experience -->
+    <section>
+      <div class="section-header">
+        <span class="section-title">Experience</span>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="exp">
+        <div class="exp-head">
+          <div class="exp-role">Project Manager · Full-Stack Developer</div>
+          <div class="exp-date">Nov 2023 – Oct 2025</div>
+        </div>
+        <div class="exp-co">Cerebrox IT Solutions <span class="exp-loc">· Cagayan de Oro, Philippines</span></div>
+        <ul class="bullets">
+          <li>Promoted to PM in Mar 2024; led sprint planning, stakeholder delivery, and client project execution.</li>
+          <li>Built full-stack web applications with Laravel and CodeIgniter, plus Node.js backends for IoT device management.</li>
+          <li>Mentored teammates through code reviews and pair programming sessions.</li>
+        </ul>
+      </div>
+
+      <div class="exp">
+        <div class="exp-head">
+          <div class="exp-role">AI Engineer · Co-Founder</div>
+          <div class="exp-date">Jan 2024 – Oct 2025</div>
+        </div>
+        <div class="exp-co">Kanto Code <span class="exp-loc">· Metro Cagayan de Oro, Philippines</span></div>
+        <ul class="bullets">
+          <li>Co-founded a freelance tech collective delivering AI integrations and web solutions for local businesses.</li>
+          <li>Integrated LLM, retrieval, text-to-speech, LangGraph, and computer vision workflows into production web applications.</li>
+          <li>Provided ML consulting for academic research; managed pricing and agile delivery in a lean team.</li>
+        </ul>
+      </div>
+
+      <div class="exp">
+        <div class="exp-head">
+          <div class="exp-role">Co-Founder &amp; CEO</div>
+          <div class="exp-date">Aug 2022 – Nov 2023</div>
+        </div>
+        <div class="exp-co">Enyoumerate AI <span class="exp-loc">· Cagayan de Oro, Philippines</span></div>
+        <ul class="bullets">
+          <li>Co-founded AI startup via USTP Student Incubation Program; evolved capstone thesis into a product.</li>
+          <li>Led MVP development, product roadmap, cross-functional team of 5, and stakeholder pitching as CEO.</li>
+          <li>Regional Qualifier, Philippine Startup Challenge 7 (DICT Region 10, Sep 2022).</li>
+        </ul>
+      </div>
+
+      <div class="exp">
+        <div class="exp-head">
+          <div class="exp-role">Software QA Intern</div>
+          <div class="exp-date">Feb 2023 – May 2023</div>
+        </div>
+        <div class="exp-co">meldCX <span class="exp-loc">· Cagayan de Oro, Philippines</span></div>
+        <ul class="bullets">
+          <li>Wrote and executed test cases for web apps at an internationally recognized tech company.</li>
+          <li>Built Selenium automation scripts; applied computer vision to QA testing workflows.</li>
+        </ul>
+      </div>
+
+    </section>
+
+    <!-- Achievements -->
+    <section>
+      <div class="section-header">
+        <span class="section-title">Achievements &amp; Activities</span>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="ach">
+        <div class="ach-dot"></div>
+        <div>
+          <div class="ach-title">Impact to Innovate: 24-Hour Hackathon<span class="ach-award">1st Runner-Up · ₱30,000</span></div>
+          <div class="ach-sub">USTP, in partnership with FICCO · Part of a 4-member team</div>
+          <div class="ach-date">April 25, 2025</div>
+        </div>
+      </div>
+
+      <div class="ach">
+        <div class="ach-dot"></div>
+        <div>
+          <div class="ach-title">CDO b.i.t.e.s Pre-Incubatee · Cohort 7</div>
+          <div class="ach-sub">Cagayan de Oro Business Incubation, Technology, Entrepreneurship &amp; Startups</div>
+          <div class="ach-date">Oct 2023</div>
+        </div>
+      </div>
+
+      <div class="ach">
+        <div class="ach-dot"></div>
+        <div>
+          <div class="ach-title">DOST-SEI Scholar</div>
+          <div class="ach-sub">Dept. of Science &amp; Technology – Science Education Institute · No failing grades throughout degree</div>
+          <div class="ach-date">Jun 2019 – Aug 2023</div>
+        </div>
+      </div>
+
+      <div class="ach">
+        <div class="ach-dot"></div>
+        <div>
+          <div class="ach-title">Regional Qualifier — CpE Challenge Quiz Bowl</div>
+          <div class="ach-sub">ICpEP Region X · Placed 2nd in regional qualifier</div>
+          <div class="ach-date">Dec 2022</div>
+        </div>
+      </div>
+
+      <div class="ach">
+        <div class="ach-dot"></div>
+        <div>
+          <div class="ach-title">General Secretary — ICpEP Student Edition USTP</div>
+          <div class="ach-sub">Managed org documents; led caption writing and major academic events</div>
+          <div class="ach-date">Aug 2021 – May 2022</div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+</div>
+</body>
+</html>

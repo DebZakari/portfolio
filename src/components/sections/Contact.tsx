@@ -1,14 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import { useTheme } from "next-themes";
 import { useExperience } from "@/hooks/useExperience";
 import SectionLabel from "@/components/SectionLabel";
 import RevealBlock from "@/components/RevealBlock";
 
-// Set to a public path (e.g. "/resume.pdf") when the file is ready.
-const RESUME_URL: string | null = null;
+const RESUME_DARK_URL = process.env.NEXT_PUBLIC_RESUME_URL?.trim() || null;
+const RESUME_LIGHT_URL = "/resume-light.pdf";
 
-const LINKS = [
+const BASE_LINKS = [
   {
     label: "Email",
     value: "mdavezachary@gmail.com",
@@ -27,9 +28,6 @@ const LINKS = [
     icon: "⎇",
     href: "https://github.com/DebZakari",
   },
-  ...(RESUME_URL
-    ? [{ label: "Résumé", value: "Download PDF", icon: "↓", href: RESUME_URL }]
-    : []),
 ];
 
 type FormState = { name: string; email: string; message: string };
@@ -37,10 +35,19 @@ type Status = "idle" | "loading" | "success" | "error";
 
 export default function Contact() {
   const { mode } = useExperience();
+  const { resolvedTheme } = useTheme();
   const immersive = mode === "immersive";
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const [form, setForm] = useState<FormState>({ name: "", email: "", message: "" });
+  const resumeUrl =
+    resolvedTheme === "light" ? RESUME_LIGHT_URL : RESUME_DARK_URL;
+  const links = resumeUrl
+    ? [
+        ...BASE_LINKS,
+        { label: "Résumé", value: "Download PDF", icon: "↓", href: resumeUrl },
+      ]
+    : BASE_LINKS;
 
   const inputStyle: React.CSSProperties = {
     width: "100%",
@@ -111,7 +118,7 @@ export default function Contact() {
                 subtitle="Open to full-time roles, freelance projects, and AI-focused collaborations."
               />
               <div style={{ display: "grid", gap: 12, marginTop: 8 }}>
-                {LINKS.map((l) => (
+                {links.map((l) => (
                   <a
                     key={l.label}
                     href={l.href}
