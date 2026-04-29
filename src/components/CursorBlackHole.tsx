@@ -70,7 +70,7 @@ export default function CursorBlackHole() {
       const isInteractive = !!(e.target as Element | null)?.closest(INTERACTIVE);
       if (isInteractive !== prevInteractive) {
         prevInteractive = isInteractive;
-        isInteractive ? applyInteractive() : applyNormal();
+        if (isInteractive) { applyInteractive(); } else { applyNormal(); }
       }
     };
 

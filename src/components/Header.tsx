@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useTheme } from "next-themes";
-import { Menu, X } from "lucide-react";
+import { Menu, Moon, Sun, X } from "lucide-react";
 import { useExperience } from "@/hooks/useExperience";
 import { useIsMounted } from "@/hooks/useIsMounted";
 import { useActiveSection } from "@/hooks/useActiveSection";
@@ -89,7 +89,7 @@ function ThemeToggle() {
         color: "var(--text)",
       }}
     >
-      {isDark ? "☀" : "🌑"}
+      {isDark ? <Sun size={16} strokeWidth={1.5} /> : <Moon size={16} strokeWidth={1.5} />}
     </button>
   );
 }

@@ -171,23 +171,30 @@ export default function About() {
                   software quality and system design.
                 </p>
               </RevealBlock>
-              <div style={{ marginTop: 32, display: "flex", gap: 32 }}>
-                {STATS.map((s, i) => (
-                  <RevealBlock key={s.l} direction="up" delay={200 + i * 60}>
-                    <div>
-                      <div style={{ fontSize: "clamp(1.6rem, 3vw, 2.2rem)", fontWeight: 700, color: "var(--text)" }}>
-                        {s.v}
-                      </div>
-                      <div
-                        className="font-mono"
-                        style={{ fontSize: 11, color: "var(--text-dim)", letterSpacing: "0.06em", marginTop: 4 }}
-                      >
-                        {s.l}
-                      </div>
-                    </div>
-                  </RevealBlock>
-                ))}
-              </div>
+              <RevealBlock direction="up" delay={260}>
+                <div
+                  className="font-mono"
+                  style={{
+                    marginTop: 32,
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: "6px 20px",
+                    fontSize: 11,
+                    color: "var(--text-dim)",
+                    letterSpacing: "0.06em",
+                  }}
+                >
+                  {STATS.map((s, i) => (
+                    <span key={s.l}>
+                      <span style={{ color: "var(--text-muted)", fontWeight: 600 }}>{s.v}</span>
+                      {" "}{s.l}
+                      {i < STATS.length - 1 && (
+                        <span style={{ marginLeft: 20, opacity: 0.3 }}>·</span>
+                      )}
+                    </span>
+                  ))}
+                </div>
+              </RevealBlock>
             </div>
 
             {/* Right — portrait card + profile card, stacked */}
@@ -282,7 +289,6 @@ export default function About() {
                   boxShadow: cardHovered
                     ? "0 20px 44px rgba(0,0,0,0.32), 0 0 0 1px var(--accent)"
                     : "0 18px 40px rgba(0,0,0,0.24)",
-                  backdropFilter: "blur(10px)",
                   transform: cardHovered ? "translateY(-4px)" : "translateY(0)",
                   transition: "transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease",
                   cursor: "pointer",

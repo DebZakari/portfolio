@@ -75,8 +75,8 @@ export default function HeroSection() {
         <div
           className="font-mono"
           style={{
-            fontSize: 12,
-            color: "var(--accent2)",
+            fontSize: 11,
+            color: "var(--accent)",
             letterSpacing: "0.14em",
             textTransform: "uppercase",
             marginBottom: 24,
@@ -87,13 +87,13 @@ export default function HeroSection() {
         >
           <span
             style={{
-              width: 24,
+              width: 20,
               height: 1,
-              background: "var(--accent2)",
+              background: "var(--accent)",
               display: "inline-block",
             }}
           />
-          Computer Engineering Graduate · Web Developer · AI Engineer · IoT · SQA
+          Web Developer · AI Engineer
         </div>
 
         <h1
@@ -115,14 +115,12 @@ export default function HeroSection() {
             fontSize: "clamp(1rem, 2vw, 1.2rem)",
             color: "var(--text-muted)",
             lineHeight: 1.7,
-            maxWidth: 580,
+            maxWidth: 520,
             marginBottom: 40,
           }}
         >
-          I&apos;m Dave Zachary Macarayo — a developer working across web
-          engineering, AI systems, IoT edge devices, and software quality
-          assurance. From full-stack platforms to biometric pipelines and
-          embedded vision systems.
+          I&apos;m Dave Zachary Macarayo — a full-stack developer building
+          production web platforms, AI microservices, and edge systems.
         </p>
 
         <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
@@ -194,22 +192,18 @@ export default function HeroSection() {
           bottom: 32,
           left: "50%",
           transform: "translateX(-50%)",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: 8,
-          color: "var(--text-muted)",
-          fontSize: 11,
-          letterSpacing: "0.08em",
+          color: "var(--text-dim)",
+          fontSize: 18,
           fontFamily: "var(--font-jetbrains-mono), monospace",
           opacity: scrolled ? 0 : 1,
           transition: "opacity 0.4s ease",
           pointerEvents: "none",
           zIndex: 10,
+          lineHeight: 1,
         }}
+        aria-hidden="true"
       >
-        <span>SCROLL</span>
-        <span style={{ fontSize: 16 }}>↓</span>
+        ↓
       </div>
     </section>
   );

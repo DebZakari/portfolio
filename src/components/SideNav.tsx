@@ -62,7 +62,7 @@ export default function SideNav() {
                 letterSpacing: "0.12em",
                 opacity: isHov || isActive ? 1 : 0,
                 transform: isHov || isActive ? "translateX(0)" : "translateX(6px)",
-                transition: "opacity 0.2s cubic-bezier(0.22, 1, 0.36, 1), transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), color 0.2s",
+                transition: "opacity 0.2s ease-out, transform 0.2s ease-out, color 0.2s ease-out",
                 pointerEvents: "none",
                 userSelect: "none",
                 whiteSpace: "nowrap",
@@ -81,7 +81,7 @@ export default function SideNav() {
                 border: `1px solid ${
                   isActive ? "var(--accent-vivid)" : isHov ? "var(--accent2)" : "var(--border)"
                 }`,
-                transition: "all 0.2s cubic-bezier(0.22, 1, 0.36, 1)",
+                transition: "all 0.2s ease-out",
                 flexShrink: 0,
               }}
             />
