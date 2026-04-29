@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useExperience } from "@/hooks/useExperience";
 import SectionLabel from "@/components/SectionLabel";
+import RevealBlock from "@/components/RevealBlock";
 
 const LINKS = [
   { label: "Email", value: "mdavezachary@gmail.com", icon: "✉", href: "mailto:mdavezachary@gmail.com" },
@@ -52,6 +53,7 @@ export default function Contact() {
             alignItems: "start",
           }}
         >
+          <RevealBlock direction="left" delay={0}>
           <div>
             <SectionLabel
               tag="05 · Transmission Dock"
@@ -164,8 +166,10 @@ export default function Contact() {
               </div>
             )}
           </div>
+          </RevealBlock>
 
           {/* Form */}
+          <RevealBlock direction="right" delay={0}>
           <div
             style={{
               background: "var(--surface)",
@@ -291,6 +295,7 @@ export default function Contact() {
               </form>
             )}
           </div>
+          </RevealBlock>
         </div>
       </section>
     </div>

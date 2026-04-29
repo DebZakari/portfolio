@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
 import { useExperience } from "@/hooks/useExperience";
 import { useTheme } from "next-themes";
 
@@ -10,7 +11,9 @@ export default function HeroSection() {
   const { mode } = useExperience();
   const { resolvedTheme } = useTheme();
   const immersive = mode === "immersive";
-  const isDark = resolvedTheme !== "light";
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+  const isDark = mounted ? resolvedTheme !== "light" : true;
 
   return (
     <section

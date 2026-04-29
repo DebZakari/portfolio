@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useExperience } from "@/hooks/useExperience";
 import SectionLabel from "@/components/SectionLabel";
+import RevealBlock from "@/components/RevealBlock";
 
 const SKILLS = [
   { cat: "Web Development", icon: "⬡", items: ["Next.js", "NestJS", "Laravel", "React", "TypeScript", "Tailwind CSS", "shadcn/ui"] },
@@ -29,11 +30,13 @@ export default function Skills() {
         margin: "0 auto",
       }}
     >
-      <SectionLabel
-        tag="02 · Skill Systems"
-        title="Technical capabilities."
-        subtitle="Eight domains spanning web engineering, AI integration, and systems-level development."
-      />
+      <RevealBlock direction="up" delay={0}>
+        <SectionLabel
+          tag="02 · Skill Systems"
+          title="Technical capabilities."
+          subtitle="Eight domains spanning web engineering, AI integration, and systems-level development."
+        />
+      </RevealBlock>
       <div
         style={{
           display: "grid",
@@ -44,8 +47,8 @@ export default function Skills() {
         {SKILLS.map((s, i) => {
           const isActive = active === i;
           return (
+            <RevealBlock key={s.cat} direction="up" delay={Math.min(i * 50, 300)}>
             <div
-              key={s.cat}
               onClick={() => setActive(isActive ? null : i)}
               style={{
                 background: isActive ? "var(--surface2)" : "var(--surface)",
@@ -57,6 +60,8 @@ export default function Skills() {
                 position: "relative",
                 overflow: "hidden",
                 boxShadow: isActive ? "0 0 32px var(--accent-glow)" : "none",
+                height: "100%",
+                boxSizing: "border-box",
               }}
               onMouseEnter={(e) => {
                 if (!isActive) {
@@ -134,6 +139,7 @@ export default function Skills() {
                 ))}
               </div>
             </div>
+            </RevealBlock>
           );
         })}
       </div>

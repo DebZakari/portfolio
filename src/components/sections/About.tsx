@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState, useEffect, useCallback } from "react";
 import { useExperience } from "@/hooks/useExperience";
 import SectionLabel from "@/components/SectionLabel";
+import RevealBlock from "@/components/RevealBlock";
 
 const STATS = [
   { v: "3+", l: "Years Building" },
@@ -146,43 +147,54 @@ export default function About() {
           >
             {/* Left — text content */}
             <div>
-              <SectionLabel
-                tag="01 · Origin System"
-                title="The developer behind the system."
-                subtitle="Computer Engineering graduate turned full-stack developer with a focus on AI integration — I build practical, intelligent web systems that work."
-              />
-              <p style={{ color: "var(--text-muted)", lineHeight: 1.75, fontSize: 15, marginBottom: 20 }}>
-                My engineering background gives me a systems-level perspective
-                across the full stack. I&apos;ve built production web platforms
-                with Next.js and NestJS, designed AI microservices with FastAPI
-                and LangGraph, and deployed edge computer vision on Raspberry Pi
-                with Coral TPU accelerators.
-              </p>
-              <p style={{ color: "var(--text-muted)", lineHeight: 1.75, fontSize: 15 }}>
-                Whether it&apos;s orchestrating vLLM inference with RAG pipelines,
-                implementing SOTA TTS with voice cloning, or fine-tuning YOLO for
-                PCB component detection — I bring the same rigorous approach to
-                software quality and system design.
-              </p>
+              <RevealBlock direction="left" distance={32} delay={0}>
+                <SectionLabel
+                  tag="01 · Origin System"
+                  title="The developer behind the system."
+                  subtitle="Computer Engineering graduate turned full-stack developer with a focus on AI integration — I build practical, intelligent web systems that work."
+                />
+              </RevealBlock>
+              <RevealBlock direction="up" delay={100}>
+                <p style={{ color: "var(--text-muted)", lineHeight: 1.75, fontSize: 15, marginBottom: 20 }}>
+                  My engineering background gives me a systems-level perspective
+                  across the full stack. I&apos;ve built production web platforms
+                  with Next.js and NestJS, designed AI microservices with FastAPI
+                  and LangGraph, and deployed edge computer vision on Raspberry Pi
+                  with Coral TPU accelerators.
+                </p>
+              </RevealBlock>
+              <RevealBlock direction="up" delay={180}>
+                <p style={{ color: "var(--text-muted)", lineHeight: 1.75, fontSize: 15 }}>
+                  Whether it&apos;s orchestrating vLLM inference with RAG pipelines,
+                  implementing SOTA TTS with voice cloning, or fine-tuning YOLO for
+                  PCB component detection — I bring the same rigorous approach to
+                  software quality and system design.
+                </p>
+              </RevealBlock>
               <div style={{ marginTop: 32, display: "flex", gap: 32 }}>
-                {STATS.map((s) => (
-                  <div key={s.l}>
-                    <div style={{ fontSize: "clamp(1.6rem, 3vw, 2.2rem)", fontWeight: 700, color: "var(--text)" }}>
-                      {s.v}
+                {STATS.map((s, i) => (
+                  <RevealBlock key={s.l} direction="up" delay={200 + i * 60}>
+                    <div>
+                      <div style={{ fontSize: "clamp(1.6rem, 3vw, 2.2rem)", fontWeight: 700, color: "var(--text)" }}>
+                        {s.v}
+                      </div>
+                      <div
+                        className="font-mono"
+                        style={{ fontSize: 11, color: "var(--text-dim)", letterSpacing: "0.06em", marginTop: 4 }}
+                      >
+                        {s.l}
+                      </div>
                     </div>
-                    <div
-                      className="font-mono"
-                      style={{ fontSize: 11, color: "var(--text-dim)", letterSpacing: "0.06em", marginTop: 4 }}
-                    >
-                      {s.l}
-                    </div>
-                  </div>
+                  </RevealBlock>
                 ))}
               </div>
             </div>
 
             {/* Right — portrait card + profile card, stacked */}
-            <div
+            <RevealBlock
+              direction="right"
+              distance={40}
+              delay={80}
               className="w-full md:max-w-[500px] md:justify-self-end"
               style={{ display: "flex", flexDirection: "column" }}
             >
@@ -319,7 +331,7 @@ export default function About() {
                   </div>
                 ))}
               </div>
-            </div>
+            </RevealBlock>
           </div>
         </section>
       </div>

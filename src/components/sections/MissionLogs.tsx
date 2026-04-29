@@ -1,6 +1,7 @@
 "use client";
 
 import SectionLabel from "@/components/SectionLabel";
+import RevealBlock from "@/components/RevealBlock";
 
 const LOGS = [
   {
@@ -43,11 +44,13 @@ export default function MissionLogs() {
         margin: "0 auto",
       }}
     >
-      <SectionLabel
-        tag="04 · Mission Logs"
-        title="Technical notes."
-        subtitle="Short writeups on systems, experiments, and engineering decisions."
-      />
+      <RevealBlock direction="up" delay={0}>
+        <SectionLabel
+          tag="04 · Mission Logs"
+          title="Technical notes."
+          subtitle="Short writeups on systems, experiments, and engineering decisions."
+        />
+      </RevealBlock>
       <div
         style={{
           display: "grid",
@@ -58,8 +61,8 @@ export default function MissionLogs() {
         }}
       >
         {LOGS.map((log, i) => (
+          <RevealBlock key={log.title} direction="none" delay={i * 50}>
           <div
-            key={log.title}
             style={{
               background: "var(--surface)",
               padding: "24px 28px",
@@ -139,6 +142,7 @@ export default function MissionLogs() {
               →
             </div>
           </div>
+          </RevealBlock>
         ))}
       </div>
     </section>

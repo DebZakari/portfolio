@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useExperience } from "@/hooks/useExperience";
 import SectionLabel from "@/components/SectionLabel";
+import RevealBlock from "@/components/RevealBlock";
 
 const PROJECTS = [
   {
@@ -76,11 +77,13 @@ export default function Projects() {
           margin: "0 auto",
         }}
       >
-        <SectionLabel
-          tag="03 · Constellation Gallery"
-          title="Project systems."
-          subtitle="Web applications and AI integrations — each one a distinct system solving a real problem."
-        />
+        <RevealBlock direction="up" delay={0}>
+          <SectionLabel
+            tag="03 · Constellation Gallery"
+            title="Project systems."
+            subtitle="Web applications and AI integrations — each one a distinct system solving a real problem."
+          />
+        </RevealBlock>
         <div
           style={{
             display: "grid",
@@ -91,8 +94,8 @@ export default function Projects() {
           {PROJECTS.map((p, i) => {
             const isHov = hovered === i;
             return (
+              <RevealBlock key={p.title} direction="up" delay={Math.min(i * 60, 300)}>
               <div
-                key={p.title}
                 onMouseEnter={() => setHovered(i)}
                 onMouseLeave={() => setHovered(null)}
                 style={{
@@ -109,6 +112,9 @@ export default function Projects() {
                     isHov && immersive
                       ? "translateY(-4px)"
                       : "translateY(0)",
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
                 }}
               >
                 {/* Screenshot placeholder */}
@@ -178,7 +184,7 @@ export default function Projects() {
                     </div>
                   )}
                 </div>
-                <div style={{ padding: 24 }}>
+                <div style={{ padding: 24, flex: 1, display: "flex", flexDirection: "column" }}>
                   <div
                     style={{
                       display: "flex",
@@ -218,6 +224,7 @@ export default function Projects() {
                       color: "var(--text-muted)",
                       lineHeight: 1.6,
                       marginBottom: 16,
+                      flex: 1,
                     }}
                   >
                     {p.desc}
@@ -319,6 +326,7 @@ export default function Projects() {
                   </div>
                 </div>
               </div>
+              </RevealBlock>
             );
           })}
         </div>
