@@ -53,10 +53,17 @@ export default function RootLayout({
       <body className="flex min-h-screen flex-col bg-bg text-text antialiased">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <ExperienceProvider>
+            <a
+              href="#main"
+              className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:rounded focus:text-sm focus:font-medium"
+              style={{ background: "var(--surface)", border: "1px solid var(--accent)", color: "var(--text)" } as React.CSSProperties}
+            >
+              Skip to content
+            </a>
             <CursorBlackHole />
             <Header />
             <SideNav />
-            <main className="flex-1">{children}</main>
+            <main id="main" className="flex-1">{children}</main>
             <Footer />
           </ExperienceProvider>
         </ThemeProvider>

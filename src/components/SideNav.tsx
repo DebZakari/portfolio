@@ -77,9 +77,9 @@ export default function SideNav() {
                 width: isActive ? 8 : 6,
                 height: isActive ? 8 : 6,
                 borderRadius: "50%",
-                background: isActive ? "var(--accent-vivid)" : "transparent",
+                background: isActive ? "var(--accent2)" : "transparent",
                 border: `1px solid ${
-                  isActive ? "var(--accent-vivid)" : isHov ? "var(--accent2)" : "var(--border)"
+                  isActive ? "var(--accent2)" : isHov ? "var(--accent2)" : "var(--border)"
                 }`,
                 transition: "all 0.2s ease-out",
                 flexShrink: 0,
