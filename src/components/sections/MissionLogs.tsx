@@ -107,7 +107,7 @@ export default function MissionLogs() {
                     style={{
                       ...MONO,
                       fontSize: 13,
-                      color: "var(--accent-vivid)",
+                      color: "var(--accent2)",
                       lineHeight: 1,
                       userSelect: "none",
                     }}
@@ -140,10 +140,10 @@ export default function MissionLogs() {
                       ...MONO,
                       padding: "2px 8px",
                       borderRadius: 20,
-                      background: "var(--accent-vivid-glow)",
-                      border: "1px solid var(--accent-vivid-muted)",
+                      background: "var(--surface2)",
+                      border: "1px solid var(--border)",
                       fontSize: 10,
-                      color: "var(--accent-vivid)",
+                      color: "var(--text-muted)",
                       letterSpacing: "0.04em",
                     }}
                   >

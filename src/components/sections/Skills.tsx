@@ -79,14 +79,14 @@ export default function Skills() {
                 onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = "var(--surface)"; }}
                 style={{
                   background: isActive ? "var(--surface2)" : "var(--surface)",
-                  border: `1px solid ${isActive ? "var(--accent-vivid)" : "var(--border)"}`,
+                  border: `1px solid ${isActive ? "var(--accent)" : "var(--border)"}`,
                   borderRadius: 16,
                   padding: "24px 24px 20px",
                   cursor: "pointer",
                   transition: "all 0.25s",
                   position: "relative",
                   overflow: "hidden",
-                  boxShadow: isActive ? "0 0 32px var(--accent-vivid-glow)" : "none",
+                  boxShadow: isActive ? "0 0 32px var(--accent-glow)" : "none",
                   height: "100%",
                   boxSizing: "border-box",
                 }}
@@ -97,7 +97,7 @@ export default function Skills() {
                       position: "absolute",
                       top: -30, right: -30,
                       width: 100, height: 100,
-                      background: "var(--accent-vivid-glow)",
+                      background: "var(--accent-glow)",
                       borderRadius: "50%",
                       filter: "blur(30px)",
                     }}
@@ -107,9 +107,8 @@ export default function Skills() {
                   <span
                     style={{
                       fontSize: 22,
-                      color: "var(--accent-vivid)",
-                      opacity: isActive ? 1 : 0.65,
-                      transition: "opacity 0.25s",
+                      color: isActive ? "var(--accent)" : "var(--text-muted)",
+                      transition: "color 0.25s",
                     }}
                   >
                     {s.icon}
@@ -132,9 +131,9 @@ export default function Skills() {
                         ...TAG_BASE,
                         padding: "3px 9px",
                         fontSize: 11,
-                        background: isActive ? "var(--accent-vivid-glow)" : "var(--bg2)",
-                        border: `1px solid ${isActive ? "var(--accent-vivid-muted)" : "var(--border)"}`,
-                        color: isActive ? "var(--accent-vivid)" : "var(--text-muted)",
+                        background: isActive ? "var(--surface)" : "var(--bg2)",
+                        border: "1px solid var(--border)",
+                        color: isActive ? "var(--text)" : "var(--text-muted)",
                       }}
                     >
                       {item}

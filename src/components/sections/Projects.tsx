@@ -121,13 +121,13 @@ export default function Projects() {
                   onMouseLeave={() => setHovered(null)}
                   style={{
                     background: "var(--surface)",
-                    border: `1px solid ${isHov ? "var(--accent-vivid-muted)" : "var(--border)"}`,
+                    border: `1px solid ${isHov ? "var(--accent2)" : "var(--border)"}`,
                     borderRadius: 20,
                     overflow: "hidden",
                     transition: "all 0.3s",
                     boxShadow:
                       isHov && immersive
-                        ? "0 8px 48px var(--accent-vivid-glow)"
+                        ? "0 8px 48px var(--accent2-glow)"
                         : "none",
                     transform:
                       isHov && immersive
@@ -157,7 +157,7 @@ export default function Projects() {
                         style={{
                           position: "absolute",
                           inset: 0,
-                          background: "var(--accent-vivid-glow)",
+                          background: "var(--accent2-glow)",
                           transition: "opacity 0.3s",
                         }}
                       />
@@ -185,8 +185,8 @@ export default function Projects() {
                             padding: "3px 10px",
                             borderRadius: 20,
                             background: "var(--surface2)",
-                            border: "1px solid var(--accent-vivid-muted)",
-                            color: "var(--accent-vivid)",
+                            border: "1px solid var(--border)",
+                            color: "var(--text-secondary)",
                             fontSize: 10,
                             fontFamily: "var(--font-jetbrains-mono), monospace",
                             letterSpacing: "0.06em",
@@ -201,8 +201,8 @@ export default function Projects() {
                             padding: "3px 10px",
                             borderRadius: 20,
                             background: "var(--surface2)",
-                            border: "1px solid var(--accent-vivid-muted)",
-                            color: "var(--accent-vivid)",
+                            border: "1px solid var(--border)",
+                            color: "var(--text-dim)",
                             fontSize: 10,
                             fontFamily: "var(--font-jetbrains-mono), monospace",
                             letterSpacing: "0.06em",
@@ -269,10 +269,10 @@ export default function Projects() {
                           style={{
                             padding: "2px 8px",
                             borderRadius: 20,
-                            background: "var(--accent-vivid-glow)",
-                            border: "1px solid var(--accent-vivid-muted)",
+                            background: "var(--bg2)",
+                            border: "1px solid var(--border)",
                             fontSize: 11,
-                            color: "var(--accent-vivid)",
+                            color: "var(--text-dim)",
                             fontFamily: "var(--font-jetbrains-mono), monospace",
                           }}
                         >
@@ -293,7 +293,7 @@ export default function Projects() {
                         border: "1px solid var(--border)",
                       }}
                     >
-                      <span style={{ color: "var(--accent-vivid)", fontSize: 12, flexShrink: 0, marginTop: 1 }}>
+                      <span style={{ color: "var(--text-muted)", fontSize: 12, flexShrink: 0, marginTop: 1 }}>
                         →
                       </span>
                       <span
@@ -360,6 +360,6 @@ const linkBtnStyle: React.CSSProperties = {
 };
 
 function applyHover(e: React.MouseEvent<HTMLAnchorElement>, entering: boolean) {
-  e.currentTarget.style.borderColor = entering ? "var(--accent-vivid)" : "var(--border)";
-  e.currentTarget.style.color = entering ? "var(--accent-vivid)" : "var(--text-muted)";
+  e.currentTarget.style.borderColor = entering ? "var(--accent2)" : "var(--border)";
+  e.currentTarget.style.color = entering ? "var(--text)" : "var(--text-muted)";
 }

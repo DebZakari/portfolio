@@ -58,7 +58,7 @@ export default function SideNav() {
               className="font-mono"
               style={{
                 fontSize: 9,
-                color: isActive ? "var(--accent-vivid)" : "var(--text-dim)",
+                color: isActive ? "var(--accent2)" : "var(--text-dim)",
                 letterSpacing: "0.12em",
                 opacity: isHov || isActive ? 1 : 0,
                 transform: isHov || isActive ? "translateX(0)" : "translateX(6px)",
@@ -77,13 +77,9 @@ export default function SideNav() {
                 width: isActive ? 8 : 6,
                 height: isActive ? 8 : 6,
                 borderRadius: "50%",
-                background: isActive
-                  ? "var(--accent-vivid)"
-                  : isHov
-                  ? "var(--accent-vivid-muted)"
-                  : "transparent",
+                background: isActive ? "var(--accent-vivid)" : "transparent",
                 border: `1px solid ${
-                  isActive || isHov ? "var(--accent-vivid)" : "var(--border)"
+                  isActive ? "var(--accent-vivid)" : isHov ? "var(--accent2)" : "var(--border)"
                 }`,
                 transition: "all 0.2s cubic-bezier(0.22, 1, 0.36, 1)",
                 flexShrink: 0,
