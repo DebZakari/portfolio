@@ -29,7 +29,7 @@ export default function Footer() {
           letterSpacing: "0.06em",
         }}
       >
-        Built with precision · Deployed with intent
+        Next.js · Vercel · Open to opportunities
       </span>
     </footer>
   );

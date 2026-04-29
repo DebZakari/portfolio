@@ -107,7 +107,7 @@ export default function HeroSection() {
             color: "var(--text)",
           }}
         >
-          Building intelligent web experiences from interface to infrastructure.
+          The system behind the interface.
         </h1>
 
         <p
@@ -119,8 +119,9 @@ export default function HeroSection() {
             marginBottom: 40,
           }}
         >
-          I&apos;m Dave Zachary Macarayo — a full-stack developer building
-          production web platforms, AI microservices, and edge systems.
+          I&apos;m Dave Zachary Macarayo. I engineer AI pipelines, inference
+          layers, and edge systems — then build the interfaces that make them
+          usable.
         </p>
 
         <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
@@ -169,19 +170,18 @@ export default function HeroSection() {
           ))}
         </div>
 
-        {immersive && (
-          <p
-            className="font-mono"
-            style={{
-              marginTop: 40,
-              fontSize: 11,
-              color: "var(--text-dim)",
-              letterSpacing: "0.05em",
-            }}
-          >
-            ↗ move cursor to interact with the star field
-          </p>
-        )}
+        <p
+          className="font-mono"
+          style={{
+            marginTop: 40,
+            fontSize: 11,
+            color: "var(--text-dim)",
+            letterSpacing: "0.05em",
+            visibility: immersive ? "visible" : "hidden",
+          }}
+        >
+          ↗ move cursor to interact with the star field
+        </p>
       </div>
 
       {/* Scroll indicator — fixed so it's always in viewport; fades out on scroll */}

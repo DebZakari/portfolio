@@ -75,7 +75,7 @@ export default function MissionLogs() {
           }}
         >
           <span style={{ ...MONO, fontSize: 11, color: "var(--text-dim)", letterSpacing: "0.06em" }}>
-            <span style={{ color: "var(--accent-vivid)", marginRight: 6 }}>$</span>
+            <span style={{ color: "var(--text-dim)", marginRight: 6 }}>$</span>
             tail -n 4 logs/mission.log
           </span>
           <span style={{ ...MONO, fontSize: 10, color: "var(--text-dim)", letterSpacing: "0.06em" }}>

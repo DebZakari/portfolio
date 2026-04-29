@@ -5,12 +5,12 @@ import { useState, useEffect, useCallback } from "react";
 import { useExperience } from "@/hooks/useExperience";
 import SectionLabel from "@/components/SectionLabel";
 import RevealBlock from "@/components/RevealBlock";
+import StatsDrawer from "@/components/StatsDrawer";
+import { TIMELINE, SYSTEMS, DOMAINS } from "@/data/stats";
 
-const STATS = [
-  { v: "3+", l: "Years Building" },
-  { v: "20+", l: "Systems Built" },
-  { v: "4", l: "Core Domains" },
-];
+const MONO: React.CSSProperties = {
+  fontFamily: "var(--font-jetbrains-mono), monospace",
+};
 
 const PROFILE_ROWS = [
   ["name", "Dave Zachary Macarayo"],
@@ -21,14 +21,31 @@ const PROFILE_ROWS = [
   ["status", "Open to opportunities ✦"],
 ];
 
+const TIMELINE_GROUPS = (() => {
+  const years = [...new Set(TIMELINE.map((e) => e.date.split(" ")[1]))];
+  return years.map((year) => ({
+    year,
+    entries: TIMELINE.filter((e) => e.date.split(" ")[1] === year),
+  }));
+})();
+
+const STATS_ROW = [
+  { key: "years",   label: "years",   value: "3+",  kind: "drawer" as const },
+  { key: "systems", label: "systems", value: "20+", kind: "drawer" as const },
+  { key: "domains", label: "domains", value: "4",   kind: "expand" as const },
+];
+
 export default function About() {
   const { mode } = useExperience();
   const immersive = mode === "immersive";
   const [modalOpen, setModalOpen] = useState(false);
   const [imageHovered, setImageHovered] = useState(false);
   const [cardHovered, setCardHovered] = useState(false);
+  const [drawerType, setDrawerType] = useState<"years" | "systems" | null>(null);
+  const [domainsOpen, setDomainsOpen] = useState(false);
 
   const closeModal = useCallback(() => setModalOpen(false), []);
+  const closeDrawer = useCallback(() => setDrawerType(null), []);
 
   useEffect(() => {
     if (!modalOpen) return;
@@ -43,6 +60,14 @@ export default function About() {
     document.body.style.overflow = modalOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [modalOpen]);
+
+  function handleStatClick(key: string, kind: "drawer" | "expand") {
+    if (kind === "expand") {
+      setDomainsOpen((v) => !v);
+    } else {
+      setDrawerType((prev) => (prev === key ? null : key as "years" | "systems"));
+    }
+  }
 
   return (
     <>
@@ -172,29 +197,178 @@ export default function About() {
                   software quality and system design.
                 </p>
               </RevealBlock>
+
+              {/* Interactive stats row */}
               <RevealBlock direction="up" delay={260}>
                 <div
                   style={{
                     marginTop: 32,
-                    display: "flex",
-                    gap: 32,
+                    borderTop: "1px solid var(--border)",
                   }}
                 >
-                  {STATS.map((s, i) => (
-                    <RevealBlock key={s.l} direction="up" delay={200 + i * 60}>
-                      <div>
-                        <div style={{ fontSize: "clamp(1.6rem, 3vw, 2.2rem)", fontWeight: 700, color: "var(--text)" }}>
-                          {s.v}
-                        </div>
-                        <div
-                          className="font-mono"
-                          style={{ fontSize: 11, color: "var(--text-dim)", letterSpacing: "0.06em", marginTop: 4 }}
+                  {STATS_ROW.map((stat) => {
+                    const isActive =
+                      stat.kind === "drawer"
+                        ? drawerType === stat.key
+                        : domainsOpen;
+                    const toggle =
+                      stat.kind === "drawer"
+                        ? "›"
+                        : domainsOpen
+                        ? "▴"
+                        : "▾";
+                    return (
+                      <button
+                        key={stat.key}
+                        onClick={() => handleStatClick(stat.key, stat.kind)}
+                        aria-expanded={isActive}
+                        style={{
+                          display: "flex",
+                          width: "calc(100% + 16px)",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          background: isActive ? "var(--surface2)" : "transparent",
+                          border: "none",
+                          borderBottom: "1px solid var(--border)",
+                          padding: "11px 8px",
+                          margin: "0 -8px",
+                          cursor: "pointer",
+                          borderRadius: 6,
+                          transition: "background 0.15s",
+                        } as React.CSSProperties}
+                        onMouseEnter={(e) => {
+                          if (!isActive) e.currentTarget.style.background = "var(--surface2)";
+                        }}
+                        onMouseLeave={(e) => {
+                          if (!isActive) e.currentTarget.style.background = "transparent";
+                        }}
+                      >
+                        <span
+                          style={{
+                            ...MONO,
+                            fontSize: 11,
+                            color: "var(--text-dim)",
+                            letterSpacing: "0.08em",
+                          }}
                         >
-                          {s.l}
-                        </div>
+                          $ {stat.label}
+                        </span>
+                        <span
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 10,
+                          }}
+                        >
+                          <span
+                            style={{
+                              ...MONO,
+                              fontSize: 15,
+                              fontWeight: 600,
+                              color: isActive ? "var(--text)" : "var(--text-muted)",
+                              letterSpacing: "-0.02em",
+                              transition: "color 0.15s",
+                            }}
+                          >
+                            {stat.value}
+                          </span>
+                          <span
+                            style={{
+                              ...MONO,
+                              fontSize: 11,
+                              color: "var(--text-dim)",
+                              transition: "transform 0.2s ease",
+                              display: "inline-block",
+                              transform:
+                                stat.kind === "drawer" && isActive
+                                  ? "translateX(2px)"
+                                  : "none",
+                            }}
+                          >
+                            {toggle}
+                          </span>
+                        </span>
+                      </button>
+                    );
+                  })}
+
+                  {/* Domain bar — inline expand */}
+                  <div
+                    style={{
+                      overflow: "hidden",
+                      maxHeight: domainsOpen ? "160px" : "0",
+                      opacity: domainsOpen ? 1 : 0,
+                      transition: "max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease",
+                    }}
+                  >
+                    <div style={{ paddingTop: 16, paddingBottom: 4 }}>
+                      {/* Stacked bar */}
+                      <div
+                        style={{
+                          height: 6,
+                          borderRadius: 3,
+                          overflow: "hidden",
+                          display: "flex",
+                          background: "var(--border)",
+                          marginBottom: 12,
+                        }}
+                      >
+                        {DOMAINS.map((d, i) => {
+                          const SEGMENT_COLORS = [
+                            "var(--accent2)",
+                            "var(--accent)",
+                            "oklch(0.72 0.15 260)",
+                            "oklch(0.62 0.12 200)",
+                          ];
+                          return (
+                            <div
+                              key={d.label}
+                              title={`${d.label} ${d.pct}%`}
+                              style={{
+                                height: "100%",
+                                width: domainsOpen ? `${d.pct}%` : "0%",
+                                background: SEGMENT_COLORS[i % SEGMENT_COLORS.length],
+                                borderRight: i < DOMAINS.length - 1 ? "1px solid var(--bg2)" : "none",
+                                transition: domainsOpen
+                                  ? `width 0.6s cubic-bezier(0.16, 1, 0.3, 1) ${0.1 + i * 0.05}s`
+                                  : "width 0.2s ease",
+                              }}
+                            />
+                          );
+                        })}
                       </div>
-                    </RevealBlock>
-                  ))}
+                      {/* Legend */}
+                      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                        {DOMAINS.map((d, i) => {
+                          const SEGMENT_COLORS = [
+                            "var(--accent2)",
+                            "var(--accent)",
+                            "oklch(0.72 0.15 260)",
+                            "oklch(0.62 0.12 200)",
+                          ];
+                          return (
+                            <div key={d.label} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                              <div
+                                style={{
+                                  width: 8,
+                                  height: 8,
+                                  borderRadius: 2,
+                                  background: SEGMENT_COLORS[i % SEGMENT_COLORS.length],
+                                  flexShrink: 0,
+                                }}
+                              />
+                              <span style={{ ...MONO, fontSize: 10, color: "var(--text-dim)", letterSpacing: "0.06em", flex: 1 }}>
+                                {d.label}
+                              </span>
+                              <span style={{ ...MONO, fontSize: 10, color: "var(--text-dim)", letterSpacing: "0.06em" }}>
+                                {d.pct}%
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </RevealBlock>
             </div>
@@ -240,17 +414,6 @@ export default function About() {
                   priority
                 />
 
-                {immersive && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      inset: 0,
-                      background: "radial-gradient(ellipse at 80% 20%, rgba(120,160,255,0.08) 0%, transparent 60%)",
-                      pointerEvents: "none",
-                    }}
-                  />
-                )}
-
                 {/* Zoom hint */}
                 <div
                   style={{
@@ -276,7 +439,6 @@ export default function About() {
 
               {/* Profile card — sits below image */}
               <div
-                tabIndex={0}
                 onMouseEnter={() => setCardHovered(true)}
                 onMouseLeave={() => setCardHovered(false)}
                 style={{
@@ -293,7 +455,7 @@ export default function About() {
                     : "0 18px 40px rgba(0,0,0,0.24)",
                   transform: cardHovered ? "translateY(-4px)" : "translateY(0)",
                   transition: "transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease",
-                  cursor: "pointer",
+                  cursor: "default",
                 }}
               >
                 {immersive && (
@@ -314,7 +476,7 @@ export default function About() {
                   className="font-mono"
                   style={{ fontSize: 11, color: "var(--text-dim)", letterSpacing: "0.08em", marginBottom: 14 }}
                 >
-                  <span style={{ color: "var(--accent-vivid)" }}>$</span> profile --verbose
+                  <span style={{ color: "var(--text-dim)" }}>$</span> profile --verbose
                 </div>
                 {PROFILE_ROWS.map(([k, v]) => (
                   <div
@@ -343,6 +505,163 @@ export default function About() {
           </div>
         </section>
       </div>
+
+      {/* Timeline drawer */}
+      <StatsDrawer
+        open={drawerType === "years"}
+        onClose={closeDrawer}
+        title="$ tail --follow logs/timeline.log"
+      >
+        <div style={{ position: "relative", paddingLeft: 24 }}>
+          {/* Vertical line */}
+          <div
+            style={{
+              position: "absolute",
+              left: 5,
+              top: 0,
+              bottom: 0,
+              width: 1,
+              background: "var(--border)",
+            }}
+            aria-hidden="true"
+          />
+
+          {TIMELINE_GROUPS.map(({ year, entries }, gi) => (
+            <div key={year} style={{ marginBottom: gi < TIMELINE_GROUPS.length - 1 ? 8 : 0 }}>
+              {/* Year anchor */}
+              <div
+                style={{
+                  position: "relative",
+                  display: "flex",
+                  alignItems: "center",
+                  paddingTop: gi === 0 ? 0 : 16,
+                  paddingBottom: 10,
+                }}
+              >
+                <div
+                  style={{
+                    position: "absolute",
+                    left: -19,
+                    width: 11,
+                    height: 11,
+                    borderRadius: "50%",
+                    border: "1.5px solid var(--accent2)",
+                    background: "var(--surface)",
+                  }}
+                  aria-hidden="true"
+                />
+                <span
+                  style={{
+                    ...MONO,
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: "var(--accent2)",
+                    letterSpacing: "0.1em",
+                  }}
+                >
+                  {year}
+                </span>
+              </div>
+
+              {/* Entries */}
+              {entries.map((entry, ei) => (
+                <div
+                  key={entry.name}
+                  style={{
+                    position: "relative",
+                    paddingBottom: ei < entries.length - 1 ? 12 : 0,
+                  }}
+                >
+                  <div
+                    style={{
+                      position: "absolute",
+                      left: -21,
+                      top: 5,
+                      width: 5,
+                      height: 5,
+                      borderRadius: "50%",
+                      background: "var(--text-dim)",
+                    }}
+                    aria-hidden="true"
+                  />
+                  <div
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 500,
+                      color: "var(--text)",
+                      letterSpacing: "-0.01em",
+                      lineHeight: 1.3,
+                    }}
+                  >
+                    {entry.name}
+                  </div>
+                  <div
+                    style={{
+                      ...MONO,
+                      fontSize: 10,
+                      color: "var(--text-dim)",
+                      letterSpacing: "0.06em",
+                      marginTop: 3,
+                    }}
+                  >
+                    {entry.type} · {entry.date}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      </StatsDrawer>
+
+      {/* Systems drawer */}
+      <StatsDrawer
+        open={drawerType === "systems"}
+        onClose={closeDrawer}
+        title="$ ls --count systems/"
+      >
+        <div>
+          {SYSTEMS.map((sys, i) => (
+            <div
+              key={sys.title}
+              style={{
+                paddingTop: i === 0 ? 0 : 14,
+                paddingBottom: 14,
+                borderBottom: i < SYSTEMS.length - 1 ? "1px solid var(--border)" : "none",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: "var(--text)",
+                  letterSpacing: "-0.01em",
+                  marginBottom: 7,
+                }}
+              >
+                {sys.title}
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+                {sys.stack.map((tech) => (
+                  <span
+                    key={tech}
+                    style={{
+                      ...MONO,
+                      fontSize: 10,
+                      color: "var(--text-dim)",
+                      padding: "2px 7px",
+                      borderRadius: 20,
+                      border: "1px solid var(--border)",
+                      letterSpacing: "0.04em",
+                    }}
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </StatsDrawer>
     </>
   );
 }

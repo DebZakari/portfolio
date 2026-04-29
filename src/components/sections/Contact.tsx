@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useTheme } from "next-themes";
-import { useExperience } from "@/hooks/useExperience";
 import SectionLabel from "@/components/SectionLabel";
 import RevealBlock from "@/components/RevealBlock";
 
@@ -34,9 +33,7 @@ type FormState = { name: string; email: string; message: string };
 type Status = "idle" | "loading" | "success" | "error";
 
 export default function Contact() {
-  const { mode } = useExperience();
   const { resolvedTheme } = useTheme();
-  const immersive = mode === "immersive";
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const [form, setForm] = useState<FormState>({ name: "", email: "", message: "" });
@@ -185,44 +182,42 @@ export default function Contact() {
                 ))}
               </div>
 
-              {immersive && (
+              <div
+                style={{
+                  marginTop: 32,
+                  padding: 20,
+                  background: "var(--surface)",
+                  border: "1px solid var(--border)",
+                  borderRadius: 12,
+                }}
+              >
                 <div
+                  className="font-mono"
                   style={{
-                    marginTop: 32,
-                    padding: 20,
-                    background: "var(--surface)",
-                    border: "1px solid var(--border)",
-                    borderRadius: 12,
+                    fontSize: 10,
+                    color: "var(--text-dim)",
+                    letterSpacing: "0.08em",
+                    marginBottom: 10,
                   }}
                 >
-                  <div
-                    className="font-mono"
-                    style={{
-                      fontSize: 10,
-                      color: "var(--text-dim)",
-                      letterSpacing: "0.08em",
-                      marginBottom: 10,
-                    }}
-                  >
-                    {"// current status"}
-                  </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <span
-                      className="animate-pulse-soft"
-                      style={{
-                        width: 8,
-                        height: 8,
-                        borderRadius: "50%",
-                        background: "var(--accent2)",
-                        display: "inline-block",
-                      }}
-                    />
-                    <span style={{ fontSize: 14, color: "var(--text-muted)" }}>
-                      Available for opportunities
-                    </span>
-                  </div>
+                  {"// current status"}
                 </div>
-              )}
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span
+                    className="animate-pulse-soft"
+                    style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: "50%",
+                      background: "var(--accent2)",
+                      display: "inline-block",
+                    }}
+                  />
+                  <span style={{ fontSize: 14, color: "var(--text-muted)" }}>
+                    Available for opportunities
+                  </span>
+                </div>
+              </div>
             </div>
           </RevealBlock>
 
@@ -324,7 +319,7 @@ export default function Contact() {
                           fontSize: 10,
                           color:
                             form.message.length > 1800
-                              ? "var(--accent-vivid)"
+                              ? "var(--accent2)"
                               : "var(--text-dim)",
                           letterSpacing: "0.04em",
                           transition: "color 0.2s",
@@ -357,11 +352,11 @@ export default function Contact() {
                       className="font-mono"
                       style={{
                         fontSize: 11,
-                        color: "var(--accent-vivid)",
+                        color: "var(--text-muted)",
                         letterSpacing: "0.04em",
                         padding: "8px 12px",
-                        background: "var(--accent-vivid-glow)",
-                        border: "1px solid var(--accent-vivid-muted)",
+                        background: "var(--surface2)",
+                        border: "1px solid var(--border)",
                         borderRadius: 8,
                       }}
                     >

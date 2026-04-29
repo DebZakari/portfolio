@@ -236,7 +236,7 @@ export default function Header() {
                         width: 4,
                         height: 4,
                         borderRadius: "50%",
-                        background: "var(--accent-vivid)",
+                        background: "var(--accent2)",
                         display: "block",
                       }}
                     />
@@ -301,7 +301,7 @@ export default function Header() {
             style={{
               height: "100%",
               width: "100%",
-              background: "var(--accent-vivid)",
+              background: "var(--accent2)",
               transform: `scaleX(${scrollProgress})`,
               transformOrigin: "left",
               transition: "transform 0.1s linear",

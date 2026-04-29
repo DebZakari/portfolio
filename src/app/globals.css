@@ -89,6 +89,7 @@ html {
   scroll-behavior: smooth;
   background-color: var(--bg);
   color: var(--text);
+  scrollbar-gutter: stable;
 }
 
 @media (prefers-reduced-motion: reduce) {
