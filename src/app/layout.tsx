@@ -4,6 +4,7 @@ import { ThemeProvider } from "next-themes";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import SideNav from "@/components/SideNav";
 import CursorBlackHole from "@/components/CursorBlackHole";
 import { ExperienceProvider } from "@/contexts/ExperienceContext";
 
@@ -54,6 +55,7 @@ export default function RootLayout({
           <ExperienceProvider>
             <CursorBlackHole />
             <Header />
+            <SideNav />
             <main className="flex-1">{children}</main>
             <Footer />
           </ExperienceProvider>

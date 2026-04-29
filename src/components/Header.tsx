@@ -1,18 +1,19 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTheme } from "next-themes";
 import { Menu, X } from "lucide-react";
 import { useExperience } from "@/hooks/useExperience";
 import { useIsMounted } from "@/hooks/useIsMounted";
+import { useActiveSection } from "@/hooks/useActiveSection";
 import type { ExperienceMode } from "@/contexts/ExperienceContext";
 
 const NAV_LINKS = [
-  { href: "#about", label: "About" },
-  { href: "#skills", label: "Skills" },
+  { href: "#about",    label: "About"    },
+  { href: "#skills",   label: "Skills"   },
   { href: "#projects", label: "Projects" },
-  { href: "#logs", label: "Logs" },
-  { href: "#contact", label: "Contact" },
+  { href: "#logs",     label: "Logs"     },
+  { href: "#contact",  label: "Contact"  },
 ];
 
 function ModeToggle() {
@@ -96,36 +97,22 @@ function ThemeToggle() {
 export default function Header() {
   const { resolvedTheme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState<string>("");
   const toggleRef = useRef<HTMLButtonElement>(null);
   const isDark = resolvedTheme !== "light";
+
+  const activeSection = useActiveSection();
 
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 40);
-      if (window.scrollY < 80) setActiveSection("");
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      setScrollProgress(total > 0 ? window.scrollY / total : 0);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  const setActive = useCallback((id: string) => setActiveSection(id), []);
-  useEffect(() => {
-    const ids = NAV_LINKS.map((l) => l.href.slice(1));
-    const observers: IntersectionObserver[] = [];
-    ids.forEach((id) => {
-      const el = document.getElementById(id);
-      if (!el) return;
-      const obs = new IntersectionObserver(
-        ([entry]) => { if (entry.isIntersecting) setActive(id); },
-        { rootMargin: "-20% 0px -60% 0px", threshold: 0 }
-      );
-      obs.observe(el);
-      observers.push(obs);
-    });
-    return () => observers.forEach((o) => o.disconnect());
-  }, [setActive]);
 
   useEffect(() => {
     if (!drawerOpen) return;
@@ -177,7 +164,6 @@ export default function Header() {
           <a
             href="#"
             aria-label="Back to top"
-            onClick={() => setActiveSection("")}
             style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}
           >
             <div
@@ -226,6 +212,7 @@ export default function Header() {
                     borderRadius: 8,
                     transition: "color 0.2s, background 0.2s",
                     background: active ? "var(--surface)" : "transparent",
+                    position: "relative",
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.color = "var(--text)";
@@ -239,6 +226,21 @@ export default function Header() {
                   }}
                 >
                   {l.label}
+                  {active && (
+                    <span
+                      style={{
+                        position: "absolute",
+                        bottom: 3,
+                        left: "50%",
+                        transform: "translateX(-50%)",
+                        width: 4,
+                        height: 4,
+                        borderRadius: "50%",
+                        background: "var(--accent-vivid)",
+                        display: "block",
+                      }}
+                    />
+                  )}
                 </a>
               );
             })}
@@ -281,6 +283,32 @@ export default function Header() {
             {drawerOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </nav>
+
+        {/* Reading progress bar */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: 1,
+            pointerEvents: "none",
+            overflow: "hidden",
+          }}
+          aria-hidden="true"
+        >
+          <div
+            style={{
+              height: "100%",
+              width: "100%",
+              background: "var(--accent-vivid)",
+              transform: `scaleX(${scrollProgress})`,
+              transformOrigin: "left",
+              transition: "transform 0.1s linear",
+              opacity: scrolled ? 1 : 0,
+            }}
+          />
+        </div>
       </header>
 
       {/* Mobile drawer overlay */}
