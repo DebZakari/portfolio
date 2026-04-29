@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 
 Changelog tracking begins at `7766696c97ea96ef40be6ef32304175f60b1d9dc`.
 
+## [0.2.1] - 2026-04-30
+
+### Added
+- `StatsDrawer` component with scroll-lock integration
+- `stats.ts` data file for drawer content
+- `logs.ts` data file extracted from MissionLogs for better organization
+- Flip card feature in About section for enhanced interactivity
+- Scroll lock utility (`scrollLock.ts`)
+- "Skip to content" link in layout for keyboard accessibility
+
+### Changed
+- Refined About section layout with flip card and improved structure
+- Contact section now uses icons for links
+- Footer refactored for cleaner structure and consistent styling
+- Skills section improved with keyboard accessibility and visual feedback
+- `SectionLabel` component accepts custom styles
+- Adjusted spring easing in `globals.css` for smoother animations
+- Simplified scroll lock utility functions
+
 ## [0.2.0] - 2026-04-29
 
 ### Added
