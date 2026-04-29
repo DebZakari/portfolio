@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { useIsMounted } from "@/hooks/useIsMounted";
+import { lockScroll, unlockScroll } from "@/utils/scrollLock";
 
 const MONO: React.CSSProperties = {
   fontFamily: "var(--font-jetbrains-mono), monospace",
@@ -29,8 +30,8 @@ export default function StatsDrawer({ open, onClose, title, children }: Props) {
   }, [open, onClose]);
 
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    if (open) lockScroll(); else unlockScroll();
+    return () => unlockScroll();
   }, [open]);
 
   useEffect(() => {

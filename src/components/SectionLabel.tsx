@@ -2,11 +2,12 @@ interface SectionLabelProps {
   tag: string;
   title: string;
   subtitle?: string;
+  style?: React.CSSProperties;
 }
 
-export default function SectionLabel({ tag, title, subtitle }: SectionLabelProps) {
+export default function SectionLabel({ tag, title, subtitle, style }: SectionLabelProps) {
   return (
-    <div style={{ marginBottom: "clamp(2.5rem, 5vw, 4rem)" }}>
+    <div style={{ marginBottom: "clamp(2.5rem, 5vw, 4rem)", ...style }}>
       <div
         className="font-mono"
         style={{

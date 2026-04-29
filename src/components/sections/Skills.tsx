@@ -74,7 +74,11 @@ export default function Skills() {
           return (
             <RevealBlock key={s.cat} direction="up" delay={i * 60}>
               <div
+                role="button"
+                tabIndex={0}
+                aria-expanded={isActive}
                 onClick={() => setActive(isActive ? null : i)}
+                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setActive(isActive ? null : i); } }}
                 onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = "var(--surface2)"; }}
                 onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = "var(--surface)"; }}
                 style={{
@@ -113,8 +117,19 @@ export default function Skills() {
                   >
                     {s.icon}
                   </span>
-                  <span className="font-mono" style={{ fontSize: 10, color: "var(--text-dim)", letterSpacing: "0.08em" }}>
-                    {String(i + 1).padStart(2, "0")}
+                  <span
+                    className="font-mono"
+                    style={{
+                      fontSize: 14,
+                      color: "var(--text-dim)",
+                      lineHeight: 1,
+                      transition: "transform 0.2s ease, color 0.2s",
+                      display: "inline-block",
+                      transform: isActive ? "rotate(45deg)" : "none",
+                    }}
+                    aria-hidden="true"
+                  >
+                    +
                   </span>
                 </div>
                 <h3 style={{ fontSize: 15, fontWeight: 600, marginBottom: 8, letterSpacing: "-0.01em", color: "var(--text)" }}>
@@ -169,7 +184,11 @@ export default function Skills() {
           return (
             <RevealBlock key={s.cat} direction="up" delay={Math.min(j * 50 + 180, 350)}>
               <div
+                role="button"
+                tabIndex={0}
+                aria-expanded={isActive}
                 onClick={() => setActive(isActive ? null : i)}
+                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setActive(isActive ? null : i); } }}
                 onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = "var(--surface2)"; }}
                 onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = "var(--surface)"; }}
                 style={{
@@ -188,8 +207,19 @@ export default function Skills() {
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
                   <span style={{ fontSize: 16, opacity: 0.45 }}>{s.icon}</span>
-                  <span className="font-mono" style={{ fontSize: 9, color: "var(--text-dim)", letterSpacing: "0.08em" }}>
-                    {String(i + 1).padStart(2, "0")}
+                  <span
+                    className="font-mono"
+                    style={{
+                      fontSize: 12,
+                      color: "var(--text-dim)",
+                      lineHeight: 1,
+                      transition: "transform 0.2s ease",
+                      display: "inline-block",
+                      transform: isActive ? "rotate(45deg)" : "none",
+                    }}
+                    aria-hidden="true"
+                  >
+                    +
                   </span>
                 </div>
                 <h3 style={{ fontSize: 12, fontWeight: 600, marginBottom: 10, letterSpacing: "-0.01em", color: "var(--text)" }}>
