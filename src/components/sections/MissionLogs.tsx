@@ -34,6 +34,10 @@ const LOGS = [
   },
 ];
 
+const MONO: React.CSSProperties = {
+  fontFamily: "var(--font-jetbrains-mono), monospace",
+};
+
 export default function MissionLogs() {
   return (
     <section
@@ -51,65 +55,126 @@ export default function MissionLogs() {
           subtitle="Short writeups on systems, experiments, and engineering decisions."
         />
       </RevealBlock>
+
       <div
         style={{
-          display: "grid",
-          gap: 1,
           borderRadius: 16,
           overflow: "hidden",
           border: "1px solid var(--border)",
         }}
       >
+        {/* Terminal header bar */}
+        <div
+          style={{
+            padding: "11px 20px",
+            background: "var(--surface2)",
+            borderBottom: "1px solid var(--border)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <span style={{ ...MONO, fontSize: 11, color: "var(--text-dim)", letterSpacing: "0.06em" }}>
+            <span style={{ color: "var(--accent-vivid)", marginRight: 6 }}>$</span>
+            tail -n 4 logs/mission.log
+          </span>
+          <span style={{ ...MONO, fontSize: 10, color: "var(--text-dim)", letterSpacing: "0.06em" }}>
+            {LOGS.length} entries
+          </span>
+        </div>
+
+        {/* Log entries */}
         {LOGS.map((log, i) => (
-          <RevealBlock key={log.title} direction="none" delay={i * 50}>
-          <div
-            style={{
-              background: "var(--surface)",
-              padding: "24px 28px",
-              borderBottom:
-                i < LOGS.length - 1 ? "1px solid var(--border)" : "none",
-              display: "grid",
-              gridTemplateColumns: "80px 1fr auto",
-              gap: 20,
-              alignItems: "start",
-              transition: "background 0.2s",
-              cursor: "pointer",
-            }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.background = "var(--surface2)")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.background = "var(--surface)")
-            }
-          >
-            <div>
+          <RevealBlock key={log.title} direction="none" delay={i * 60}>
+            <div
+              style={{
+                background: "var(--surface)",
+                padding: "20px 24px",
+                borderBottom: i < LOGS.length - 1 ? "1px solid var(--border)" : "none",
+                cursor: "pointer",
+                transition: "background 0.2s",
+              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.background = "var(--surface2)")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.background = "var(--surface)")
+              }
+            >
+              {/* Prompt row */}
               <div
-                className="font-mono"
                 style={{
-                  fontSize: 10,
-                  color: "var(--text-dim)",
-                  letterSpacing: "0.06em",
-                  marginBottom: 6,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginBottom: 10,
                 }}
               >
-                {log.date}
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span
+                    style={{
+                      ...MONO,
+                      fontSize: 13,
+                      color: "var(--accent-vivid)",
+                      lineHeight: 1,
+                      userSelect: "none",
+                    }}
+                  >
+                    ›
+                  </span>
+                  <span
+                    style={{
+                      ...MONO,
+                      fontSize: 10,
+                      color: "var(--text-dim)",
+                      letterSpacing: "0.06em",
+                    }}
+                  >
+                    {String(i + 1).padStart(2, "0")}.log
+                  </span>
+                  <span
+                    style={{
+                      ...MONO,
+                      fontSize: 10,
+                      color: "var(--text-dim)",
+                      opacity: 0.4,
+                      userSelect: "none",
+                    }}
+                  >
+                    |
+                  </span>
+                  <span
+                    style={{
+                      ...MONO,
+                      padding: "2px 8px",
+                      borderRadius: 20,
+                      background: "var(--accent-vivid-glow)",
+                      border: "1px solid var(--accent-vivid-muted)",
+                      fontSize: 10,
+                      color: "var(--accent-vivid)",
+                      letterSpacing: "0.04em",
+                    }}
+                  >
+                    {log.tag}
+                  </span>
+                </div>
+
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <span
+                    style={{
+                      ...MONO,
+                      fontSize: 10,
+                      color: "var(--text-dim)",
+                      letterSpacing: "0.06em",
+                    }}
+                  >
+                    {log.date}
+                  </span>
+                  <span style={{ color: "var(--text-dim)", fontSize: 14 }}>→</span>
+                </div>
               </div>
-              <span
-                style={{
-                  padding: "2px 8px",
-                  borderRadius: 20,
-                  background: "var(--bg)",
-                  border: "1px solid var(--border)",
-                  fontSize: 10,
-                  color: "var(--accent)",
-                  fontFamily: "var(--font-jetbrains-mono), monospace",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {log.tag}
-              </span>
-            </div>
-            <div>
+
+              {/* Title */}
               <h3
                 style={{
                   fontSize: 15,
@@ -122,26 +187,19 @@ export default function MissionLogs() {
               >
                 {log.title}
               </h3>
+
+              {/* Excerpt */}
               <p
                 style={{
                   fontSize: 13,
                   color: "var(--text-muted)",
                   lineHeight: 1.6,
+                  maxWidth: "72ch",
                 }}
               >
                 {log.excerpt}
               </p>
             </div>
-            <div
-              style={{
-                color: "var(--text-dim)",
-                fontSize: 18,
-                alignSelf: "center",
-              }}
-            >
-              →
-            </div>
-          </div>
           </RevealBlock>
         ))}
       </div>

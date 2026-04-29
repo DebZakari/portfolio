@@ -5,6 +5,8 @@ import { useExperience } from "@/hooks/useExperience";
 import SectionLabel from "@/components/SectionLabel";
 import RevealBlock from "@/components/RevealBlock";
 
+const GITHUB = "https://github.com/DebZakari";
+
 const PROJECTS = [
   {
     title: "NovelVerse",
@@ -13,6 +15,9 @@ const PROJECTS = [
     role: "Solo Developer / Founder",
     ai: true,
     outcome: "End-to-end AI platform: RAG search, TTS narration, voice cloning",
+    inProgress: true,
+    github: null,
+    demo: null,
   },
   {
     title: "Enrollment V2",
@@ -21,6 +26,9 @@ const PROJECTS = [
     role: "Full-Stack Developer",
     ai: false,
     outcome: "Deployed enterprise enrollment system in production",
+    inProgress: false,
+    github: null, // private repo
+    demo: null,
   },
   {
     title: "PCB Components UI",
@@ -29,6 +37,9 @@ const PROJECTS = [
     role: "IoT / CV Engineer",
     ai: true,
     outcome: "Real-time edge inference for electronics manufacturing",
+    inProgress: false,
+    github: GITHUB, // TODO: replace with specific repo URL
+    demo: null,
   },
   {
     title: "Iris Biometric System",
@@ -37,6 +48,9 @@ const PROJECTS = [
     role: "Computer Vision Engineer",
     ai: true,
     outcome: "Complete iris biometric detection + segmentation pipeline",
+    inProgress: false,
+    github: GITHUB, // TODO: replace with specific repo URL
+    demo: null,
   },
   {
     title: "Face Recognition Pipeline",
@@ -45,6 +59,9 @@ const PROJECTS = [
     role: "ML Engineer",
     ai: true,
     outcome: "99%+ accuracy face detection and recognition system",
+    inProgress: false,
+    github: GITHUB, // TODO: replace with specific repo URL
+    demo: null,
   },
   {
     title: "FastAPI AI Microservice",
@@ -53,6 +70,9 @@ const PROJECTS = [
     role: "Backend Engineer",
     ai: true,
     outcome: "Scalable async microservice for AI model serving",
+    inProgress: false,
+    github: GITHUB, // TODO: replace with specific repo URL
+    demo: null,
   },
 ];
 
@@ -93,239 +113,228 @@ export default function Projects() {
         >
           {PROJECTS.map((p, i) => {
             const isHov = hovered === i;
+            const hasLinks = p.github || p.demo;
             return (
               <RevealBlock key={p.title} direction="up" delay={Math.min(i * 60, 300)}>
-              <div
-                onMouseEnter={() => setHovered(i)}
-                onMouseLeave={() => setHovered(null)}
-                style={{
-                  background: "var(--surface)",
-                  border: `1px solid ${isHov ? "var(--accent2)" : "var(--border)"}`,
-                  borderRadius: 20,
-                  overflow: "hidden",
-                  transition: "all 0.3s",
-                  boxShadow:
-                    isHov && immersive
-                      ? "0 8px 48px var(--accent2-glow)"
-                      : "none",
-                  transform:
-                    isHov && immersive
-                      ? "translateY(-4px)"
-                      : "translateY(0)",
-                  height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                {/* Screenshot placeholder */}
                 <div
+                  onMouseEnter={() => setHovered(i)}
+                  onMouseLeave={() => setHovered(null)}
                   style={{
-                    height: 180,
-                    background: `repeating-linear-gradient(45deg, var(--surface2) 0px, var(--surface2) 1px, transparent 1px, transparent 12px)`,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderBottom: "1px solid var(--border)",
-                    position: "relative",
+                    background: "var(--surface)",
+                    border: `1px solid ${isHov ? "var(--accent-vivid-muted)" : "var(--border)"}`,
+                    borderRadius: 20,
                     overflow: "hidden",
                     transition: "all 0.3s",
+                    boxShadow:
+                      isHov && immersive
+                        ? "0 8px 48px var(--accent-vivid-glow)"
+                        : "none",
+                    transform:
+                      isHov && immersive
+                        ? "translateY(-4px)"
+                        : "translateY(0)",
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
                   }}
                 >
-                  {immersive && isHov && (
-                    <div
-                      style={{
-                        position: "absolute",
-                        inset: 0,
-                        background: "var(--accent2-glow)",
-                        transition: "opacity 0.3s",
-                      }}
-                    />
-                  )}
-                  <div style={{ textAlign: "center", position: "relative", zIndex: 1 }}>
-                    <div
-                      className="font-mono"
-                      style={{
-                        fontSize: 10,
-                        color: "var(--text-dim)",
-                        letterSpacing: "0.1em",
-                      }}
-                    >
-                      PROJECT SCREENSHOT
-                    </div>
-                    <div
-                      className="font-mono"
-                      style={{
-                        fontSize: 10,
-                        color: "var(--text-dim)",
-                        letterSpacing: "0.06em",
-                        marginTop: 4,
-                      }}
-                    >
-                      {p.title}
-                    </div>
-                  </div>
-                  {p.ai && (
-                    <div
-                      style={{
-                        position: "absolute",
-                        top: 12,
-                        right: 12,
-                        padding: "3px 10px",
-                        borderRadius: 20,
-                        background: "var(--surface2)",
-                        border: "1px solid var(--border)",
-                        color: "var(--text-muted)",
-                        fontSize: 10,
-                        fontFamily: "var(--font-jetbrains-mono), monospace",
-                        letterSpacing: "0.06em",
-                      }}
-                    >
-                      AI
-                    </div>
-                  )}
-                </div>
-                <div style={{ padding: 24, flex: 1, display: "flex", flexDirection: "column" }}>
+                  {/* Screenshot placeholder */}
                   <div
                     style={{
+                      height: 180,
+                      background: `repeating-linear-gradient(45deg, var(--surface2) 0px, var(--surface2) 1px, transparent 1px, transparent 12px)`,
                       display: "flex",
-                      alignItems: "flex-start",
-                      justifyContent: "space-between",
-                      gap: 8,
-                      marginBottom: 10,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderBottom: "1px solid var(--border)",
+                      position: "relative",
+                      overflow: "hidden",
+                      transition: "all 0.3s",
                     }}
                   >
-                    <h3
-                      style={{
-                        fontSize: 16,
-                        fontWeight: 600,
-                        letterSpacing: "-0.02em",
-                        lineHeight: 1.2,
-                        color: "var(--text)",
-                      }}
-                    >
-                      {p.title}
-                    </h3>
-                    <span
-                      className="font-mono"
-                      style={{
-                        fontSize: 10,
-                        color: "var(--text-dim)",
-                        letterSpacing: "0.06em",
-                        flexShrink: 0,
-                        paddingTop: 3,
-                      }}
-                    >
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
+                    {immersive && isHov && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          inset: 0,
+                          background: "var(--accent-vivid-glow)",
+                          transition: "opacity 0.3s",
+                        }}
+                      />
+                    )}
+                    <div style={{ textAlign: "center", position: "relative", zIndex: 1 }}>
+                      <div
+                        className="font-mono"
+                        style={{ fontSize: 10, color: "var(--text-dim)", letterSpacing: "0.1em" }}
+                      >
+                        PROJECT SCREENSHOT
+                      </div>
+                      <div
+                        className="font-mono"
+                        style={{ fontSize: 10, color: "var(--text-dim)", letterSpacing: "0.06em", marginTop: 4 }}
+                      >
+                        {p.title}
+                      </div>
+                    </div>
+
+                    {/* Badges */}
+                    <div style={{ position: "absolute", top: 12, right: 12, display: "flex", gap: 6 }}>
+                      {p.inProgress && (
+                        <div
+                          style={{
+                            padding: "3px 10px",
+                            borderRadius: 20,
+                            background: "var(--surface2)",
+                            border: "1px solid var(--accent-vivid-muted)",
+                            color: "var(--accent-vivid)",
+                            fontSize: 10,
+                            fontFamily: "var(--font-jetbrains-mono), monospace",
+                            letterSpacing: "0.06em",
+                          }}
+                        >
+                          IN PROGRESS
+                        </div>
+                      )}
+                      {p.ai && (
+                        <div
+                          style={{
+                            padding: "3px 10px",
+                            borderRadius: 20,
+                            background: "var(--surface2)",
+                            border: "1px solid var(--accent-vivid-muted)",
+                            color: "var(--accent-vivid)",
+                            fontSize: 10,
+                            fontFamily: "var(--font-jetbrains-mono), monospace",
+                            letterSpacing: "0.06em",
+                          }}
+                        >
+                          AI
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <p
-                    style={{
-                      fontSize: 13,
-                      color: "var(--text-muted)",
-                      lineHeight: 1.6,
-                      marginBottom: 16,
-                      flex: 1,
-                    }}
-                  >
-                    {p.desc}
-                  </p>
-                  {/* Tech tags */}
-                  <div
-                    style={{
-                      display: "flex",
-                      flexWrap: "wrap",
-                      gap: 6,
-                      marginBottom: 16,
-                    }}
-                  >
-                    {p.tech.map((t) => (
+
+                  <div style={{ padding: 24, flex: 1, display: "flex", flexDirection: "column" }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        justifyContent: "space-between",
+                        gap: 8,
+                        marginBottom: 10,
+                      }}
+                    >
+                      <h3
+                        style={{
+                          fontSize: 16,
+                          fontWeight: 600,
+                          letterSpacing: "-0.02em",
+                          lineHeight: 1.2,
+                          color: "var(--text)",
+                        }}
+                      >
+                        {p.title}
+                      </h3>
                       <span
-                        key={t}
+                        className="font-mono"
                         style={{
-                          padding: "2px 8px",
-                          borderRadius: 20,
-                          background: "var(--bg)",
-                          border: "1px solid var(--border)",
-                          fontSize: 11,
+                          fontSize: 10,
                           color: "var(--text-dim)",
-                          fontFamily: "var(--font-jetbrains-mono), monospace",
+                          letterSpacing: "0.06em",
+                          flexShrink: 0,
+                          paddingTop: 3,
                         }}
                       >
-                        {t}
+                        {String(i + 1).padStart(2, "0")}
                       </span>
-                    ))}
-                  </div>
-                  {/* Outcome */}
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: 6,
-                      alignItems: "flex-start",
-                      padding: "10px 14px",
-                      background: "var(--bg)",
-                      borderRadius: 10,
-                      border: "1px solid var(--border)",
-                    }}
-                  >
-                    <span
+                    </div>
+
+                    <p
                       style={{
-                        color: "var(--accent2)",
-                        fontSize: 12,
-                        flexShrink: 0,
-                        marginTop: 1,
-                      }}
-                    >
-                      →
-                    </span>
-                    <span
-                      className="font-mono"
-                      style={{
-                        fontSize: 11,
+                        fontSize: 13,
                         color: "var(--text-muted)",
-                        lineHeight: 1.5,
+                        lineHeight: 1.6,
+                        marginBottom: 16,
+                        flex: 1,
                       }}
                     >
-                      {p.outcome}
-                    </span>
-                  </div>
-                  {/* Links */}
-                  <div
-                    style={{
-                      marginTop: 16,
-                      display: "flex",
-                      gap: 10,
-                    }}
-                  >
-                    {["Demo", "GitHub", "Case Study"].map((l) => (
-                      <button
-                        key={l}
-                        style={{
-                          padding: "6px 14px",
-                          borderRadius: 20,
-                          border: "1px solid var(--border)",
-                          background: "transparent",
-                          color: "var(--text-muted)",
-                          fontSize: 11,
-                          fontFamily: "inherit",
-                          cursor: "pointer",
-                          transition: "all 0.2s",
-                          letterSpacing: "0.02em",
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.borderColor = "var(--accent2)";
-                          e.currentTarget.style.color = "var(--accent2)";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.borderColor = "var(--border)";
-                          e.currentTarget.style.color = "var(--text-muted)";
-                        }}
+                      {p.desc}
+                    </p>
+
+                    {/* Tech tags */}
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 16 }}>
+                      {p.tech.map((t) => (
+                        <span
+                          key={t}
+                          style={{
+                            padding: "2px 8px",
+                            borderRadius: 20,
+                            background: "var(--accent-vivid-glow)",
+                            border: "1px solid var(--accent-vivid-muted)",
+                            fontSize: 11,
+                            color: "var(--accent-vivid)",
+                            fontFamily: "var(--font-jetbrains-mono), monospace",
+                          }}
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Outcome */}
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: 6,
+                        alignItems: "flex-start",
+                        padding: "10px 14px",
+                        background: "var(--bg)",
+                        borderRadius: 10,
+                        border: "1px solid var(--border)",
+                      }}
+                    >
+                      <span style={{ color: "var(--accent-vivid)", fontSize: 12, flexShrink: 0, marginTop: 1 }}>
+                        →
+                      </span>
+                      <span
+                        className="font-mono"
+                        style={{ fontSize: 11, color: "var(--text-muted)", lineHeight: 1.5 }}
                       >
-                        {l}
-                      </button>
-                    ))}
+                        {p.outcome}
+                      </span>
+                    </div>
+
+                    {/* Links — only render when real links exist */}
+                    {hasLinks && (
+                      <div style={{ marginTop: 16, display: "flex", gap: 10, flexWrap: "wrap" }}>
+                        {p.demo && (
+                          <a
+                            href={p.demo}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={linkBtnStyle}
+                            onMouseEnter={(e) => applyHover(e, true)}
+                            onMouseLeave={(e) => applyHover(e, false)}
+                          >
+                            Demo
+                          </a>
+                        )}
+                        {p.github && (
+                          <a
+                            href={p.github}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={linkBtnStyle}
+                            onMouseEnter={(e) => applyHover(e, true)}
+                            onMouseLeave={(e) => applyHover(e, false)}
+                          >
+                            GitHub
+                          </a>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
-              </div>
               </RevealBlock>
             );
           })}
@@ -333,4 +342,24 @@ export default function Projects() {
       </section>
     </div>
   );
+}
+
+const linkBtnStyle: React.CSSProperties = {
+  padding: "6px 14px",
+  borderRadius: 20,
+  border: "1px solid var(--border)",
+  background: "transparent",
+  color: "var(--text-muted)",
+  fontSize: 11,
+  fontFamily: "inherit",
+  cursor: "pointer",
+  transition: "all 0.2s",
+  letterSpacing: "0.02em",
+  textDecoration: "none",
+  display: "inline-block",
+};
+
+function applyHover(e: React.MouseEvent<HTMLAnchorElement>, entering: boolean) {
+  e.currentTarget.style.borderColor = entering ? "var(--accent-vivid)" : "var(--border)";
+  e.currentTarget.style.color = entering ? "var(--accent-vivid)" : "var(--text-muted)";
 }

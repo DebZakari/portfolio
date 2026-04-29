@@ -8,7 +8,7 @@ import RevealBlock from "@/components/RevealBlock";
 
 const STATS = [
   { v: "3+", l: "Years Building" },
-  { v: "9+", l: "Public Repos" },
+  { v: "20+", l: "Systems Built" },
   { v: "4", l: "Core Domains" },
 ];
 
@@ -155,7 +155,7 @@ export default function About() {
                 />
               </RevealBlock>
               <RevealBlock direction="up" delay={100}>
-                <p style={{ color: "var(--text-muted)", lineHeight: 1.75, fontSize: 15, marginBottom: 20 }}>
+                <p style={{ color: "var(--text-muted)", lineHeight: 1.75, fontSize: 15, marginBottom: 20, maxWidth: "65ch" }}>
                   My engineering background gives me a systems-level perspective
                   across the full stack. I&apos;ve built production web platforms
                   with Next.js and NestJS, designed AI microservices with FastAPI
@@ -164,7 +164,7 @@ export default function About() {
                 </p>
               </RevealBlock>
               <RevealBlock direction="up" delay={180}>
-                <p style={{ color: "var(--text-muted)", lineHeight: 1.75, fontSize: 15 }}>
+                <p style={{ color: "var(--text-muted)", lineHeight: 1.75, fontSize: 15, maxWidth: "65ch" }}>
                   Whether it&apos;s orchestrating vLLM inference with RAG pipelines,
                   implementing SOTA TTS with voice cloning, or fine-tuning YOLO for
                   PCB component detection — I bring the same rigorous approach to
@@ -219,7 +219,7 @@ export default function About() {
                   boxShadow: imageHovered
                     ? "0 28px 56px rgba(0,0,0,0.45)"
                     : "0 4px 16px rgba(0,0,0,0.16)",
-                  transition: "transform 260ms cubic-bezier(0.34,1.56,0.64,1), box-shadow 260ms ease",
+                  transition: "transform 260ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 260ms ease",
                 }}
               >
                 <Image
@@ -306,7 +306,7 @@ export default function About() {
                   className="font-mono"
                   style={{ fontSize: 11, color: "var(--text-dim)", letterSpacing: "0.08em", marginBottom: 14 }}
                 >
-                  $ profile --verbose
+                  <span style={{ color: "var(--accent-vivid)" }}>$</span> profile --verbose
                 </div>
                 {PROFILE_ROWS.map(([k, v]) => (
                   <div

@@ -12,7 +12,13 @@ export default function HeroSection() {
   const { resolvedTheme } = useTheme();
   const immersive = mode === "immersive";
   const [mounted, setMounted] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
   const isDark = mounted ? resolvedTheme !== "light" : true;
 
   return (
@@ -185,11 +191,11 @@ export default function HeroSection() {
         )}
       </div>
 
-      {/* Scroll indicator */}
+      {/* Scroll indicator — fixed so it's always in viewport; fades out on scroll */}
       <div
         className={immersive ? "animate-bob" : ""}
         style={{
-          position: "absolute",
+          position: "fixed",
           bottom: 32,
           left: "50%",
           transform: "translateX(-50%)",
@@ -197,10 +203,14 @@ export default function HeroSection() {
           flexDirection: "column",
           alignItems: "center",
           gap: 8,
-          color: "var(--text-dim)",
+          color: "var(--text-muted)",
           fontSize: 11,
           letterSpacing: "0.08em",
           fontFamily: "var(--font-jetbrains-mono), monospace",
+          opacity: scrolled ? 0 : 1,
+          transition: "opacity 0.4s ease",
+          pointerEvents: "none",
+          zIndex: 10,
         }}
       >
         <span>SCROLL</span>

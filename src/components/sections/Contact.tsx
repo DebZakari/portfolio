@@ -25,7 +25,7 @@ export default function Contact() {
     borderRadius: 10,
     padding: "12px 16px",
     color: "var(--text)",
-    fontFamily: "var(--font-space-grotesk), sans-serif",
+    fontFamily: "inherit",
     fontSize: 14,
     transition: "border-color 0.2s",
     outline: "none",
