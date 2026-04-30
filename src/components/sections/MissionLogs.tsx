@@ -1,17 +1,23 @@
 "use client";
 
+import Link from "next/link";
 import SectionLabel from "@/components/SectionLabel";
 import RevealBlock from "@/components/RevealBlock";
+import TerminalPrompt from "@/components/TerminalPrompt";
 import { LOGS } from "@/data/logs";
+
+const VISIBLE = 3;
 
 const MONO: React.CSSProperties = {
   fontFamily: "var(--font-jetbrains-mono), monospace",
 };
 
 export default function MissionLogs() {
+  const visible = LOGS.slice(0, VISIBLE);
   return (
     <section
       id="logs"
+      aria-label="Mission Logs"
       style={{
         padding: "clamp(5rem, 10vw, 8rem) clamp(1.5rem, 5vw, 4rem)",
         maxWidth: 1200,
@@ -36,7 +42,7 @@ export default function MissionLogs() {
         {/* Terminal header bar */}
         <div
           style={{
-            padding: "11px 20px",
+            padding: "12px 20px",
             background: "var(--surface2)",
             borderBottom: "1px solid var(--border)",
             display: "flex",
@@ -44,23 +50,36 @@ export default function MissionLogs() {
             justifyContent: "space-between",
           }}
         >
-          <span style={{ ...MONO, fontSize: 11, color: "var(--text-dim)", letterSpacing: "0.06em" }}>
+          <span style={{ ...MONO, fontSize: 11, color: "var(--text-dim)", letterSpacing: "0.08em" }}>
             <span style={{ color: "var(--text-dim)", marginRight: 6 }}>$</span>
-            tail -n 4 logs/mission.log
+            tail -n {VISIBLE} logs/mission.log
           </span>
-          <span style={{ ...MONO, fontSize: 10, color: "var(--text-dim)", letterSpacing: "0.06em" }}>
-            {LOGS.length} entries
-          </span>
+          <Link
+            href="/logs"
+            style={{
+              ...MONO,
+              fontSize: 10,
+              color: "var(--text-dim)",
+              letterSpacing: "0.08em",
+              textDecoration: "none",
+              opacity: 0.6,
+              transition: "opacity 0.2s",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
+            onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.6")}
+            aria-label={`View all ${LOGS.length} log entries`}
+          >
+            {LOGS.length} entries →
+          </Link>
         </div>
 
-        {/* Log entries */}
-        {LOGS.map((log, i) => (
-          <RevealBlock key={log.title} direction="none" delay={i * 60}>
-            <div
+        {visible.map((log, i) => (
+          <RevealBlock key={log.title} direction="up" delay={i * 80}>
+            <article
               style={{
                 background: "var(--surface)",
                 padding: "20px 24px",
-                borderBottom: i < LOGS.length - 1 ? "1px solid var(--border)" : "none",
+                borderBottom: i < visible.length - 1 ? "1px solid var(--border)" : "none",
               }}
             >
               {/* Prompt row */}
@@ -87,9 +106,9 @@ export default function MissionLogs() {
                   <span
                     style={{
                       ...MONO,
-                      fontSize: 10,
+                      fontSize: 11,
                       color: "var(--text-dim)",
-                      letterSpacing: "0.06em",
+                      letterSpacing: "0.08em",
                     }}
                   >
                     {String(i + 1).padStart(2, "0")}.log
@@ -112,9 +131,9 @@ export default function MissionLogs() {
                       borderRadius: 20,
                       background: "var(--surface2)",
                       border: "1px solid var(--border)",
-                      fontSize: 10,
+                      fontSize: 11,
                       color: "var(--text-muted)",
-                      letterSpacing: "0.04em",
+                      letterSpacing: "0.06em",
                     }}
                   >
                     {log.tag}
@@ -124,9 +143,9 @@ export default function MissionLogs() {
                 <span
                   style={{
                     ...MONO,
-                    fontSize: 10,
+                    fontSize: 11,
                     color: "var(--text-dim)",
-                    letterSpacing: "0.06em",
+                    letterSpacing: "0.08em",
                   }}
                 >
                   {log.date}
@@ -136,11 +155,11 @@ export default function MissionLogs() {
               {/* Title */}
               <h3
                 style={{
-                  fontSize: 15,
+                  fontSize: 16,
                   fontWeight: 600,
                   letterSpacing: "-0.02em",
                   marginBottom: 8,
-                  lineHeight: 1.3,
+                  lineHeight: 1.2,
                   color: "var(--text)",
                 }}
               >
@@ -150,17 +169,18 @@ export default function MissionLogs() {
               {/* Excerpt */}
               <p
                 style={{
-                  fontSize: 13,
+                  fontSize: 15,
                   color: "var(--text-muted)",
-                  lineHeight: 1.6,
+                  lineHeight: 1.75,
                   maxWidth: "72ch",
                 }}
               >
                 {log.excerpt}
               </p>
-            </div>
+            </article>
           </RevealBlock>
         ))}
+        <TerminalPrompt />
       </div>
     </section>
   );

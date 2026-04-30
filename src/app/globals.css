@@ -193,3 +193,45 @@ body {
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+@keyframes terminal-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes terminal-cursor-blink {
+  0%, 100% { background-color: var(--text-muted); color: var(--surface2); }
+  50% { background-color: transparent; color: var(--text-muted); }
+}
+
+/* ─── Project cards ─────────────────────────────────────────────── */
+.project-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.project-hero-inner {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 680px) {
+  .project-hero-inner {
+    flex-direction: row;
+    min-height: 260px;
+  }
+
+  /* !important required: overrides inline height/border props from PlaceholderZone */
+  .project-hero-image-pane {
+    width: 340px;
+    flex-shrink: 0;
+    height: auto !important;
+    border-right: 1px solid var(--border);
+    border-bottom: none !important;
+  }
+
+  .project-hero-content-pane {
+    flex: 1;
+    min-width: 0;
+  }
+}
