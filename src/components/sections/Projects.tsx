@@ -101,7 +101,7 @@ export default function Projects() {
           <SectionLabel
             tag="03 · Constellation Gallery"
             title="Project systems."
-            subtitle="Web applications and AI integrations — each one a distinct system solving a real problem."
+            subtitle="Web applications and AI integrations. Each one a distinct system solving a real problem."
           />
         </RevealBlock>
         <div
@@ -162,7 +162,7 @@ export default function Projects() {
                         }}
                       />
                     )}
-                    <div style={{ textAlign: "center", position: "relative", zIndex: 1 }}>
+                    <div style={{ textAlign: "center", position: "relative", zIndex: 1 }} aria-hidden="true">
                       <div
                         className="font-mono"
                         style={{ fontSize: 10, color: "var(--text-dim)", letterSpacing: "0.1em" }}

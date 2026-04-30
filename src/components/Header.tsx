@@ -63,9 +63,9 @@ function ModeToggle() {
 }
 
 function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
   const mounted = useIsMounted();
-  const isDark = theme !== "light";
+  const isDark = resolvedTheme !== "light";
 
   if (!mounted) return <div className="w-9 h-9" aria-hidden="true" />;
 

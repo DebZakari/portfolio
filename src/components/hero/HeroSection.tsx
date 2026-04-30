@@ -120,7 +120,7 @@ export default function HeroSection() {
           }}
         >
           I&apos;m Dave Zachary Macarayo. I engineer AI pipelines, inference
-          layers, and edge systems — then build the interfaces that make them
+          layers, and edge systems; then build the interfaces that make them
           usable.
         </p>
 

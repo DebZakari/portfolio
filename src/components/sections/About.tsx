@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useExperience } from "@/hooks/useExperience";
 import { lockScroll, unlockScroll } from "@/utils/scrollLock";
 import SectionLabel from "@/components/SectionLabel";
@@ -45,8 +45,13 @@ export default function About() {
   const [cardFlipped, setCardFlipped] = useState(false);
   const [drawerType, setDrawerType] = useState<"years" | "systems" | null>(null);
   const [domainsOpen, setDomainsOpen] = useState(false);
+  const modalCloseRef = useRef<HTMLButtonElement>(null);
+  const portraitTriggerRef = useRef<HTMLDivElement>(null);
 
-  const closeModal = useCallback(() => setModalOpen(false), []);
+  const closeModal = useCallback(() => {
+    setModalOpen(false);
+    portraitTriggerRef.current?.focus();
+  }, []);
   const closeDrawer = useCallback(() => setDrawerType(null), []);
 
   useEffect(() => {
@@ -59,7 +64,12 @@ export default function About() {
   }, [modalOpen, closeModal]);
 
   useEffect(() => {
-    if (modalOpen) lockScroll(); else unlockScroll();
+    if (modalOpen) {
+      lockScroll();
+      modalCloseRef.current?.focus();
+    } else {
+      unlockScroll();
+    }
     return () => unlockScroll();
   }, [modalOpen]);
 
@@ -104,7 +114,7 @@ export default function About() {
           >
             <Image
               src="/images/ZEG00343.JPG"
-              alt="Dave Zachary Macarayo — full portrait"
+              alt="Dave Zachary Macarayo, full portrait"
               width={700}
               height={875}
               style={{
@@ -119,6 +129,7 @@ export default function About() {
               priority
             />
             <button
+              ref={modalCloseRef}
               onClick={closeModal}
               aria-label="Close photo"
               style={{
@@ -179,7 +190,7 @@ export default function About() {
                 <SectionLabel
                   tag="01 · Origin System"
                   title="The developer behind the system."
-                  subtitle="Computer Engineering graduate turned full-stack developer with a focus on AI integration — I build practical, intelligent web systems that work."
+                  subtitle="Computer Engineering graduate turned full-stack developer with a focus on AI integration. I build practical, intelligent web systems that work."
                 />
               </RevealBlock>
               <RevealBlock direction="up" delay={100}>
@@ -195,7 +206,7 @@ export default function About() {
                 <p style={{ color: "var(--text-muted)", lineHeight: 1.75, fontSize: 15, maxWidth: "65ch" }}>
                   Whether it&apos;s orchestrating vLLM inference with RAG pipelines,
                   implementing SOTA TTS with voice cloning, or fine-tuning YOLO for
-                  PCB component detection — I bring the same rigorous approach to
+                  PCB component detection. I bring the same rigorous approach to
                   software quality and system design.
                 </p>
               </RevealBlock>
@@ -387,6 +398,7 @@ export default function About() {
             >
               {/* Portrait card — rises above profile card on hover */}
               <div
+                ref={portraitTriggerRef}
                 onMouseEnter={() => setImageHovered(true)}
                 onMouseLeave={() => setImageHovered(false)}
                 onClick={() => setModalOpen(true)}
@@ -643,7 +655,7 @@ export default function About() {
                         className="font-mono"
                         style={{ fontSize: 10, color: "var(--text-dim)", letterSpacing: "0.05em", marginBottom: 18 }}
                       >
-                        // engr. · Full-Stack Developer · AI Engineer
+                        {"// engr. · Full-Stack Developer · AI Engineer"}
                       </div>
                       <div
                         style={{
