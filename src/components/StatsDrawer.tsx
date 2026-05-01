@@ -92,14 +92,14 @@ export default function StatsDrawer({ open, onClose, title, children }: Props) {
             onClick={onClose}
             aria-label="Close"
             style={{
-              width: 28,
-              height: 28,
+              width: 44,
+              height: 44,
               borderRadius: "50%",
               border: "1px solid var(--border)",
               background: "transparent",
               color: "var(--text-muted)",
               cursor: "pointer",
-              fontSize: 16,
+              fontSize: 20,
               lineHeight: 1,
               display: "flex",
               alignItems: "center",

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useTheme } from "next-themes";
 import SectionLabel from "@/components/SectionLabel";
 import RevealBlock from "@/components/RevealBlock";
@@ -22,22 +22,98 @@ const IconGitHub = () => (
 );
 const IconResume = () => <span style={{ fontSize: 14 }}>↓</span>;
 
+const INPUT_BASE_STYLE: React.CSSProperties = {
+  width: "100%",
+  background: "var(--surface)",
+  borderRadius: 10,
+  padding: "12px 16px",
+  color: "var(--text)",
+  fontFamily: "inherit",
+  fontSize: 14,
+  outline: "none",
+  transition: "border-color 0.2s, box-shadow 0.2s",
+  minHeight: 44,
+};
+
 const BASE_LINKS: { label: string; value: string; icon: React.ReactNode; href: string }[] = [
   { label: "Email",    value: "mdavezachary@gmail.com",      icon: <IconEmail />,    href: "mailto:mdavezachary@gmail.com" },
   { label: "LinkedIn", value: "Dave Zachary Macarayo",       icon: <IconLinkedIn />, href: "https://www.linkedin.com/in/dave-zachary-macarayo-002304282/" },
   { label: "GitHub",   value: "DebZakari",                   icon: <IconGitHub />,   href: "https://github.com/DebZakari" },
 ];
 
-type FormState = { name: string; email: string; message: string };
+type FormState = { name: string; email: string; message: string; hp: string };
+type FieldErrors = { name?: string; email?: string; message?: string };
 type Status = "idle" | "loading" | "success" | "error";
+
+type FieldConfig = {
+  key: "name" | "email";
+  label: string;
+  placeholder: string;
+  maxLength: number;
+  type: string;
+  autoComplete: string;
+  inputMode?: React.InputHTMLAttributes<HTMLInputElement>["inputMode"];
+  autoCorrect?: string;
+  autoCapitalize?: string;
+};
+
+const FIELDS: FieldConfig[] = [
+  {
+    key: "name",
+    label: "Name",
+    placeholder: "Your name",
+    maxLength: 100,
+    type: "text",
+    autoComplete: "name",
+  },
+  {
+    key: "email",
+    label: "Email",
+    placeholder: "your@email.com",
+    maxLength: 320,
+    type: "email",
+    autoComplete: "email",
+    inputMode: "email",
+    autoCorrect: "off",
+    autoCapitalize: "off",
+  },
+];
+
+function validate(form: FormState): FieldErrors {
+  const errors: FieldErrors = {};
+  if (!form.name.trim()) {
+    errors.name = "Name is required.";
+  } else if (form.name.trim().length < 2) {
+    errors.name = "Name must be at least 2 characters.";
+  }
+  if (!form.email.trim()) {
+    errors.email = "Email is required.";
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+    errors.email = "Enter a valid email address.";
+  }
+  if (!form.message.trim()) {
+    errors.message = "Message is required.";
+  } else if (form.message.trim().length < 10) {
+    errors.message = "Message must be at least 10 characters.";
+  }
+  return errors;
+}
 
 export default function Contact() {
   const { resolvedTheme } = useTheme();
   const mounted = useIsMounted();
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState("");
-  const [form, setForm] = useState<FormState>({ name: "", email: "", message: "" });
+  const [form, setForm] = useState<FormState>({ name: "", email: "", message: "", hp: "" });
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [focusedField, setFocusedField] = useState<string | null>(null);
   const [hoveredLink, setHoveredLink] = useState<number | null>(null);
+  const [formStartTime] = useState(() => Date.now());
+
+  const nameRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const messageRef = useRef<HTMLTextAreaElement>(null);
+
   const resumeUrl = mounted
     ? (resolvedTheme === "light" ? RESUME_LIGHT_URL : RESUME_DARK_URL)
     : RESUME_DARK_URL;
@@ -48,31 +124,55 @@ export default function Contact() {
       ]
     : BASE_LINKS;
 
-  const inputStyle: React.CSSProperties = {
-    width: "100%",
-    background: "var(--surface)",
-    border: "1px solid var(--border)",
-    borderRadius: 10,
-    padding: "12px 16px",
-    color: "var(--text)",
-    fontFamily: "inherit",
-    fontSize: 14,
-    transition: "border-color 0.2s",
-    outline: "none",
-  };
+  function fieldStyle(key: string, hasError: boolean): React.CSSProperties {
+    const focused = focusedField === key;
+    if (hasError) {
+      return {
+        ...INPUT_BASE_STYLE,
+        border: focused ? "1.5px solid var(--accent)" : "1.5px solid var(--text-muted)",
+        boxShadow: focused ? "0 0 0 3px var(--accent-glow)" : undefined,
+      };
+    }
+    return {
+      ...INPUT_BASE_STYLE,
+      border: focused ? "1px solid var(--accent)" : "1px solid var(--border)",
+    };
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (status === "loading") return;
 
+    // Honeypot: silently succeed for bots that fill hidden fields
+    if (form.hp) {
+      setStatus("success");
+      return;
+    }
+
+    const errors = validate(form);
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      if (errors.name) nameRef.current?.focus();
+      else if (errors.email) emailRef.current?.focus();
+      else if (errors.message) messageRef.current?.focus();
+      return;
+    }
+
     setStatus("loading");
     setErrorMsg("");
+    setFieldErrors({});
 
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          message: form.message,
+          hp: form.hp,
+          t: formStartTime,
+        }),
       });
 
       if (res.ok) {
@@ -120,16 +220,14 @@ export default function Contact() {
               <div style={{ display: "grid", gap: 12, marginTop: 8 }}>
                 {links.map((l, li) => {
                   const isHov = hoveredLink === li;
+                  const isExternal = l.href.startsWith("http");
                   return (
                   <a
                     key={l.label}
                     href={l.href}
-                    target={l.href.startsWith("http") ? "_blank" : undefined}
-                    rel={
-                      l.href.startsWith("http")
-                        ? "noopener noreferrer"
-                        : undefined
-                    }
+                    target={isExternal ? "_blank" : undefined}
+                    rel={isExternal ? "noopener noreferrer" : undefined}
+                    aria-label={isExternal ? `${l.label}: ${l.value} (opens in new tab)` : undefined}
                     download={l.label === "Résumé" ? true : undefined}
                     style={{
                       display: "flex",
@@ -140,7 +238,6 @@ export default function Contact() {
                       border: `1px solid ${isHov ? "var(--accent)" : "var(--border)"}`,
                       borderRadius: 12,
                       transition: "border-color 0.2s",
-                      cursor: "pointer",
                       textDecoration: "none",
                     }}
                     onMouseEnter={() => setHoveredLink(li)}
@@ -232,7 +329,7 @@ export default function Contact() {
                 background: "var(--surface)",
                 border: "1px solid var(--border)",
                 borderRadius: 20,
-                padding: 32,
+                padding: "clamp(20px, 4vw, 32px)",
               }}
             >
               <h3
@@ -250,23 +347,74 @@ export default function Contact() {
               {status === "success" ? (
                 <div role="status" aria-live="polite" style={{ textAlign: "center", padding: "40px 0" }}>
                   <div style={{ fontSize: 32, marginBottom: 12 }}>✦</div>
-                  <p style={{ color: "var(--text-muted)", fontSize: 15 }}>
+                  <p style={{ color: "var(--text-muted)", fontSize: 15, marginBottom: 20 }}>
                     Message received. I&apos;ll be in touch soon.
                   </p>
+                  <button
+                    onClick={() => {
+                      setStatus("idle");
+                      setForm({ name: "", email: "", message: "", hp: "" });
+                      setFieldErrors({});
+                      setErrorMsg("");
+                    }}
+                    className="font-mono"
+                    style={{
+                      background: "transparent",
+                      border: "1px solid var(--border)",
+                      borderRadius: 28,
+                      padding: "8px 18px",
+                      color: "var(--text-muted)",
+                      fontSize: 11,
+                      letterSpacing: "0.08em",
+                      cursor: "pointer",
+                      transition: "border-color 0.2s, color 0.2s",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = "var(--accent)";
+                      e.currentTarget.style.color = "var(--text)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = "var(--border)";
+                      e.currentTarget.style.color = "var(--text-muted)";
+                    }}
+                  >
+                    send another
+                  </button>
                 </div>
               ) : (
                 <form
                   onSubmit={handleSubmit}
-                  style={{ display: "grid", gap: 16 }}
+                  noValidate
+                  style={{ display: "grid", gap: 16, position: "relative" }}
                 >
-                  {(
-                    [
-                      ["name", "Name", "Your name", 100, "text"],
-                      ["email", "Email", "your@email.com", 320, "email"],
-                    ] as [keyof FormState, string, string, number, string][]
-                  ).map(([k, label, ph, maxLen, type]) => (
-                    <div key={k}>
+                  {/* Honeypot — hidden from real users, traps automated submissions */}
+                  <div
+                    aria-hidden="true"
+                    style={{
+                      position: "absolute",
+                      left: "-9999px",
+                      top: "auto",
+                      width: 1,
+                      height: 1,
+                      overflow: "hidden",
+                    }}
+                  >
+                    <label htmlFor="hp-field">Leave this empty</label>
+                    <input
+                      id="hp-field"
+                      name="hp"
+                      type="text"
+                      tabIndex={-1}
+                      autoComplete="off"
+                      value={form.hp}
+                      onChange={(e) => setForm((f) => ({ ...f, hp: e.target.value }))}
+                    />
+                  </div>
+
+                  {FIELDS.map((field) => (
+                    <div key={field.key}>
                       <label
+                        htmlFor={field.key}
                         className="font-mono"
                         style={{
                           fontSize: 11,
@@ -276,25 +424,53 @@ export default function Contact() {
                           marginBottom: 6,
                         }}
                       >
-                        {label}
+                        {field.label}
                       </label>
                       <input
-                        type={type}
-                        placeholder={ph}
+                        ref={field.key === "name" ? nameRef : emailRef}
+                        id={field.key}
+                        name={field.key}
+                        type={field.type}
+                        placeholder={field.placeholder}
                         required
-                        maxLength={maxLen}
-                        value={form[k]}
-                        onChange={(e) =>
-                          setForm((f) => ({ ...f, [k]: e.target.value }))
-                        }
-                        style={inputStyle}
-                        onFocus={(e) =>
-                          (e.currentTarget.style.borderColor = "var(--accent)")
-                        }
-                        onBlur={(e) =>
-                          (e.currentTarget.style.borderColor = "var(--border)")
-                        }
+                        aria-required="true"
+                        maxLength={field.maxLength}
+                        autoComplete={field.autoComplete}
+                        inputMode={field.inputMode}
+                        autoCorrect={field.autoCorrect}
+                        autoCapitalize={field.autoCapitalize}
+                        aria-invalid={!!fieldErrors[field.key]}
+                        aria-describedby={fieldErrors[field.key] ? `${field.key}-error` : undefined}
+                        value={form[field.key]}
+                        onChange={(e) => {
+                          setForm((f) => ({ ...f, [field.key]: e.target.value }));
+                          if (fieldErrors[field.key]) {
+                            setFieldErrors((fe) => ({ ...fe, [field.key]: undefined }));
+                          }
+                        }}
+                        style={fieldStyle(field.key, !!fieldErrors[field.key])}
+                        onFocus={() => setFocusedField(field.key)}
+                        onBlur={() => setFocusedField(null)}
                       />
+                      {fieldErrors[field.key] && (
+                        <span
+                          id={`${field.key}-error`}
+                          className="font-mono"
+                          style={{
+                            display: "block",
+                            marginTop: 4,
+                            fontSize: 10,
+                            color: "var(--text)",
+                            letterSpacing: "0.04em",
+                            padding: "4px 8px",
+                            background: "var(--surface2)",
+                            border: "1px solid var(--accent2)",
+                            borderRadius: 6,
+                          }}
+                        >
+                          ! {fieldErrors[field.key]}
+                        </span>
+                      )}
                     </div>
                   ))}
 
@@ -308,6 +484,7 @@ export default function Contact() {
                       }}
                     >
                       <label
+                        htmlFor="message"
                         className="font-mono"
                         style={{
                           fontSize: 11,
@@ -318,6 +495,7 @@ export default function Contact() {
                         Message
                       </label>
                       <span
+                        aria-hidden="true"
                         className="font-mono"
                         style={{
                           fontSize: 10,
@@ -331,24 +509,61 @@ export default function Contact() {
                       >
                         {form.message.length}/2000
                       </span>
+                      {/* Announces once when crossing the warning threshold */}
+                      <span
+                        aria-live="polite"
+                        style={{
+                          position: "absolute",
+                          left: "-9999px",
+                          width: 1,
+                          height: 1,
+                          overflow: "hidden",
+                        }}
+                      >
+                        {form.message.length > 1800 ? "Approaching message limit" : ""}
+                      </span>
                     </div>
                     <textarea
+                      ref={messageRef}
+                      id="message"
+                      name="message"
                       placeholder="Tell me about your project..."
                       required
+                      aria-required="true"
                       rows={5}
                       maxLength={2000}
+                      aria-invalid={!!fieldErrors.message}
+                      aria-describedby={fieldErrors.message ? "message-error" : undefined}
                       value={form.message}
-                      onChange={(e) =>
-                        setForm((f) => ({ ...f, message: e.target.value }))
-                      }
-                      style={{ ...inputStyle, resize: "vertical" }}
-                      onFocus={(e) =>
-                        (e.currentTarget.style.borderColor = "var(--accent)")
-                      }
-                      onBlur={(e) =>
-                        (e.currentTarget.style.borderColor = "var(--border)")
-                      }
+                      onChange={(e) => {
+                        setForm((f) => ({ ...f, message: e.target.value }));
+                        if (fieldErrors.message) {
+                          setFieldErrors((fe) => ({ ...fe, message: undefined }));
+                        }
+                      }}
+                      style={{ ...fieldStyle("message", !!fieldErrors.message), resize: "vertical" }}
+                      onFocus={() => setFocusedField("message")}
+                      onBlur={() => setFocusedField(null)}
                     />
+                    {fieldErrors.message && (
+                      <span
+                        id="message-error"
+                        className="font-mono"
+                        style={{
+                          display: "block",
+                          marginTop: 4,
+                          fontSize: 10,
+                          color: "var(--text)",
+                          letterSpacing: "0.04em",
+                          padding: "4px 8px",
+                          background: "var(--surface2)",
+                          border: "1px solid var(--accent2)",
+                          borderRadius: 6,
+                        }}
+                      >
+                        ! {fieldErrors.message}
+                      </span>
+                    )}
                   </div>
 
                   {status === "error" && errorMsg && (
@@ -357,11 +572,11 @@ export default function Contact() {
                       className="font-mono"
                       style={{
                         fontSize: 11,
-                        color: "var(--text-muted)",
+                        color: "var(--text)",
                         letterSpacing: "0.04em",
                         padding: "8px 12px",
                         background: "var(--surface2)",
-                        border: "1px solid var(--border)",
+                        border: "1px solid var(--accent2)",
                         borderRadius: 8,
                       }}
                     >
@@ -372,6 +587,7 @@ export default function Contact() {
                   <button
                     type="submit"
                     disabled={status === "loading"}
+                    aria-busy={status === "loading"}
                     style={{
                       padding: "13px 22px",
                       borderRadius: 28,

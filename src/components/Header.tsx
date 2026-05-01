@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { useTheme } from "next-themes";
 import { Menu, Moon, Sun, X } from "lucide-react";
 import { useExperience } from "@/hooks/useExperience";
@@ -9,11 +10,11 @@ import { useActiveSection } from "@/hooks/useActiveSection";
 import type { ExperienceMode } from "@/contexts/ExperienceContext";
 
 const NAV_LINKS = [
-  { href: "#about",    label: "About"    },
-  { href: "#skills",   label: "Skills"   },
-  { href: "#projects", label: "Projects" },
-  { href: "#logs",     label: "Logs"     },
-  { href: "#contact",  label: "Contact"  },
+  { href: "/#about",    section: "about",    label: "About"    },
+  { href: "/#skills",   section: "skills",   label: "Skills"   },
+  { href: "/#projects", section: "projects", label: "Projects" },
+  { href: "/#logs",     section: "logs",     label: "Logs"     },
+  { href: "/#contact",  section: "contact",  label: "Contact"  },
 ];
 
 function ModeToggle() {
@@ -145,7 +146,7 @@ export default function Header() {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          transition: "background 0.4s, backdrop-filter 0.4s, border-color 0.4s",
+          transition: "background 0.4s, border-color 0.4s",
           background: scrolled
             ? isDark
               ? "oklch(7% 0.02 265 / 0.85)"
@@ -153,6 +154,7 @@ export default function Header() {
             : "transparent",
           backdropFilter: scrolled ? "blur(16px)" : "none",
           borderBottom: scrolled ? "1px solid var(--border)" : "1px solid transparent",
+          transform: "translateZ(0)",
         }}
         className={scrolled ? (isDark ? "dark" : "light") : ""}
       >
@@ -161,9 +163,10 @@ export default function Header() {
           aria-label="Primary"
         >
           {/* Logo */}
-          <a
-            href="#"
+          <Link
+            href="/"
             aria-label="Back to top"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}
           >
             <div
@@ -193,14 +196,14 @@ export default function Header() {
             >
               DZM
             </span>
-          </a>
+          </Link>
 
           {/* Desktop nav */}
           <div className="hidden md:flex items-center" style={{ gap: 8 }}>
             {NAV_LINKS.map((l) => {
-              const active = activeSection === l.href.slice(1);
+              const active = activeSection === l.section;
               return (
-                <a
+                <Link
                   key={l.href}
                   href={l.href}
                   aria-current={active ? "page" : undefined}
@@ -241,7 +244,7 @@ export default function Header() {
                       }}
                     />
                   )}
-                </a>
+                </Link>
               );
             })}
           </div>
@@ -250,8 +253,8 @@ export default function Header() {
           <div className="hidden md:flex items-center" style={{ gap: 8 }}>
             <ModeToggle />
             <ThemeToggle />
-            <a
-              href="#contact"
+            <Link
+              href="/#contact"
               style={{
                 padding: "8px 18px",
                 borderRadius: 24,
@@ -267,13 +270,13 @@ export default function Header() {
               onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
             >
               Hire Me
-            </a>
+            </Link>
           </div>
 
           {/* Mobile hamburger */}
           <button
             ref={toggleRef}
-            className="flex md:hidden h-9 w-9 items-center justify-center rounded-md transition-colors duration-[--duration-base]"
+            className="flex md:hidden h-11 w-11 items-center justify-center rounded-md transition-colors duration-[--duration-base]"
             style={{ color: "var(--text-muted)" }}
             aria-label={drawerOpen ? "Close menu" : "Open menu"}
             aria-expanded={drawerOpen}
@@ -314,8 +317,8 @@ export default function Header() {
       {/* Mobile drawer overlay */}
       {drawerOpen && (
         <div
-          className="fixed inset-0 z-40 md:hidden"
-          style={{ background: "rgba(0,0,0,0.6)" }}
+          className="fixed inset-0 md:hidden"
+          style={{ background: "rgba(0,0,0,0.6)", zIndex: 90 }}
           aria-hidden="true"
           onClick={() => setDrawerOpen(false)}
         />
@@ -328,22 +331,25 @@ export default function Header() {
         aria-label="Navigation menu"
         aria-modal="true"
         className={[
-          "fixed top-0 right-0 z-50 h-full w-72 flex flex-col pt-20 pb-8 px-6 md:hidden",
+          "fixed top-0 right-0 h-full flex flex-col md:hidden",
           "transition-transform duration-[--duration-slow]",
           drawerOpen ? "translate-x-0" : "translate-x-full",
         ].join(" ")}
         style={{
+          zIndex: 110,
+          width: "min(280px, 85vw)",
+          padding: "5rem clamp(1rem, 4vw, 1.5rem) 2rem",
           background: "var(--surface)",
           borderLeft: "1px solid var(--border)",
         }}
       >
         <nav aria-label="Mobile navigation">
           <ul className="flex flex-col gap-1" role="list">
-            {NAV_LINKS.map(({ href, label }) => {
-              const active = activeSection === href.slice(1);
+            {NAV_LINKS.map(({ href, section, label }) => {
+              const active = activeSection === section;
               return (
                 <li key={href}>
-                  <a
+                  <Link
                     href={href}
                     aria-current={active ? "page" : undefined}
                     className={[
@@ -356,7 +362,7 @@ export default function Header() {
                     onClick={() => setDrawerOpen(false)}
                   >
                     {label}
-                  </a>
+                  </Link>
                 </li>
               );
             })}
@@ -364,10 +370,19 @@ export default function Header() {
         </nav>
 
         <div className="mt-auto flex flex-col gap-4">
-          <ModeToggle />
-          <ThemeToggle />
-          <a
-            href="#contact"
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 10,
+            }}
+          >
+            <ModeToggle />
+            <ThemeToggle />
+          </div>
+          <Link
+            href="/#contact"
             style={{
               padding: "10px 18px",
               borderRadius: 24,
@@ -380,7 +395,7 @@ export default function Header() {
             }}
           >
             Hire Me
-          </a>
+          </Link>
         </div>
       </div>
     </>

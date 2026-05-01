@@ -136,12 +136,12 @@ export default function About() {
                 position: "absolute",
                 top: 12,
                 right: 12,
-                width: 36,
-                height: 36,
+                width: 44,
+                height: 44,
                 borderRadius: "50%",
                 background: "rgba(0,0,0,0.6)",
                 border: "1px solid rgba(255,255,255,0.15)",
-                color: "#fff",
+                color: "#f0f0f0",
                 cursor: "pointer",
                 fontSize: 20,
                 lineHeight: 1,
@@ -441,7 +441,7 @@ export default function About() {
                     borderRadius: 8,
                     padding: "4px 10px",
                     fontSize: 11,
-                    color: "#fff",
+                    color: "#f0f0f0",
                     fontFamily: "var(--font-jetbrains-mono), monospace",
                     letterSpacing: "0.06em",
                     pointerEvents: "none",
@@ -641,7 +641,7 @@ export default function About() {
                         </span>
                         <span
                           style={{
-                            fontSize: "clamp(1.2rem, 3.5vw, 1.5rem)",
+                            fontSize: "clamp(1.3rem, 5vw, 1.6rem)",
                             fontWeight: 700,
                             letterSpacing: "-0.03em",
                             color: "var(--text)",
