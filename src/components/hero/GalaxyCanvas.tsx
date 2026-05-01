@@ -850,7 +850,7 @@ export default function GalaxyCanvas({ active, theme }: GalaxyCanvasProps) {
 
       const mx = S.mouse.x;
       const my = S.mouse.y;
-      const bhActive = mx > -9000;
+      const bhActive = mx !== OFFSCREEN;
       const gravityBodies: GravityBody[] = [];
 
       rings.forEach((ring) => {

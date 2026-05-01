@@ -39,12 +39,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true });
   }
 
-  // Timing trap: reject submissions that are too fast (bots) or stale (replays)
-  if (typeof t === "number") {
-    const elapsed = Date.now() - t;
-    if (elapsed < MIN_ELAPSED_MS || elapsed > MAX_ELAPSED_MS) {
-      return NextResponse.json({ ok: true });
-    }
+  // Timing trap: reject submissions that are too fast (bots), stale (replays), or missing t
+  if (typeof t !== "number") {
+    return NextResponse.json({ ok: true });
+  }
+  const elapsed = Date.now() - t;
+  if (elapsed < MIN_ELAPSED_MS || elapsed > MAX_ELAPSED_MS) {
+    return NextResponse.json({ ok: true });
   }
 
   if (!name?.trim() || !email?.trim() || !message?.trim()) {

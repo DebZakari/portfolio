@@ -7,6 +7,7 @@ import { Menu, Moon, Sun, X } from "lucide-react";
 import { useExperience } from "@/hooks/useExperience";
 import { useIsMounted } from "@/hooks/useIsMounted";
 import { useActiveSection } from "@/hooks/useActiveSection";
+import { lockScroll, unlockScroll } from "@/utils/scrollLock";
 import type { ExperienceMode } from "@/contexts/ExperienceContext";
 
 const NAV_LINKS = [
@@ -128,8 +129,8 @@ export default function Header() {
   }, [drawerOpen]);
 
   useEffect(() => {
-    document.body.style.overflow = drawerOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    if (drawerOpen) lockScroll(); else unlockScroll();
+    return () => unlockScroll();
   }, [drawerOpen]);
 
   return (
@@ -330,6 +331,7 @@ export default function Header() {
         role="dialog"
         aria-label="Navigation menu"
         aria-modal="true"
+        aria-hidden={!drawerOpen}
         className={[
           "fixed top-0 right-0 h-full flex flex-col md:hidden",
           "transition-transform duration-[--duration-slow]",

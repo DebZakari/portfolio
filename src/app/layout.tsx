@@ -22,7 +22,10 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
+const BASE_URL = "https://dz-macarayo.vercel.app";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(BASE_URL),
   title: "Dave Zachary Macarayo: Developer Portfolio",
   description:
     "Dave Zachary Macarayo builds modern web applications and AI-integrated systems, including LLM workflows, RAG systems, speech synthesis, biometrics, and computer vision.",
@@ -32,6 +35,14 @@ export const metadata: Metadata = {
       "Modern web applications and AI-integrated systems.",
     type: "website",
     locale: "en_US",
+    url: BASE_URL,
+    images: [{ url: "/og", width: 1200, height: 630, alt: "Dave Zachary Macarayo – Developer Portfolio" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Dave Zachary Macarayo: Developer Portfolio",
+    description: "Modern web applications and AI-integrated systems.",
+    images: ["/og"],
   },
   robots: {
     index: true,
