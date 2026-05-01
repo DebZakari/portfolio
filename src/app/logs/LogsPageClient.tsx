@@ -210,7 +210,7 @@ export default function LogsPageClient() {
                 opacity: 0.35,
               }}
             >
-              — end of log —
+              · end of log ·
             </span>
           </div>
         </div>

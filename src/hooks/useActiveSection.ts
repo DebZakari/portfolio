@@ -19,12 +19,16 @@ export function useActiveSection(): string {
 
   useEffect(() => {
     if (fromRoute !== null) return;
-    setActive(""); // clear stale state from previous route visit
+    // Use rAF so setActive is inside a callback, not the effect body
+    const frame = requestAnimationFrame(() => setActive(""));
     const onScroll = () => {
       if (window.scrollY < 80) setActive("");
     };
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, [fromRoute]);
 
   useEffect(() => {
