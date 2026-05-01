@@ -44,7 +44,7 @@ const linkStyle: React.CSSProperties = {
   display: "inline-flex",
   alignItems: "center",
   gap: 6,
-  padding: "6px 12px",
+  padding: "8px 14px",
   borderRadius: 20,
   border: "1px solid var(--border)",
   background: "transparent",
@@ -255,7 +255,7 @@ function NarrativeSection({
               <div
                 style={{
                   display: "grid",
-                  gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+                  gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
                   gap: 12,
                 }}
               >

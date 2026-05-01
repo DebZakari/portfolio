@@ -32,6 +32,7 @@ const INPUT_BASE_STYLE: React.CSSProperties = {
   fontSize: 14,
   outline: "none",
   transition: "border-color 0.2s, box-shadow 0.2s",
+  minHeight: 44,
 };
 
 const BASE_LINKS: { label: string; value: string; icon: React.ReactNode; href: string }[] = [
@@ -328,7 +329,7 @@ export default function Contact() {
                 background: "var(--surface)",
                 border: "1px solid var(--border)",
                 borderRadius: 20,
-                padding: 32,
+                padding: "clamp(20px, 4vw, 32px)",
               }}
             >
               <h3

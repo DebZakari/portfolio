@@ -88,6 +88,8 @@ export default function MissionLogs() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
+                  flexWrap: "wrap",
+                  gap: "8px 12px",
                   marginBottom: 10,
                 }}
               >

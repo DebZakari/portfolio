@@ -231,6 +231,11 @@ body {
   flex-direction: column;
 }
 
+/* Responsive hero image height on mobile */
+.project-hero-image-pane {
+  height: clamp(160px, 30vw, 220px) !important;
+}
+
 @media (min-width: 680px) {
   .project-hero-inner {
     flex-direction: row;

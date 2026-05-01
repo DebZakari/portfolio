@@ -27,6 +27,12 @@ function GitHubIcon({ href }: { href: string }) {
         color: "var(--text-dim)",
         display: "flex",
         alignItems: "center",
+        justifyContent: "center",
+        width: 44,
+        height: 44,
+        margin: -14,
+        padding: 14,
+        borderRadius: 8,
         transition: "color 0.2s",
       }}
       onMouseEnter={(e) => (e.currentTarget.style.color = "var(--text)")}

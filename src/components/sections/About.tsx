@@ -136,8 +136,8 @@ export default function About() {
                 position: "absolute",
                 top: 12,
                 right: 12,
-                width: 36,
-                height: 36,
+                width: 44,
+                height: 44,
                 borderRadius: "50%",
                 background: "rgba(0,0,0,0.6)",
                 border: "1px solid rgba(255,255,255,0.15)",
@@ -641,7 +641,7 @@ export default function About() {
                         </span>
                         <span
                           style={{
-                            fontSize: "clamp(1.2rem, 3.5vw, 1.5rem)",
+                            fontSize: "clamp(1.3rem, 5vw, 1.6rem)",
                             fontWeight: 700,
                             letterSpacing: "-0.03em",
                             color: "var(--text)",

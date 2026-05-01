@@ -46,10 +46,10 @@ export default function ProjectImageLightbox({ src, alt, onClose }: Props) {
         onClick={onClose}
         style={{
           position: "absolute",
-          top: 20,
-          right: 20,
-          width: 40,
-          height: 40,
+          top: 12,
+          right: 12,
+          width: 44,
+          height: 44,
           borderRadius: "50%",
           background: "var(--surface)",
           border: "1px solid var(--border)",
