@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTheme } from "next-themes";
 import SectionLabel from "@/components/SectionLabel";
 import RevealBlock from "@/components/RevealBlock";
+import { useIsMounted } from "@/hooks/useIsMounted";
 
 const RESUME_DARK_URL = process.env.NEXT_PUBLIC_RESUME_URL?.trim() || null;
 const RESUME_LIGHT_URL = "/resume-light.pdf";
@@ -32,11 +33,11 @@ type Status = "idle" | "loading" | "success" | "error";
 
 export default function Contact() {
   const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+  const mounted = useIsMounted();
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const [form, setForm] = useState<FormState>({ name: "", email: "", message: "" });
-  useEffect(() => setMounted(true), []);
+  const [hoveredLink, setHoveredLink] = useState<number | null>(null);
   const resumeUrl = mounted
     ? (resolvedTheme === "light" ? RESUME_LIGHT_URL : RESUME_DARK_URL)
     : RESUME_DARK_URL;
@@ -117,7 +118,9 @@ export default function Contact() {
                 style={{ marginBottom: "clamp(1.5rem, 3vw, 2rem)" }}
               />
               <div style={{ display: "grid", gap: 12, marginTop: 8 }}>
-                {links.map((l) => (
+                {links.map((l, li) => {
+                  const isHov = hoveredLink === li;
+                  return (
                   <a
                     key={l.label}
                     href={l.href}
@@ -134,18 +137,14 @@ export default function Contact() {
                       gap: 14,
                       padding: "14px 18px",
                       background: "var(--surface)",
-                      border: "1px solid var(--border)",
+                      border: `1px solid ${isHov ? "var(--accent)" : "var(--border)"}`,
                       borderRadius: 12,
                       transition: "border-color 0.2s",
                       cursor: "pointer",
                       textDecoration: "none",
                     }}
-                    onMouseEnter={(e) =>
-                      (e.currentTarget.style.borderColor = "var(--accent)")
-                    }
-                    onMouseLeave={(e) =>
-                      (e.currentTarget.style.borderColor = "var(--border)")
-                    }
+                    onMouseEnter={() => setHoveredLink(li)}
+                    onMouseLeave={() => setHoveredLink(null)}
                   >
                     <span
                       style={{
@@ -158,8 +157,9 @@ export default function Contact() {
                         alignItems: "center",
                         justifyContent: "center",
                         fontSize: 14,
-                        color: "var(--text-muted)",
+                        color: isHov ? "var(--text)" : "var(--text-muted)",
                         flexShrink: 0,
+                        transition: "color 0.2s",
                       }}
                     >
                       {l.icon}
@@ -172,16 +172,18 @@ export default function Contact() {
                           color: "var(--text-dim)",
                           letterSpacing: "0.08em",
                           marginBottom: 2,
+                          transition: "color 0.2s",
                         }}
                       >
                         {l.label}
                       </div>
-                      <div style={{ fontSize: 13, color: "var(--text-muted)" }}>
+                      <div style={{ fontSize: 13, color: isHov ? "var(--text)" : "var(--text-muted)", transition: "color 0.2s" }}>
                         {l.value}
                       </div>
                     </div>
                   </a>
-                ))}
+                );
+                })}
               </div>
 
               <div

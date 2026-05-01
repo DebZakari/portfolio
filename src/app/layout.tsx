@@ -23,11 +23,11 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Dave Zachary Macarayo — Developer Portfolio",
+  title: "Dave Zachary Macarayo: Developer Portfolio",
   description:
     "Dave Zachary Macarayo builds modern web applications and AI-integrated systems, including LLM workflows, RAG systems, speech synthesis, biometrics, and computer vision.",
   openGraph: {
-    title: "Dave Zachary Macarayo — Developer Portfolio",
+    title: "Dave Zachary Macarayo: Developer Portfolio",
     description:
       "Modern web applications and AI-integrated systems.",
     type: "website",

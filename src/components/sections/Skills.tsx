@@ -222,7 +222,7 @@ export default function Skills() {
                     +
                   </span>
                 </div>
-                <h3 style={{ fontSize: 12, fontWeight: 600, marginBottom: 10, letterSpacing: "-0.01em", color: "var(--text)" }}>
+                <h3 style={{ fontSize: 13, fontWeight: 600, marginBottom: 10, letterSpacing: "-0.01em", color: "var(--text)" }}>
                   {s.cat}
                 </h3>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
