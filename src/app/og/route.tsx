@@ -7,7 +7,7 @@ const spaceGroteskPromise = fetch(
 ).then((r) => r.arrayBuffer());
 
 const jetbrainsMonoPromise = fetch(
-  new URL("./JetBrainsMono-Regular.ttf", import.meta.url)
+  new URL("./JetBrainsMono-Regular.woff", import.meta.url)
 ).then((r) => r.arrayBuffer());
 
 // Design tokens
