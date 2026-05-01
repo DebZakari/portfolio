@@ -5,6 +5,7 @@ import { useTheme } from "next-themes";
 import SectionLabel from "@/components/SectionLabel";
 import RevealBlock from "@/components/RevealBlock";
 import { useIsMounted } from "@/hooks/useIsMounted";
+import { useExperience } from "@/hooks/useExperience";
 
 const RESUME_DARK_URL = process.env.NEXT_PUBLIC_RESUME_URL?.trim() || null;
 const RESUME_LIGHT_URL = "/resume-light.pdf";
@@ -102,6 +103,8 @@ function validate(form: FormState): FieldErrors {
 export default function Contact() {
   const { resolvedTheme } = useTheme();
   const mounted = useIsMounted();
+  const { mode } = useExperience();
+  const immersive = mode === "immersive";
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const [form, setForm] = useState<FormState>({ name: "", email: "", message: "", hp: "" });
@@ -129,7 +132,7 @@ export default function Contact() {
     if (hasError) {
       return {
         ...INPUT_BASE_STYLE,
-        border: focused ? "1.5px solid var(--accent)" : "1.5px solid var(--text-muted)",
+        border: focused ? "1.5px solid var(--accent)" : "1.5px solid var(--text)",
         boxShadow: focused ? "0 0 0 3px var(--accent-glow)" : undefined,
       };
     }
@@ -305,7 +308,7 @@ export default function Contact() {
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <span
-                    className="animate-pulse-soft"
+                    className={immersive ? "animate-pulse-soft" : ""}
                     style={{
                       width: 8,
                       height: 8,

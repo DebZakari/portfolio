@@ -141,7 +141,7 @@ export default function About() {
                 borderRadius: "50%",
                 background: "rgba(0,0,0,0.6)",
                 border: "1px solid rgba(255,255,255,0.15)",
-                color: "#f0f0f0",
+                color: "var(--text)",
                 cursor: "pointer",
                 fontSize: 20,
                 lineHeight: 1,
@@ -405,7 +405,7 @@ export default function About() {
                 role="button"
                 tabIndex={0}
                 aria-label="View full portrait photo"
-                onKeyDown={(e) => e.key === "Enter" && setModalOpen(true)}
+                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setModalOpen(true); } }}
                 style={{
                   position: "relative",
                   zIndex: imageHovered ? 3 : 1,
@@ -441,7 +441,7 @@ export default function About() {
                     borderRadius: 8,
                     padding: "4px 10px",
                     fontSize: 11,
-                    color: "#f0f0f0",
+                    color: "var(--text)",
                     fontFamily: "var(--font-jetbrains-mono), monospace",
                     letterSpacing: "0.06em",
                     pointerEvents: "none",
@@ -685,7 +685,7 @@ export default function About() {
                       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                           <span
-                            className="animate-pulse-soft"
+                            className={immersive ? "animate-pulse-soft" : ""}
                             style={{
                               width: 6,
                               height: 6,

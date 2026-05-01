@@ -1,21 +1,38 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 const SECTION_IDS = ["about", "skills", "projects", "logs", "contact"];
 
+function routeSection(pathname: string): string | null {
+  if (pathname === "/logs" || pathname.startsWith("/logs/")) return "logs";
+  if (pathname.startsWith("/projects/")) return "projects";
+  return null;
+}
+
 export function useActiveSection(): string {
+  const pathname = usePathname();
   const [active, setActive] = useState("");
 
+  const fromRoute = routeSection(pathname);
+
   useEffect(() => {
+    if (fromRoute !== null) return;
+    // Use rAF so setActive is inside a callback, not the effect body
+    const frame = requestAnimationFrame(() => setActive(""));
     const onScroll = () => {
       if (window.scrollY < 80) setActive("");
     };
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [fromRoute]);
 
   useEffect(() => {
+    if (fromRoute !== null) return;
     const observers: IntersectionObserver[] = [];
     SECTION_IDS.forEach((id) => {
       const el = document.getElementById(id);
@@ -28,7 +45,7 @@ export function useActiveSection(): string {
       observers.push(obs);
     });
     return () => observers.forEach((o) => o.disconnect());
-  }, []);
+  }, [fromRoute]);
 
-  return active;
+  return fromRoute ?? active;
 }

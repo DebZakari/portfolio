@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { useExperience } from "@/hooks/useExperience";
 import SectionLabel from "@/components/SectionLabel";
 import RevealBlock from "@/components/RevealBlock";
@@ -9,12 +9,12 @@ const FEATURED = [
   {
     cat: "Web Development", icon: "⬡",
     desc: "Full-stack web engineering across modern JS and PHP ecosystems.",
-    items: ["Next.js", "NestJS", "Laravel", "React", "TypeScript", "Tailwind CSS", "shadcn/ui"],
+    items: ["Next.js", "NestJS", "Laravel", "CodeIgniter", "React", "Tailwind CSS", "Alpine.js", "PHP", "shadcn/ui"],
   },
   {
     cat: "AI / ML Engineering", icon: "◈",
     desc: "Model training, inference optimization, and production ML service architecture.",
-    items: ["FastAPI", "LangGraph", "PyTorch", "TensorFlow", "vLLM", "Ollama", "ONNX Runtime"],
+    items: ["Python", "FastAPI", "LangGraph", "PyTorch", "TensorFlow", "vLLM", "Ollama", "ONNX Runtime"],
   },
   {
     cat: "LLM & RAG Systems", icon: "◎",
@@ -24,18 +24,18 @@ const FEATURED = [
 ];
 
 const SUPPORTING = [
+  { cat: "DevOps & Infra", icon: "▣", items: ["Docker", "Turborepo", "pnpm", "Node.js", "BullMQ", "Cloudflare R2", "MinIO", "Redis"] },
+  { cat: "Databases & ORM", icon: "▧", items: ["PostgreSQL", "pgvector", "Neo4j", "MySQL", "Drizzle ORM", "Eloquent ORM", "Redis"] },
+  { cat: "Computer Vision", icon: "○", items: ["YOLO", "UNet", "TFLite", "OpenCV", "Raspberry Pi", "Coral Edge TPU", "Tkinter"] },
   { cat: "Speech & Audio AI", icon: "◉", items: ["Kokoro TTS", "Fish Speech", "faster-whisper", "Voice Cloning", "Audio Pipelines"] },
   { cat: "Biometrics", icon: "◇", items: ["Face Recognition", "ArcFace", "RetinaFace", "Iris Detection", "Iris Segmentation"] },
-  { cat: "Computer Vision", icon: "○", items: ["YOLOv8", "UNet", "OpenCV", "Raspberry Pi", "Coral Edge TPU", "Tkinter"] },
-  { cat: "DevOps & Infra", icon: "▣", items: ["Docker", "Turborepo", "pnpm", "BullMQ", "Cloudflare R2", "MinIO", "Redis"] },
-  { cat: "Databases & ORM", icon: "▧", items: ["PostgreSQL", "pgvector", "Neo4j", "MySQL", "Drizzle ORM", "Eloquent ORM", "Redis"] },
 ];
+
 
 const TAG_BASE: React.CSSProperties = {
   borderRadius: 20,
   fontFamily: "var(--font-jetbrains-mono), monospace",
   letterSpacing: "0.02em",
-  transition: "all 0.2s",
 };
 
 export default function Skills() {
@@ -56,7 +56,7 @@ export default function Skills() {
         <SectionLabel
           tag="02 · Skill Systems"
           title="Technical capabilities."
-          subtitle="Eight domains spanning web engineering, AI integration, and systems-level development."
+          subtitle="Eight domains: web engineering, AI and ML, LLM systems, computer vision, biometrics, speech, databases, and infrastructure."
         />
       </RevealBlock>
 
@@ -149,6 +149,7 @@ export default function Skills() {
                         background: isActive ? "var(--surface)" : "var(--bg2)",
                         border: "1px solid var(--border)",
                         color: isActive ? "var(--text)" : "var(--text-muted)",
+                        transition: "background 0.2s, color 0.2s",
                       }}
                     >
                       {item}
@@ -233,9 +234,10 @@ export default function Skills() {
                         ...TAG_BASE,
                         padding: "2px 7px",
                         fontSize: 10,
-                        background: "var(--bg2)",
+                        background: isActive ? "var(--surface)" : "var(--bg2)",
                         border: "1px solid var(--border)",
-                        color: "var(--text-muted)",
+                        color: isActive ? "var(--text)" : "var(--text-muted)",
+                        transition: "background 0.2s, color 0.2s",
                       }}
                     >
                       {item}

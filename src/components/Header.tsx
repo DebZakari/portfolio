@@ -7,13 +7,14 @@ import { Menu, Moon, Sun, X } from "lucide-react";
 import { useExperience } from "@/hooks/useExperience";
 import { useIsMounted } from "@/hooks/useIsMounted";
 import { useActiveSection } from "@/hooks/useActiveSection";
+import { lockScroll, unlockScroll } from "@/utils/scrollLock";
 import type { ExperienceMode } from "@/contexts/ExperienceContext";
 
 const NAV_LINKS = [
   { href: "/#about",    section: "about",    label: "About"    },
   { href: "/#skills",   section: "skills",   label: "Skills"   },
   { href: "/#projects", section: "projects", label: "Projects" },
-  { href: "/#logs",     section: "logs",     label: "Logs"     },
+  { href: "/#logs",     section: "logs",     label: "Logs" },
   { href: "/#contact",  section: "contact",  label: "Contact"  },
 ];
 
@@ -21,7 +22,7 @@ function ModeToggle() {
   const { mode, setMode } = useExperience();
   const mounted = useIsMounted();
 
-  if (!mounted) return <div className="w-[140px] h-[34px]" aria-hidden="true" />;
+  if (!mounted) return <div className="skeleton w-[140px] h-[34px]" style={{ borderRadius: 24 }} aria-hidden="true" />;
 
   return (
     <div
@@ -68,7 +69,7 @@ function ThemeToggle() {
   const mounted = useIsMounted();
   const isDark = resolvedTheme !== "light";
 
-  if (!mounted) return <div className="w-9 h-9" aria-hidden="true" />;
+  if (!mounted) return <div className="skeleton w-9 h-9" style={{ borderRadius: "50%" }} aria-hidden="true" />;
 
   return (
     <button
@@ -128,8 +129,8 @@ export default function Header() {
   }, [drawerOpen]);
 
   useEffect(() => {
-    document.body.style.overflow = drawerOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    if (drawerOpen) lockScroll(); else unlockScroll();
+    return () => unlockScroll();
   }, [drawerOpen]);
 
   return (
@@ -225,6 +226,13 @@ export default function Header() {
                     if (!active) {
                       e.currentTarget.style.color = "var(--text-muted)";
                       e.currentTarget.style.background = "transparent";
+                    }
+                  }}
+                  onClick={(e) => {
+                    const el = document.getElementById(l.section);
+                    if (el) {
+                      e.preventDefault();
+                      el.scrollIntoView({ behavior: "smooth" });
                     }
                   }}
                 >
@@ -330,6 +338,7 @@ export default function Header() {
         role="dialog"
         aria-label="Navigation menu"
         aria-modal="true"
+        aria-hidden={!drawerOpen}
         className={[
           "fixed top-0 right-0 h-full flex flex-col md:hidden",
           "transition-transform duration-[--duration-slow]",
@@ -359,7 +368,14 @@ export default function Header() {
                       color: active ? "var(--text)" : "var(--text-muted)",
                       background: active ? "var(--surface2)" : "transparent",
                     }}
-                    onClick={() => setDrawerOpen(false)}
+                    onClick={(e) => {
+                      setDrawerOpen(false);
+                      const el = document.getElementById(section);
+                      if (el) {
+                        e.preventDefault();
+                        el.scrollIntoView({ behavior: "smooth" });
+                      }
+                    }}
                   >
                     {label}
                   </Link>

@@ -124,6 +124,50 @@ body {
   color: var(--text);
 }
 
+/* ─── Autofill ────────────────────────────────────────────────── */
+/* Acknowledged state: faint Pulsar Violet tint signals "machine filled this" */
+
+/* Keyframe hack counters Chrome 126+ autofill animation override */
+@keyframes autofill-dark {
+  from { box-shadow: 0 0 0 1000px oklch(10% 0.008 285) inset; }
+  to   { box-shadow: 0 0 0 1000px oklch(10% 0.008 285) inset; }
+}
+@keyframes autofill-light {
+  from { box-shadow: 0 0 0 1000px oklch(97% 0.008 285) inset; }
+  to   { box-shadow: 0 0 0 1000px oklch(97% 0.008 285) inset; }
+}
+
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover,
+.dark input:-webkit-autofill:focus {
+  animation-name: autofill-dark;
+  animation-fill-mode: both;
+  box-shadow: 0 0 0 1000px oklch(10% 0.008 285) inset;
+  -webkit-text-fill-color: #f0f0f0;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+.light input:-webkit-autofill,
+.light input:-webkit-autofill:hover,
+.light input:-webkit-autofill:focus {
+  animation-name: autofill-light;
+  animation-fill-mode: both;
+  box-shadow: 0 0 0 1000px oklch(97% 0.008 285) inset;
+  -webkit-text-fill-color: #0a0a0a;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+/* Firefox */
+.dark input:-moz-autofill {
+  background-color: oklch(10% 0.008 285) !important;
+  color: #f0f0f0 !important;
+}
+
+.light input:-moz-autofill {
+  background-color: oklch(97% 0.008 285) !important;
+  color: #0a0a0a !important;
+}
+
 /* ─── Scrollbar ───────────────────────────────────────────────── */
 ::-webkit-scrollbar {
   width: 5px;
@@ -219,11 +263,64 @@ body {
   }
 }
 
+/* ─── Skeleton loading ───────────────────────────────────────────── */
+@keyframes skeleton-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--surface) 25%,
+    var(--surface2) 50%,
+    var(--surface) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation-duration: 0.01ms;
+  }
+}
+
 /* ─── Project cards ─────────────────────────────────────────────── */
 .project-card:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
   border-radius: 20px;
+}
+
+/* Card-overlay link: title link whose ::after covers the whole card */
+.project-card-title-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.project-card-title-link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+/* Suppress default focus ring on the link text; show it on the card instead */
+.project-card-title-link:focus-visible {
+  outline: none;
+}
+
+.project-card:has(.project-card-title-link:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 20px;
+}
+
+/* Inner link (e.g. Live demo) sits above the overlay */
+.project-card-inner-link {
+  position: relative;
+  z-index: 2;
 }
 
 .project-hero-inner {
@@ -255,4 +352,27 @@ body {
     flex: 1;
     min-width: 0;
   }
+}
+
+/* Logs page */
+.log-back-link {
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+.log-back-link:hover {
+  opacity: 1;
+}
+
+.log-title-link {
+  transition: color 0.2s;
+}
+.log-title-link:hover {
+  color: var(--accent2) !important;
+}
+
+.log-entry {
+  transition: background 0.2s;
+}
+.log-entry:hover {
+  background: var(--surface2) !important;
 }

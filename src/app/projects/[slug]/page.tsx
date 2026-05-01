@@ -16,10 +16,10 @@ export async function generateMetadata({
   const project = PROJECTS.find((p) => p.slug === slug);
   if (!project) return {};
   return {
-    title: `${project.title} — Dave Zachary Macarayo`,
+    title: `${project.title} | Dave Zachary Macarayo`,
     description: project.headline,
     openGraph: {
-      title: `${project.title} — Dave Zachary Macarayo`,
+      title: `${project.title} | Dave Zachary Macarayo`,
       description: project.headline,
       type: "article",
     },

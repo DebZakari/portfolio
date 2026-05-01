@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 
 Changelog tracking begins at `7766696c97ea96ef40be6ef32304175f60b1d9dc`.
 
+## [0.5.0] - 2026-05-02
+
+### Added
+- Added Mission Logs page with full log entries, archive navigation, and terminal-style end-of-log marker
+- Added OG image generation for social sharing
+- Added autofill styles for dark and light themes
+- Added skeleton loading animations across components
+- Added smooth scroll for header nav links: re-clicking an active section scrolls correctly; cross-page navigation falls back to normal routing
+
+### Changed
+- Updated `SideNav` and `useActiveSection` with pathname-aware active section detection for project and logs routes
+- Refined Skills section content and restored shared `TAG_BASE` style constant
+- Refined contact form with improved validation and focus handling
+- Restricted status dot pulse animation to Immersive mode only
+
+### Fixed
+- Replaced hardcoded color values in `About` with `var(--text)` design token
+- Removed em dashes from visible copy and page metadata
+- Fixed `useActiveSection` stale-state reset to satisfy `react-hooks/set-state-in-effect` lint rule
+
 ## [0.4.0] - 2026-05-01
 
 ### Added

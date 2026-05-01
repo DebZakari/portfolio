@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useExperience } from "@/hooks/useExperience";
 import SectionLabel from "@/components/SectionLabel";
 import RevealBlock from "@/components/RevealBlock";
@@ -12,7 +12,6 @@ export default function Projects() {
   const { mode } = useExperience();
   const immersive = mode === "immersive";
   const [hovered, setHovered] = useState<number | null>(null);
-  const router = useRouter();
 
   const [hero, ...supporting] = PROJECTS;
   const heroHov = hovered === 0;
@@ -44,14 +43,11 @@ export default function Projects() {
         {/* ── Hero card — NovelVerse ─────────────────────────────── */}
         <RevealBlock direction="up" delay={0}>
           <div
-            role="button"
-            tabIndex={0}
             className="project-card"
-            onClick={() => router.push(`/projects/${hero.slug}`)}
-            onKeyDown={(e) => e.key === "Enter" && router.push(`/projects/${hero.slug}`)}
             onMouseEnter={() => setHovered(0)}
             onMouseLeave={() => setHovered(null)}
             style={{
+              position: "relative",
               background: "var(--surface)",
               border: `1px solid ${heroHov ? "var(--accent2)" : "var(--border)"}`,
               borderRadius: 20,
@@ -60,7 +56,6 @@ export default function Projects() {
               marginBottom: 16,
               boxShadow: heroHov && immersive ? "0 8px 48px var(--accent2-glow)" : "none",
               transform: heroHov && immersive ? "translateY(-4px)" : "translateY(0)",
-              cursor: "pointer",
             }}
           >
             <div className="project-hero-inner">
@@ -97,9 +92,15 @@ export default function Projects() {
                       letterSpacing: "-0.03em",
                       lineHeight: 1.1,
                       color: "var(--text)",
+                      margin: 0,
                     }}
                   >
-                    {hero.title}
+                    <Link
+                      href={`/projects/${hero.slug}`}
+                      className="project-card-title-link"
+                    >
+                      {hero.title}
+                    </Link>
                   </h3>
                   <span
                     className="font-mono"
@@ -138,7 +139,7 @@ export default function Projects() {
                       href={hero.demo}
                       target="_blank"
                       rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
+                      className="project-card-inner-link"
                       style={linkBtnStyle}
                       onMouseEnter={(e) => applyHover(e, true)}
                       onMouseLeave={(e) => applyHover(e, false)}
@@ -166,15 +167,17 @@ export default function Projects() {
             const isHov = hovered === idx;
             return (
               <RevealBlock key={p.title} direction="up" delay={Math.min(i * 60, 240)}>
-                <div
-                  role="button"
-                  tabIndex={0}
+                <Link
+                  href={`/projects/${p.slug}`}
                   className="project-card"
-                  onClick={() => router.push(`/projects/${p.slug}`)}
-                  onKeyDown={(e) => e.key === "Enter" && router.push(`/projects/${p.slug}`)}
                   onMouseEnter={() => setHovered(idx)}
                   onMouseLeave={() => setHovered(null)}
                   style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    height: "100%",
+                    textDecoration: "none",
+                    color: "inherit",
                     background: "var(--surface)",
                     border: `1px solid ${isHov ? "var(--accent2)" : "var(--border)"}`,
                     borderRadius: 20,
@@ -182,10 +185,6 @@ export default function Projects() {
                     transition: "border-color 0.2s, box-shadow 0.25s, transform 0.25s",
                     boxShadow: isHov && immersive ? "0 8px 48px var(--accent2-glow)" : "none",
                     transform: isHov && immersive ? "translateY(-4px)" : "translateY(0)",
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                    cursor: "pointer",
                   }}
                 >
                   <ProjectMediaZone
@@ -217,6 +216,7 @@ export default function Projects() {
                           letterSpacing: "-0.02em",
                           lineHeight: 1.2,
                           color: "var(--text)",
+                          margin: 0,
                         }}
                       >
                         {p.title}
@@ -253,7 +253,7 @@ export default function Projects() {
                       </span>
                     </div>
                   </div>
-                </div>
+                </Link>
               </RevealBlock>
             );
           })}
