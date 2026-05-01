@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { useTheme } from "next-themes";
 import { Menu, Moon, Sun, X } from "lucide-react";
 import { useExperience } from "@/hooks/useExperience";
@@ -9,11 +10,11 @@ import { useActiveSection } from "@/hooks/useActiveSection";
 import type { ExperienceMode } from "@/contexts/ExperienceContext";
 
 const NAV_LINKS = [
-  { href: "#about",    label: "About"    },
-  { href: "#skills",   label: "Skills"   },
-  { href: "#projects", label: "Projects" },
-  { href: "#logs",     label: "Logs"     },
-  { href: "#contact",  label: "Contact"  },
+  { href: "/#about",    section: "about",    label: "About"    },
+  { href: "/#skills",   section: "skills",   label: "Skills"   },
+  { href: "/#projects", section: "projects", label: "Projects" },
+  { href: "/#logs",     section: "logs",     label: "Logs"     },
+  { href: "/#contact",  section: "contact",  label: "Contact"  },
 ];
 
 function ModeToggle() {
@@ -161,8 +162,8 @@ export default function Header() {
           aria-label="Primary"
         >
           {/* Logo */}
-          <a
-            href="#"
+          <Link
+            href="/"
             aria-label="Back to top"
             style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}
           >
@@ -193,14 +194,14 @@ export default function Header() {
             >
               DZM
             </span>
-          </a>
+          </Link>
 
           {/* Desktop nav */}
           <div className="hidden md:flex items-center" style={{ gap: 8 }}>
             {NAV_LINKS.map((l) => {
-              const active = activeSection === l.href.slice(1);
+              const active = activeSection === l.section;
               return (
-                <a
+                <Link
                   key={l.href}
                   href={l.href}
                   aria-current={active ? "page" : undefined}
@@ -241,7 +242,7 @@ export default function Header() {
                       }}
                     />
                   )}
-                </a>
+                </Link>
               );
             })}
           </div>
@@ -250,8 +251,8 @@ export default function Header() {
           <div className="hidden md:flex items-center" style={{ gap: 8 }}>
             <ModeToggle />
             <ThemeToggle />
-            <a
-              href="#contact"
+            <Link
+              href="/#contact"
               style={{
                 padding: "8px 18px",
                 borderRadius: 24,
@@ -267,7 +268,7 @@ export default function Header() {
               onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
             >
               Hire Me
-            </a>
+            </Link>
           </div>
 
           {/* Mobile hamburger */}
@@ -339,11 +340,11 @@ export default function Header() {
       >
         <nav aria-label="Mobile navigation">
           <ul className="flex flex-col gap-1" role="list">
-            {NAV_LINKS.map(({ href, label }) => {
-              const active = activeSection === href.slice(1);
+            {NAV_LINKS.map(({ href, section, label }) => {
+              const active = activeSection === section;
               return (
                 <li key={href}>
-                  <a
+                  <Link
                     href={href}
                     aria-current={active ? "page" : undefined}
                     className={[
@@ -356,7 +357,7 @@ export default function Header() {
                     onClick={() => setDrawerOpen(false)}
                   >
                     {label}
-                  </a>
+                  </Link>
                 </li>
               );
             })}
@@ -366,8 +367,8 @@ export default function Header() {
         <div className="mt-auto flex flex-col gap-4">
           <ModeToggle />
           <ThemeToggle />
-          <a
-            href="#contact"
+          <Link
+            href="/#contact"
             style={{
               padding: "10px 18px",
               borderRadius: 24,
@@ -380,7 +381,7 @@ export default function Header() {
             }}
           >
             Hire Me
-          </a>
+          </Link>
         </div>
       </div>
     </>
