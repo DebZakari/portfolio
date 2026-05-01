@@ -23,10 +23,10 @@ export default function HeroSection() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
   useEffect(() => {
-    if (immersive) {
-      setHasActivatedImmersive(true);
-    }
-  }, [immersive]);
+    if (!immersive || hasActivatedImmersive) return;
+    const id = window.setTimeout(() => setHasActivatedImmersive(true), 0);
+    return () => window.clearTimeout(id);
+  }, [immersive, hasActivatedImmersive]);
   const isDark = mounted ? resolvedTheme !== "light" : true;
   const canUseGalaxyCanvas = !isMobile;
   const shouldMountGalaxyCanvas = canUseGalaxyCanvas && (immersive || hasActivatedImmersive);
