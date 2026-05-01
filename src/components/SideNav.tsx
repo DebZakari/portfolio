@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { useActiveSection } from "@/hooks/useActiveSection";
 
 const SECTIONS = [
@@ -12,8 +13,11 @@ const SECTIONS = [
 ];
 
 export default function SideNav() {
+  const pathname = usePathname();
   const activeSection = useActiveSection();
   const [hovered, setHovered] = useState<string | null>(null);
+
+  if (pathname !== "/") return null;
 
   return (
     <div
