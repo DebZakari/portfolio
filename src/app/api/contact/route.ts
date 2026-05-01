@@ -2,8 +2,15 @@ import { Resend } from "resend";
 import { NextResponse } from "next/server";
 
 const EMAIL_TO = "mdavezachary@gmail.com";
+const MIN_ELAPSED_MS = 1500;
+const MAX_ELAPSED_MS = 30 * 60 * 1000;
 
 export async function POST(request: Request) {
+  const contentType = request.headers.get("Content-Type") || "";
+  if (!contentType.includes("application/json")) {
+    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+  }
+
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     return NextResponse.json(
@@ -19,15 +26,44 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
-  const { name, email, message } = body as {
+  const { name, email, message, hp, t } = body as {
     name?: string;
     email?: string;
     message?: string;
+    hp?: string;
+    t?: number;
   };
+
+  // Honeypot: silently succeed for bots that fill hidden fields
+  if (hp) {
+    return NextResponse.json({ ok: true });
+  }
+
+  // Timing trap: reject submissions that are too fast (bots) or stale (replays)
+  if (typeof t === "number") {
+    const elapsed = Date.now() - t;
+    if (elapsed < MIN_ELAPSED_MS || elapsed > MAX_ELAPSED_MS) {
+      return NextResponse.json({ ok: true });
+    }
+  }
 
   if (!name?.trim() || !email?.trim() || !message?.trim()) {
     return NextResponse.json(
       { error: "All fields are required" },
+      { status: 400 }
+    );
+  }
+
+  if (name.trim().length < 2) {
+    return NextResponse.json(
+      { error: "Name must be at least 2 characters" },
+      { status: 400 }
+    );
+  }
+
+  if (message.trim().length < 10) {
+    return NextResponse.json(
+      { error: "Message must be at least 10 characters" },
       { status: 400 }
     );
   }
