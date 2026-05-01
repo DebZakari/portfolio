@@ -18,7 +18,13 @@ const FAINT_SIGNAL = "#888888";
 const VOID_TEXT    = "#444444";
 
 interface LangEntry { name: string; pct: number }
-interface Stats { repos: number; stars: number; commits: number; langs: LangEntry[] }
+interface Stats {
+  repos: number;
+  stars: number;
+  commits: number;
+  followers: number;
+  langs: LangEntry[];
+}
 
 async function fetchStats(): Promise<Stats> {
   const headers = { "User-Agent": "DebZakari-readme-stats" };
@@ -53,9 +59,15 @@ async function fetchStats(): Promise<Stats> {
       pct: total > 0 ? Math.round((count / total) * 100) : 0,
     }));
 
-    return { repos: user.public_repos ?? 0, stars, commits: commits.total_count ?? 0, langs };
+    return {
+      repos:     user.public_repos ?? 0,
+      stars,
+      commits:   commits.total_count ?? 0,
+      followers: user.followers ?? 0,
+      langs,
+    };
   } catch {
-    return { repos: 0, stars: 0, commits: 0, langs: [] };
+    return { repos: 0, stars: 0, commits: 0, followers: 0, langs: [] };
   }
 }
 
@@ -67,17 +79,18 @@ export async function GET() {
   ]);
 
   const statItems = [
-    { label: "COMMITS", value: stats.commits > 0 ? stats.commits.toLocaleString("en-US") : "—" },
-    { label: "REPOS",   value: stats.repos.toString() },
-    { label: "STARS",   value: stats.stars.toString() },
+    { label: "COMMITS",   value: stats.commits > 0 ? stats.commits.toLocaleString("en-US") : "—" },
+    { label: "REPOS",     value: stats.repos.toString() },
+    { label: "STARS",     value: stats.stars.toString() },
+    { label: "FOLLOWERS", value: stats.followers.toString() },
   ];
 
   return new ImageResponse(
     (
       <div
         style={{
-          width: 480,
-          height: 160,
+          width: 495,
+          height: 175,
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
@@ -106,7 +119,7 @@ export async function GET() {
               <span
                 style={{
                   fontFamily: "Space Grotesk, system-ui, sans-serif",
-                  fontSize: 26,
+                  fontSize: 22,
                   fontWeight: 700,
                   color: SIGNAL_WHITE,
                   letterSpacing: "-0.02em",
@@ -171,8 +184,8 @@ export async function GET() {
       </div>
     ),
     {
-      width: 480,
-      height: 160,
+      width: 495,
+      height: 175,
       fonts: [
         { name: "Space Grotesk", data: spaceGroteskData, weight: 700, style: "normal" },
         { name: "JetBrains Mono", data: jetbrainsMonoData, weight: 400, style: "normal" },

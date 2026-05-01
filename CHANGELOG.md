@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 Changelog tracking begins at `7766696c97ea96ef40be6ef32304175f60b1d9dc`.
 
+## [0.5.3] - 2026-05-02
+
+### Changed
+- Added Followers as a fourth stat to the `/api/readme-stats` card
+- Resized `/api/readme-stats` card from 480×160 to 495×175 to match streak card width and accommodate the additional stat
+
 ## [0.5.2] - 2026-05-02
 
 ### Added
