@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useExperience } from "@/hooks/useExperience";
 import { useTheme } from "next-themes";
 import { useIsMounted } from "@/hooks/useIsMounted";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 const GalaxyCanvas = dynamic(() => import("./GalaxyCanvas"), { ssr: false });
 
@@ -13,13 +14,23 @@ export default function HeroSection() {
   const { resolvedTheme } = useTheme();
   const immersive = mode === "immersive";
   const mounted = useIsMounted();
+  const isMobile = useIsMobile();
   const [scrolled, setScrolled] = useState(false);
+  const [hasActivatedImmersive, setHasActivatedImmersive] = useState(immersive);
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+  useEffect(() => {
+    if (immersive) {
+      setHasActivatedImmersive(true);
+    }
+  }, [immersive]);
   const isDark = mounted ? resolvedTheme !== "light" : true;
+  const canUseGalaxyCanvas = !isMobile;
+  const shouldMountGalaxyCanvas = canUseGalaxyCanvas && (immersive || hasActivatedImmersive);
+  const showGalaxyCanvas = canUseGalaxyCanvas && immersive;
 
   return (
     <section
@@ -46,21 +57,35 @@ export default function HeroSection() {
         }}
       />
 
-      {/* Canvas */}
-      {immersive && <GalaxyCanvas theme={resolvedTheme ?? "dark"} />}
-
-      {/* Focus mode subtle grid */}
-      {!immersive && (
+      {/* Canvas — mount once used, pause in focus mode for smoother return */}
+      {shouldMountGalaxyCanvas && (
         <div
           style={{
             position: "absolute",
             inset: 0,
-            backgroundImage: `linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)`,
-            backgroundSize: "60px 60px",
-            opacity: 0.3,
+            opacity: showGalaxyCanvas ? 1 : 0,
+            pointerEvents: showGalaxyCanvas ? "auto" : "none",
+            transition: "opacity 0.3s ease",
           }}
-        />
+          aria-hidden={!showGalaxyCanvas}
+        >
+          <GalaxyCanvas active={showGalaxyCanvas} theme={resolvedTheme ?? "dark"} />
+        </div>
       )}
+
+      {/* Focus mode subtle grid */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          backgroundImage: `linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)`,
+          backgroundSize: "60px 60px",
+          opacity: showGalaxyCanvas ? 0 : 0.3,
+          transition: "opacity 0.3s ease",
+          pointerEvents: "none",
+        }}
+        aria-hidden="true"
+      />
 
       {/* Content */}
       <div
@@ -170,19 +195,18 @@ export default function HeroSection() {
           ))}
         </div>
 
-        {immersive && (
-          <p
-            className="font-mono"
-            style={{
-              marginTop: 40,
-              fontSize: 11,
-              color: "var(--text-dim)",
-              letterSpacing: "0.05em",
-            }}
-          >
-            ↗ move cursor to interact with the star field
-          </p>
-        )}
+        <p
+          className="font-mono"
+          style={{
+            marginTop: 40,
+            fontSize: 11,
+            color: "var(--text-dim)",
+            letterSpacing: "0.05em",
+            visibility: showGalaxyCanvas ? "visible" : "hidden",
+          }}
+        >
+          ↗ move cursor to interact with the star field
+        </p>
       </div>
 
       {/* Scroll indicator — fixed so it's always in viewport; fades out on scroll */}

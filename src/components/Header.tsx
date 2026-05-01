@@ -146,7 +146,7 @@ export default function Header() {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          transition: "background 0.4s, backdrop-filter 0.4s, border-color 0.4s",
+          transition: "background 0.4s, border-color 0.4s",
           background: scrolled
             ? isDark
               ? "oklch(7% 0.02 265 / 0.85)"
@@ -154,6 +154,7 @@ export default function Header() {
             : "transparent",
           backdropFilter: scrolled ? "blur(16px)" : "none",
           borderBottom: scrolled ? "1px solid var(--border)" : "1px solid transparent",
+          transform: "translateZ(0)",
         }}
         className={scrolled ? (isDark ? "dark" : "light") : ""}
       >
@@ -165,6 +166,7 @@ export default function Header() {
           <Link
             href="/"
             aria-label="Back to top"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}
           >
             <div
@@ -274,7 +276,7 @@ export default function Header() {
           {/* Mobile hamburger */}
           <button
             ref={toggleRef}
-            className="flex md:hidden h-9 w-9 items-center justify-center rounded-md transition-colors duration-[--duration-base]"
+            className="flex md:hidden h-11 w-11 items-center justify-center rounded-md transition-colors duration-[--duration-base]"
             style={{ color: "var(--text-muted)" }}
             aria-label={drawerOpen ? "Close menu" : "Open menu"}
             aria-expanded={drawerOpen}
@@ -315,8 +317,8 @@ export default function Header() {
       {/* Mobile drawer overlay */}
       {drawerOpen && (
         <div
-          className="fixed inset-0 z-40 md:hidden"
-          style={{ background: "rgba(0,0,0,0.6)" }}
+          className="fixed inset-0 md:hidden"
+          style={{ background: "rgba(0,0,0,0.6)", zIndex: 90 }}
           aria-hidden="true"
           onClick={() => setDrawerOpen(false)}
         />
@@ -329,11 +331,14 @@ export default function Header() {
         aria-label="Navigation menu"
         aria-modal="true"
         className={[
-          "fixed top-0 right-0 z-50 h-full w-72 flex flex-col pt-20 pb-8 px-6 md:hidden",
+          "fixed top-0 right-0 h-full flex flex-col md:hidden",
           "transition-transform duration-[--duration-slow]",
           drawerOpen ? "translate-x-0" : "translate-x-full",
         ].join(" ")}
         style={{
+          zIndex: 110,
+          width: "min(280px, 85vw)",
+          padding: "5rem clamp(1rem, 4vw, 1.5rem) 2rem",
           background: "var(--surface)",
           borderLeft: "1px solid var(--border)",
         }}
@@ -365,8 +370,17 @@ export default function Header() {
         </nav>
 
         <div className="mt-auto flex flex-col gap-4">
-          <ModeToggle />
-          <ThemeToggle />
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 10,
+            }}
+          >
+            <ModeToggle />
+            <ThemeToggle />
+          </div>
           <Link
             href="/#contact"
             style={{

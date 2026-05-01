@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 
 interface GalaxyCanvasProps {
+  active: boolean;
   theme: string;
 }
 
@@ -169,6 +170,14 @@ type Scene = {
   bursts: Burst[];
   meteorNextMs: number;
   cometNextMs: number;
+};
+
+const galaxyRuntimeCache: {
+  scene: Scene | null;
+  time: number;
+} = {
+  scene: null,
+  time: 0,
 };
 
 const makePlanet = (
@@ -406,14 +415,37 @@ const spawnSpaceObj = (kind: "meteor" | "comet", scene: Scene): SpaceObj => {
   };
 };
 
-export default function GalaxyCanvas({ theme }: GalaxyCanvasProps) {
+export default function GalaxyCanvas({ active, theme }: GalaxyCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const activeRef = useRef(active);
+  const themeRef = useRef(theme);
   const stateRef = useRef<{
     scene: Scene | null;
     mouse: { x: number; y: number };
     animId: number | null;
     resizeTimer: number | null;
-  }>({ scene: null, mouse: { x: OFFSCREEN, y: OFFSCREEN }, animId: null, resizeTimer: null });
+    redraw: (() => void) | null;
+    syncPlayback: (() => void) | null;
+    time: number;
+  }>({
+    scene: galaxyRuntimeCache.scene,
+    mouse: { x: OFFSCREEN, y: OFFSCREEN },
+    animId: null,
+    resizeTimer: null,
+    redraw: null,
+    syncPlayback: null,
+    time: galaxyRuntimeCache.time,
+  });
+
+  useEffect(() => {
+    themeRef.current = theme;
+    stateRef.current.redraw?.();
+  }, [theme]);
+
+  useEffect(() => {
+    activeRef.current = active;
+    stateRef.current.syncPlayback?.();
+  }, [active]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -473,10 +505,16 @@ export default function GalaxyCanvas({ theme }: GalaxyCanvasProps) {
     const STAR_OBJ_GRAVITY = 2200;
     const PLANET_OBJ_GRAVITY = 760;
 
-    let t = 0;
+    let t = S.time;
     let lastTs: number | null = null;
-    const isDark = theme !== "light";
+    let isDark = themeRef.current !== "light";
     const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    const syncRuntimeCache = () => {
+      S.time = t;
+      galaxyRuntimeCache.scene = S.scene;
+      galaxyRuntimeCache.time = t;
+    };
 
     const rebuildScene = () => {
       const rect = canvas.getBoundingClientRect();
@@ -486,7 +524,17 @@ export default function GalaxyCanvas({ theme }: GalaxyCanvasProps) {
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      S.scene = createScene(width, height, dpr);
+      if (
+        galaxyRuntimeCache.scene &&
+        galaxyRuntimeCache.scene.width === width &&
+        galaxyRuntimeCache.scene.height === height &&
+        galaxyRuntimeCache.scene.dpr === dpr
+      ) {
+        S.scene = galaxyRuntimeCache.scene;
+      } else {
+        S.scene = createScene(width, height, dpr);
+      }
+      syncRuntimeCache();
     };
 
     const resetMouse = () => {
@@ -497,6 +545,7 @@ export default function GalaxyCanvas({ theme }: GalaxyCanvasProps) {
     const drawStaticScene = () => {
       const scene = S.scene;
       if (!scene) return;
+      isDark = themeRef.current !== "light";
 
       const { width: W, height: H, stars, rings, nebulae } = scene;
       ctx.setTransform(scene.dpr, 0, 0, scene.dpr, 0, 0);
@@ -540,6 +589,12 @@ export default function GalaxyCanvas({ theme }: GalaxyCanvasProps) {
           drawOnePlanet(orbitState.ox, orbitState.oy, planetRadius, 1, 1, 0);
         });
       });
+    };
+
+    S.redraw = () => {
+      if (S.scene && (reducedMotionQuery.matches || S.animId === null)) {
+        drawStaticScene();
+      }
     };
 
     const drawOnePlanet = (
@@ -767,6 +822,8 @@ export default function GalaxyCanvas({ theme }: GalaxyCanvasProps) {
         S.animId = requestAnimationFrame(draw);
         return;
       }
+
+      isDark = themeRef.current !== "light";
 
       if (reducedMotionQuery.matches) {
         drawStaticScene();
@@ -1540,6 +1597,7 @@ export default function GalaxyCanvas({ theme }: GalaxyCanvasProps) {
         ctx.restore();
       }
 
+      syncRuntimeCache();
       S.animId = requestAnimationFrame(draw);
     };
 
@@ -1555,7 +1613,14 @@ export default function GalaxyCanvas({ theme }: GalaxyCanvasProps) {
       S.animId = null;
     };
 
-    const renderForMotionPreference = () => {
+    const syncPlaybackState = () => {
+      if (!activeRef.current) {
+        stopAnimation();
+        resetMouse();
+        drawStaticScene();
+        return;
+      }
+
       if (reducedMotionQuery.matches) {
         stopAnimation();
         resetMouse();
@@ -1565,10 +1630,12 @@ export default function GalaxyCanvas({ theme }: GalaxyCanvasProps) {
       }
     };
 
-    renderForMotionPreference();
+    S.syncPlayback = syncPlaybackState;
+
+    syncPlaybackState();
 
     const onReducedMotionChange = () => {
-      renderForMotionPreference();
+      syncPlaybackState();
     };
 
     const onMove = (e: PointerEvent) => {
@@ -1606,6 +1673,9 @@ export default function GalaxyCanvas({ theme }: GalaxyCanvasProps) {
     ro.observe(canvas);
 
     return () => {
+      syncRuntimeCache();
+      S.redraw = null;
+      S.syncPlayback = null;
       stopAnimation();
       if (S.resizeTimer !== null) {
         window.clearTimeout(S.resizeTimer);
@@ -1618,7 +1688,7 @@ export default function GalaxyCanvas({ theme }: GalaxyCanvasProps) {
       reducedMotionQuery.removeEventListener("change", onReducedMotionChange);
       ro.disconnect();
     };
-  }, [theme]);
+  }, []);
 
   return (
     <canvas

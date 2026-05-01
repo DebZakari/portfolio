@@ -5,6 +5,7 @@ import { useTheme } from "next-themes";
 import { useExperience } from "@/hooks/useExperience";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useIsMounted } from "@/hooks/useIsMounted";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 const INTERACTIVE =
   'a, button, input, textarea, select, label, [role="button"], [tabindex]:not([tabindex="-1"])';
@@ -15,13 +16,14 @@ export default function CursorBlackHole() {
   const { mode } = useExperience();
   const prefersReduced = useReducedMotion();
   const mounted = useIsMounted();
+  const isMobile = useIsMobile();
   const { resolvedTheme } = useTheme();
   // outer: position only — no transition so cursor tracks instantly
   const outerRef = useRef<HTMLDivElement>(null);
   // inner: visuals + scale — transition here doesn't affect tracking
   const innerRef = useRef<HTMLDivElement>(null);
 
-  const active = mounted && mode === "immersive" && !prefersReduced;
+  const active = mounted && mode === "immersive" && !prefersReduced && !isMobile;
 
   // Cursor suppression — separate effect, no resolvedTheme dep
   useEffect(() => {
