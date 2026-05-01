@@ -405,7 +405,7 @@ export default function About() {
                 role="button"
                 tabIndex={0}
                 aria-label="View full portrait photo"
-                onKeyDown={(e) => e.key === "Enter" && setModalOpen(true)}
+                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setModalOpen(true); } }}
                 style={{
                   position: "relative",
                   zIndex: imageHovered ? 3 : 1,

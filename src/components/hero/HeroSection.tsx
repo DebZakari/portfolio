@@ -100,7 +100,8 @@ export default function HeroSection() {
         <div
           className="font-mono"
           style={{
-            fontSize: 11,
+            fontSize: 12,
+            fontWeight: 400,
             color: "var(--accent)",
             letterSpacing: "0.14em",
             textTransform: "uppercase",

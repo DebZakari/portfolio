@@ -464,7 +464,7 @@ export default function Contact() {
                             letterSpacing: "0.04em",
                             padding: "4px 8px",
                             background: "var(--surface2)",
-                            border: "1px solid var(--text)",
+                            border: "1px solid var(--accent2)",
                             borderRadius: 6,
                           }}
                         >
@@ -576,7 +576,7 @@ export default function Contact() {
                         letterSpacing: "0.04em",
                         padding: "8px 12px",
                         background: "var(--surface2)",
-                        border: "1px solid var(--text)",
+                        border: "1px solid var(--accent2)",
                         borderRadius: 8,
                       }}
                     >

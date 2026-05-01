@@ -219,11 +219,64 @@ body {
   }
 }
 
+/* ─── Skeleton loading ───────────────────────────────────────────── */
+@keyframes skeleton-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--surface) 25%,
+    var(--surface2) 50%,
+    var(--surface) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation-duration: 0.01ms;
+  }
+}
+
 /* ─── Project cards ─────────────────────────────────────────────── */
 .project-card:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
   border-radius: 20px;
+}
+
+/* Card-overlay link: title link whose ::after covers the whole card */
+.project-card-title-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.project-card-title-link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+/* Suppress default focus ring on the link text; show it on the card instead */
+.project-card-title-link:focus-visible {
+  outline: none;
+}
+
+.project-card:has(.project-card-title-link:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 20px;
+}
+
+/* Inner link (e.g. Live demo) sits above the overlay */
+.project-card-inner-link {
+  position: relative;
+  z-index: 2;
 }
 
 .project-hero-inner {

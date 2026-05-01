@@ -14,7 +14,7 @@ const NAV_LINKS = [
   { href: "/#about",    section: "about",    label: "About"    },
   { href: "/#skills",   section: "skills",   label: "Skills"   },
   { href: "/#projects", section: "projects", label: "Projects" },
-  { href: "/#logs",     section: "logs",     label: "Logs"     },
+  { href: "/#logs",     section: "logs",     label: "Logs" },
   { href: "/#contact",  section: "contact",  label: "Contact"  },
 ];
 
@@ -22,7 +22,7 @@ function ModeToggle() {
   const { mode, setMode } = useExperience();
   const mounted = useIsMounted();
 
-  if (!mounted) return <div className="w-[140px] h-[34px]" aria-hidden="true" />;
+  if (!mounted) return <div className="skeleton w-[140px] h-[34px]" style={{ borderRadius: 24 }} aria-hidden="true" />;
 
   return (
     <div
@@ -69,7 +69,7 @@ function ThemeToggle() {
   const mounted = useIsMounted();
   const isDark = resolvedTheme !== "light";
 
-  if (!mounted) return <div className="w-9 h-9" aria-hidden="true" />;
+  if (!mounted) return <div className="skeleton w-9 h-9" style={{ borderRadius: "50%" }} aria-hidden="true" />;
 
   return (
     <button
