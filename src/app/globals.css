@@ -22,9 +22,6 @@
   --accent-glow:     rgba(240, 240, 240, 0.06);
   --accent2-glow:    rgba(240, 240, 240, 0.04);
   --grad:            linear-gradient(135deg, #ffffff, #aaaaaa);
-  --accent-vivid:        oklch(62% 0.18 275);
-  --accent-vivid-muted:  oklch(62% 0.18 275 / 0.28);
-  --accent-vivid-glow:   oklch(62% 0.18 275 / 0.12);
 }
 
 /* Light mode ("solar") */
@@ -44,9 +41,6 @@
   --accent-glow:     rgba(10, 10, 10, 0.06);
   --accent2-glow:    rgba(10, 10, 10, 0.04);
   --grad:            linear-gradient(135deg, #000000, #555555);
-  --accent-vivid:        oklch(42% 0.18 275);
-  --accent-vivid-muted:  oklch(42% 0.18 275 / 0.2);
-  --accent-vivid-glow:   oklch(42% 0.18 275 / 0.08);
 }
 
 /* ─── Tailwind theme ──────────────────────────────────────────── */
@@ -204,10 +198,32 @@ body {
   50% { background-color: transparent; color: var(--text-muted); }
 }
 
+/* ─── Lightbox ──────────────────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ─── Project detail page ────────────────────────────────────────── */
+.project-detail-body {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .project-detail-body {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 64px;
+    align-items: start;
+  }
+}
+
 /* ─── Project cards ─────────────────────────────────────────────── */
 .project-card:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
+  border-radius: 20px;
 }
 
 .project-hero-inner {
