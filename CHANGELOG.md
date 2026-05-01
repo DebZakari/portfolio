@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 Changelog tracking begins at `7766696c97ea96ef40be6ef32304175f60b1d9dc`.
 
+## [0.5.1] - 2026-05-02
+
+### Changed
+- Redesigned OG image layout to center content within the square-safe zone (x: 285–915px), ensuring social previews on WhatsApp, iMessage, and other square-cropping platforms render correctly
+- Added `JetBrains Mono` as a second font in the OG route, applying the two-voice rule: Space Grotesk for the name, JetBrains Mono for all labels, chips, and URL
+- Reordered skill chips: `Full-Stack` now appears first
+- Aligned OG background color to `void-deep` design token (`#0f0f0f`)
+
+### Fixed
+- Fixed nebula glow positioning to use pixel coordinates instead of CSS transforms (unsupported in `ImageResponse`/satori)
+- Fixed eyebrow uppercase rendering via string literal instead of `textTransform` (unsupported in satori)
+
+### Performance
+- Subsetted `JetBrainsMono-Regular` to OG-only characters: 270 KB → 7 KB
+- Subsetted `SpaceGrotesk-Bold` to OG-only characters: 16 KB → 1.8 KB (later reverted due to regression; restored to 16 KB)
+
 ## [0.5.0] - 2026-05-02
 
 ### Added
