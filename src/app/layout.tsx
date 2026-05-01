@@ -60,6 +60,7 @@ export default function RootLayout({
       lang="en"
       className={`${spaceGrotesk.variable} ${jetbrainsMono.variable}`}
       suppressHydrationWarning
+      data-scroll-behavior="smooth"
     >
       <body className="flex min-h-screen flex-col bg-bg text-text antialiased">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
