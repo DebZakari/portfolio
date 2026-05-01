@@ -245,8 +245,11 @@ export default function TerminalPrompt() {
   }, [stopBlink, startBlink]);
 
   useEffect(() => {
-    const coarse = window.matchMedia("(pointer: coarse)").matches;
-    setIsMobile(coarse || "ontouchstart" in window);
+    const id = window.setTimeout(() => {
+      const coarse = window.matchMedia("(pointer: coarse)").matches;
+      setIsMobile(coarse || "ontouchstart" in window);
+    }, 0);
+    return () => window.clearTimeout(id);
   }, []);
 
   useEffect(() => {
