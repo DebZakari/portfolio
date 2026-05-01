@@ -14,7 +14,7 @@ const FEATURED = [
   {
     cat: "AI / ML Engineering", icon: "◈",
     desc: "Model training, inference optimization, and production ML service architecture.",
-    items: ["Python", "FastAPI", "LangGraph", "PyTorch", "TensorFlow", "vLLM", "Ollama", "ONNX Runtime"],
+    items: ["Python", "FastAPI", "LangGraph", "PyTorch", "TensorFlow", "Hugging Face", "ComfyUI", "vLLM", "Ollama", "ONNX Runtime"],
   },
   {
     cat: "LLM & RAG Systems", icon: "◎",
