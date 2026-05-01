@@ -170,18 +170,19 @@ export default function HeroSection() {
           ))}
         </div>
 
-        <p
-          className="font-mono"
-          style={{
-            marginTop: 40,
-            fontSize: 11,
-            color: "var(--text-dim)",
-            letterSpacing: "0.05em",
-            visibility: immersive ? "visible" : "hidden",
-          }}
-        >
-          ↗ move cursor to interact with the star field
-        </p>
+        {immersive && (
+          <p
+            className="font-mono"
+            style={{
+              marginTop: 40,
+              fontSize: 11,
+              color: "var(--text-dim)",
+              letterSpacing: "0.05em",
+            }}
+          >
+            ↗ move cursor to interact with the star field
+          </p>
+        )}
       </div>
 
       {/* Scroll indicator — fixed so it's always in viewport; fades out on scroll */}
