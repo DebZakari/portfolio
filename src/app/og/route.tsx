@@ -2,32 +2,39 @@ import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
 
-const fontPromise = fetch(
+const spaceGroteskPromise = fetch(
   new URL("./SpaceGrotesk-Bold.woff", import.meta.url)
 ).then((r) => r.arrayBuffer());
 
-const BG      = "#0b0b0e";
-const SURFACE = "#141414";
-const BORDER  = "#262626";
-const TEXT    = "#f0f0f0";
-const MUTED   = "#888888";
-const DIM     = "#444444";
+const jetbrainsMonoPromise = fetch(
+  new URL("./JetBrainsMono-Regular.ttf", import.meta.url)
+).then((r) => r.arrayBuffer());
 
-// [x, y, diameter, opacity] — weighted toward top-right (nebula region)
+// Design tokens
+const VOID_DEEP    = "#0f0f0f";
+const SURFACE      = "#141414";
+const BORDER       = "#262626";
+const SIGNAL_WHITE = "#f0f0f0";
+const FAINT_SIGNAL = "#888888";
+const VOID_TEXT    = "#444444";
+
+// Stars distributed across canvas; denser in center safe zone (x:285–915)
 const STARS: [number, number, number, number][] = [
-  [848, 38,  1.5, 0.50], [912, 64,  1.0, 0.30], [966, 28,  2.0, 0.55],
-  [1028, 88, 1.0, 0.25], [1082, 52, 1.5, 0.42], [1128, 118, 1.0, 0.22],
-  [978, 136, 1.5, 0.38], [874, 154, 1.0, 0.20], [1056, 168, 2.0, 0.32],
-  [1144, 78, 1.0, 0.36], [1100, 200, 1.5, 0.20], [940, 192, 1.0, 0.18],
-  // sparse scatter
-  [118, 58,  1.0, 0.22], [284, 42,  1.5, 0.30], [452, 76,  1.0, 0.18],
-  [614, 52,  2.0, 0.28], [196, 178, 1.0, 0.18], [376, 138, 1.0, 0.22],
-  [706, 114, 1.5, 0.26], [52,  286, 1.0, 0.16], [338, 298, 1.0, 0.20],
-  [528, 244, 1.0, 0.18], [768, 272, 1.5, 0.22], [62,  420, 1.0, 0.14],
+  [360, 48,  1.5, 0.45], [480, 72,  1.0, 0.30], [600, 36,  2.0, 0.50],
+  [720, 88,  1.0, 0.28], [840, 56,  1.5, 0.40], [500, 160, 1.0, 0.22],
+  [660, 130, 2.0, 0.35], [780, 200, 1.0, 0.20], [420, 220, 1.5, 0.28],
+  [540, 520, 1.0, 0.20], [700, 540, 1.5, 0.25], [820, 480, 1.0, 0.18],
+  [400, 480, 2.0, 0.22], [630, 580, 1.0, 0.18], [760, 600, 1.5, 0.20],
+  [80,  80,  1.0, 0.18], [180, 140, 1.5, 0.22], [1060, 90,  1.0, 0.20],
+  [1140, 200, 1.5, 0.25], [100, 400, 1.0, 0.16], [200, 520, 1.0, 0.18],
+  [1080, 420, 1.5, 0.20], [1160, 520, 1.0, 0.16], [60,  560, 1.0, 0.14],
 ];
 
 export async function GET() {
-  const fontData = await fontPromise;
+  const [spaceGroteskData, jetbrainsMonoData] = await Promise.all([
+    spaceGroteskPromise,
+    jetbrainsMonoPromise,
+  ]);
 
   return new ImageResponse(
     (
@@ -37,36 +44,36 @@ export async function GET() {
           height: 630,
           display: "flex",
           flexDirection: "column",
-          justifyContent: "flex-end",
-          padding: "0 72px 64px",
-          background: BG,
+          alignItems: "center",
+          justifyContent: "center",
+          background: VOID_DEEP,
           position: "relative",
           overflow: "hidden",
           fontFamily: "Space Grotesk, system-ui, sans-serif",
         }}
       >
-        {/* Nebula glow — achromatic, top-right */}
+        {/* Nebula glow — centered, pixel-positioned (no CSS transforms) */}
         <div
           style={{
             position: "absolute",
-            top: -80,
-            right: -40,
-            width: 560,
-            height: 460,
+            top: -120,
+            left: 250,
+            width: 700,
+            height: 500,
             borderRadius: "50%",
             background:
-              "radial-gradient(ellipse at 60% 40%, rgba(255,255,255,0.055) 0%, rgba(255,255,255,0.012) 45%, transparent 72%)",
+              "radial-gradient(ellipse at 50% 40%, rgba(255,255,255,0.055) 0%, rgba(255,255,255,0.012) 45%, transparent 72%)",
           }}
         />
 
-        {/* Secondary glow — bottom-left warmth */}
+        {/* Secondary glow — bottom center */}
         <div
           style={{
             position: "absolute",
-            bottom: -120,
-            left: -60,
-            width: 380,
-            height: 320,
+            bottom: -140,
+            left: 350,
+            width: 500,
+            height: 360,
             borderRadius: "50%",
             background:
               "radial-gradient(ellipse, rgba(255,255,255,0.025) 0%, transparent 70%)",
@@ -89,28 +96,26 @@ export async function GET() {
           />
         ))}
 
-        {/* ── Header row ── */}
+        {/* ── Content — centered within the 630px square safe zone ── */}
         <div
           style={{
-            position: "absolute",
-            top: 56,
-            left: 72,
-            right: 72,
             display: "flex",
+            flexDirection: "column",
             alignItems: "center",
-            justifyContent: "space-between",
+            zIndex: 1,
           }}
         >
           {/* Monogram */}
           <div
             style={{
-              width: 48,
-              height: 48,
+              width: 52,
+              height: 52,
               borderRadius: "50%",
               background: "linear-gradient(145deg, #f0f0f0 0%, #888888 100%)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              marginBottom: 24,
             }}
           >
             <div
@@ -127,83 +132,55 @@ export async function GET() {
             </div>
           </div>
 
-          {/* URL annotation */}
-          <div
-            style={{
-              fontSize: 11,
-              fontFamily: "monospace",
-              color: DIM,
-              letterSpacing: "0.08em",
-            }}
-          >
-            dz-macarayo.vercel.app
-          </div>
-        </div>
-
-        {/* ── Content ── */}
-        <div style={{ display: "flex", flexDirection: "column" }}>
-
-          {/* Eyebrow — matches Section Label pattern */}
+          {/* Eyebrow — JetBrains Mono, manual uppercase */}
           <div
             style={{
               display: "flex",
               alignItems: "center",
               gap: 10,
-              marginBottom: 18,
+              marginBottom: 20,
             }}
           >
-            <div
-              style={{
-                width: 20,
-                height: 1,
-                background: MUTED,
-              }}
-            />
+            <div style={{ width: 20, height: 1, background: FAINT_SIGNAL }} />
             <span
               style={{
                 fontSize: 11,
-                fontFamily: "monospace",
-                color: MUTED,
+                fontFamily: "JetBrains Mono, monospace",
+                color: FAINT_SIGNAL,
                 letterSpacing: "0.14em",
-                textTransform: "uppercase",
               }}
             >
-              Web Developer · AI Engineer
+              {"WEB DEVELOPER · AI ENGINEER"}
             </span>
+            <div style={{ width: 20, height: 1, background: FAINT_SIGNAL }} />
           </div>
 
           {/* Name — display scale */}
           <div
             style={{
-              fontSize: 66,
+              fontSize: 64,
               fontWeight: 700,
-              color: TEXT,
+              color: SIGNAL_WHITE,
               lineHeight: 1.04,
               letterSpacing: "-0.03em",
-              marginBottom: 30,
+              textAlign: "center",
+              fontFamily: "Space Grotesk, system-ui, sans-serif",
+              marginBottom: 40,
             }}
           >
             Dave Zachary Macarayo
           </div>
 
-          {/* Chips + divider row */}
+          {/* Chips — JetBrains Mono labels */}
           <div
             style={{
               display: "flex",
               alignItems: "center",
               gap: 8,
+              marginBottom: 24,
             }}
           >
-            {/* Vertical rule */}
-            <div
-              style={{
-                width: 1,
-                height: 28,
-                background: BORDER,
-                marginRight: 4,
-              }}
-            />
-            {["LLMs · RAG", "TTS · Vision", "Edge AI", "Full-Stack"].map(
+            {["Full-Stack", "LLMs · RAG", "TTS · Vision", "Edge AI"].map(
               (tag) => (
                 <div
                   key={tag}
@@ -213,8 +190,8 @@ export async function GET() {
                     border: `1px solid ${BORDER}`,
                     background: SURFACE,
                     fontSize: 11,
-                    fontFamily: "monospace",
-                    color: DIM,
+                    fontFamily: "JetBrains Mono, monospace",
+                    color: VOID_TEXT,
                     letterSpacing: "0.06em",
                     display: "flex",
                     alignItems: "center",
@@ -225,6 +202,18 @@ export async function GET() {
               )
             )}
           </div>
+
+          {/* URL — JetBrains Mono metadata */}
+          <div
+            style={{
+              fontSize: 11,
+              fontFamily: "JetBrains Mono, monospace",
+              color: VOID_TEXT,
+              letterSpacing: "0.08em",
+            }}
+          >
+            dz-macarayo.vercel.app
+          </div>
         </div>
       </div>
     ),
@@ -234,8 +223,14 @@ export async function GET() {
       fonts: [
         {
           name: "Space Grotesk",
-          data: fontData,
+          data: spaceGroteskData,
           weight: 700,
+          style: "normal",
+        },
+        {
+          name: "JetBrains Mono",
+          data: jetbrainsMonoData,
+          weight: 400,
           style: "normal",
         },
       ],
