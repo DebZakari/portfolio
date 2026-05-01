@@ -685,7 +685,7 @@ export default function About() {
                       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                           <span
-                            className="animate-pulse-soft"
+                            className={immersive ? "animate-pulse-soft" : ""}
                             style={{
                               width: 6,
                               height: 6,

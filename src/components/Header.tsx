@@ -228,6 +228,13 @@ export default function Header() {
                       e.currentTarget.style.background = "transparent";
                     }
                   }}
+                  onClick={(e) => {
+                    const el = document.getElementById(l.section);
+                    if (el) {
+                      e.preventDefault();
+                      el.scrollIntoView({ behavior: "smooth" });
+                    }
+                  }}
                 >
                   {l.label}
                   {active && (
@@ -361,7 +368,14 @@ export default function Header() {
                       color: active ? "var(--text)" : "var(--text-muted)",
                       background: active ? "var(--surface2)" : "transparent",
                     }}
-                    onClick={() => setDrawerOpen(false)}
+                    onClick={(e) => {
+                      setDrawerOpen(false);
+                      const el = document.getElementById(section);
+                      if (el) {
+                        e.preventDefault();
+                        el.scrollIntoView({ behavior: "smooth" });
+                      }
+                    }}
                   >
                     {label}
                   </Link>
