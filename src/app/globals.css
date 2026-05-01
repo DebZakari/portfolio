@@ -256,3 +256,26 @@ body {
     min-width: 0;
   }
 }
+
+/* Logs page */
+.log-back-link {
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+.log-back-link:hover {
+  opacity: 1;
+}
+
+.log-title-link {
+  transition: color 0.2s;
+}
+.log-title-link:hover {
+  color: var(--accent2) !important;
+}
+
+.log-entry {
+  transition: background 0.2s;
+}
+.log-entry:hover {
+  background: var(--surface2) !important;
+}

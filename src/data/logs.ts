@@ -3,6 +3,7 @@ export type LogEntry = {
   tag: string;
   title: string;
   excerpt: string;
+  slug?: string;
 };
 
 export const LOGS: LogEntry[] = [

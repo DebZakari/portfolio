@@ -129,7 +129,7 @@ export default function Contact() {
     if (hasError) {
       return {
         ...INPUT_BASE_STYLE,
-        border: focused ? "1.5px solid var(--accent)" : "1.5px solid var(--text-muted)",
+        border: focused ? "1.5px solid var(--accent)" : "1.5px solid var(--text)",
         boxShadow: focused ? "0 0 0 3px var(--accent-glow)" : undefined,
       };
     }
@@ -464,7 +464,7 @@ export default function Contact() {
                             letterSpacing: "0.04em",
                             padding: "4px 8px",
                             background: "var(--surface2)",
-                            border: "1px solid var(--accent2)",
+                            border: "1px solid var(--text)",
                             borderRadius: 6,
                           }}
                         >
@@ -576,7 +576,7 @@ export default function Contact() {
                         letterSpacing: "0.04em",
                         padding: "8px 12px",
                         background: "var(--surface2)",
-                        border: "1px solid var(--accent2)",
+                        border: "1px solid var(--text)",
                         borderRadius: 8,
                       }}
                     >
