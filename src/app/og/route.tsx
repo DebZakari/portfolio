@@ -102,7 +102,6 @@ export async function GET() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            zIndex: 1,
           }}
         >
           {/* Monogram */}

@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 Changelog tracking begins at `7766696c97ea96ef40be6ef32304175f60b1d9dc`.
 
+## [0.5.2] - 2026-05-02
+
+### Added
+- Added `/api/readme-banner` route generating a 900×280 PNG header banner for the GitHub profile README, using Space Grotesk and JetBrains Mono with the void-black starfield aesthetic
+- Added `/api/readme-stats` route generating a 480×160 PNG stats card showing commits, public repos, stars, and top languages via the GitHub public API; revalidates daily
+
+### Changed
+- Added Hugging Face and ComfyUI to the AI/ML Engineering skills list in the Skills section
+- Removed unsupported `zIndex` property from OG image content wrapper (no-op in Satori)
+
 ## [0.5.1] - 2026-05-02
 
 ### Changed
