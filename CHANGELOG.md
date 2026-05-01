@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 
 Changelog tracking begins at `7766696c97ea96ef40be6ef32304175f60b1d9dc`.
 
+## [0.4.0] - 2026-05-01
+
+### Added
+- Added project detail pages with shared project data, media zones, and lightbox support
+- Added mobile detection with `useIsMobile`
+- Added stronger contact form bot mitigation with honeypot and timing checks
+
+### Changed
+- Updated the Projects section to route cards to dedicated project detail pages
+- Updated the contact form with inline validation, better focus handling, and clearer success/error states
+- Improved mobile hero and navigation behavior, including drawer layout and galaxy/cursor handling
+- Refined responsive layouts, touch targets, and spacing across project, contact, about, mission logs, and skills surfaces
+
+### Fixed
+- Restored cross-page header navigation from project pages back to home sections
+- Deferred terminal prompt mobile detection to satisfy React hooks linting
+- Deferred immersive canvas activation state to preserve paused remount behavior without lint errors
+
 ## [0.3.0] - 2026-05-01
 
 ### Added
