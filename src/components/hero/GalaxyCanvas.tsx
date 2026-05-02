@@ -421,7 +421,7 @@ export default function GalaxyCanvas({ active, theme }: GalaxyCanvasProps) {
   const themeRef = useRef(theme);
   const stateRef = useRef<{
     scene: Scene | null;
-    mouse: { x: number; y: number };
+    mouse: { x: number; y: number; vx: number; vy: number; lastMoveTs: number };
     animId: number | null;
     resizeTimer: number | null;
     redraw: (() => void) | null;
@@ -429,7 +429,7 @@ export default function GalaxyCanvas({ active, theme }: GalaxyCanvasProps) {
     time: number;
   }>({
     scene: galaxyRuntimeCache.scene,
-    mouse: { x: OFFSCREEN, y: OFFSCREEN },
+    mouse: { x: OFFSCREEN, y: OFFSCREEN, vx: 0, vy: 0, lastMoveTs: 0 },
     animId: null,
     resizeTimer: null,
     redraw: null,
@@ -498,6 +498,10 @@ export default function GalaxyCanvas({ active, theme }: GalaxyCanvasProps) {
     const BH_ORBIT_CAPTURE_MAX = 104;
     const BH_ORBIT_TARGET_MIN = 52;
     const BH_ORBIT_TARGET_MAX = 84;
+    const BH_ORBIT_CURSOR_BREAK_SPEED = 7.5;
+    const BH_ORBIT_CURSOR_BREAK_RADIAL_SPEED = 4.2;
+    const BH_ORBIT_RELEASE_CURSOR_INFLUENCE = 0.32;
+    const DRIFT_PLANET_MAX_SPEED = 5.8;
     const MAX_ACTIVE_METEORS = 3;
     const MAX_ACTIVE_COMETS = 2;
     const MAX_ORBITING_OBJECTS = 3;
@@ -540,6 +544,9 @@ export default function GalaxyCanvas({ active, theme }: GalaxyCanvasProps) {
     const resetMouse = () => {
       S.mouse.x = OFFSCREEN;
       S.mouse.y = OFFSCREEN;
+      S.mouse.vx = 0;
+      S.mouse.vy = 0;
+      S.mouse.lastMoveTs = 0;
     };
 
     const drawStaticScene = () => {
@@ -801,6 +808,41 @@ export default function GalaxyCanvas({ active, theme }: GalaxyCanvasProps) {
         obj.orbitSpin * (obj.kind === "meteor" ? mix(0.036, 0.052, obj.orbitAffinity) : mix(0.018, 0.03, obj.orbitAffinity));
     };
 
+    const releaseBlackHoleOrbit = (obj: SpaceObj, mx: number, my: number, cursorVx: number, cursorVy: number) => {
+      const dx = obj.x - mx;
+      const dy = obj.y - my;
+      const dist = Math.hypot(dx, dy) || 1;
+      const dirX = dx / dist;
+      const dirY = dy / dist;
+      const tangentX = -dirY * obj.orbitSpin;
+      const tangentY = dirX * obj.orbitSpin;
+      const orbitSpeed = Math.abs(obj.orbitAngularSpeed) * Math.max(obj.orbitRadius, BH_ORBIT_TARGET_MIN);
+      const releaseSpeed = clamp(orbitSpeed, obj.kind === "meteor" ? 2.4 : 1.4, obj.baseMaxSpeed);
+
+      obj.orbitingBlackHole = false;
+      obj.vx = tangentX * releaseSpeed + dirX * releaseSpeed * 0.16 + cursorVx * BH_ORBIT_RELEASE_CURSOR_INFLUENCE;
+      obj.vy = tangentY * releaseSpeed + dirY * releaseSpeed * 0.16 + cursorVy * BH_ORBIT_RELEASE_CURSOR_INFLUENCE;
+    };
+
+    const shouldReleaseBlackHoleOrbit = (
+      obj: SpaceObj,
+      mx: number,
+      my: number,
+      cursorVx: number,
+      cursorVy: number,
+    ) => {
+      const cursorSpeed = Math.hypot(cursorVx, cursorVy);
+      if (cursorSpeed < BH_ORBIT_CURSOR_BREAK_SPEED) return false;
+
+      const dx = obj.x - mx;
+      const dy = obj.y - my;
+      const dist = Math.hypot(dx, dy) || 1;
+      const radialCursorSpeed = Math.abs((cursorVx * dx + cursorVy * dy) / dist);
+      const stress = cursorSpeed + radialCursorSpeed * 0.8;
+
+      return stress > BH_ORBIT_CURSOR_BREAK_SPEED + BH_ORBIT_CURSOR_BREAK_RADIAL_SPEED * obj.orbitAffinity;
+    };
+
     const updateBlackHoleOrbit = (obj: SpaceObj, mx: number, my: number, dtF: number) => {
       obj.orbitAngle += obj.orbitAngularSpeed * dtF;
       obj.orbitRadius = mix(obj.orbitRadius, obj.orbitRadiusTarget, 0.018 * dtF);
@@ -851,7 +893,101 @@ export default function GalaxyCanvas({ active, theme }: GalaxyCanvasProps) {
       const mx = S.mouse.x;
       const my = S.mouse.y;
       const bhActive = mx !== OFFSCREEN;
+      const pointerIdleMs = S.mouse.lastMoveTs > 0 ? performance.now() - S.mouse.lastMoveTs : Infinity;
+      if (pointerIdleMs > 80) {
+        const decay = Math.pow(0.82, dtF);
+        S.mouse.vx *= decay;
+        S.mouse.vy *= decay;
+        if (Math.hypot(S.mouse.vx, S.mouse.vy) < 0.05) {
+          S.mouse.vx = 0;
+          S.mouse.vy = 0;
+        }
+      }
+      const cursorVx = S.mouse.vx;
+      const cursorVy = S.mouse.vy;
       const gravityBodies: GravityBody[] = [];
+
+      const startPlanetCapture = (
+        planet: Planet,
+        fromX: number,
+        fromY: number,
+        targetX: number,
+        targetY: number,
+        arcBase: number,
+      ) => {
+        planet.pCaptured = true;
+        planet.pCaptureMs = P_TOTAL;
+        planet.pCapturePx = fromX;
+        planet.pCapturePy = fromY;
+        planet.pTargetX = targetX;
+        planet.pTargetY = targetY;
+        planet.pCaptureArc = arcBase * (0.65 + Math.random() * 0.75);
+        planet.pSpin = Math.random() < 0.5 ? -1 : 1;
+        planet.pOpacity = 1;
+        planet.driftVx = 0;
+        planet.driftVy = 0;
+      };
+
+      const updatePlanetCapture = (planet: Planet) => {
+        planet.pCaptureMs -= dt;
+        if (planet.pCaptureMs > P_TOTAL - P_FADEOUT) {
+          planet.pOpacity = 1 - (P_TOTAL - planet.pCaptureMs) / P_FADEOUT;
+        } else if (planet.pCaptureMs > P_FADEIN) {
+          planet.pOpacity = 0;
+        } else {
+          planet.pvx = 0;
+          planet.pvy = 0;
+          planet.pOpacity = 1 - planet.pCaptureMs / P_FADEIN;
+        }
+        if (planet.pCaptureMs <= 0) {
+          planet.pCaptured = false;
+          planet.pCaptureMs = 0;
+          planet.pOpacity = 1;
+        }
+      };
+
+      const updateDetachedPlanet = (planet: Planet, opacity: number, arcBase: number) => {
+        if (planet.pCaptured) {
+          if (planet.pCaptureMs > P_TOTAL - P_FADEOUT) {
+            updatePlanetCapture(planet);
+          } else {
+            planet.pOpacity = 0;
+            planet.pvx = 0;
+            planet.pvy = 0;
+          }
+          return;
+        }
+
+        if (bhActive) {
+          const ddx = mx - planet.driftPx;
+          const ddy = my - planet.driftPy;
+          const dd2 = ddx * ddx + ddy * ddy;
+          const dd = Math.sqrt(dd2);
+          if (dd < EV_PLANET) {
+            startPlanetCapture(planet, planet.driftPx, planet.driftPy, mx, my, arcBase);
+          } else {
+            const pull = getCursorGravityPull(dd, BH_PLANET_PULL_RADIUS, PLANET_G, 0.12, 1.9, 0.42, BH_PLANET_CORE_BOOST);
+            if (pull > 0 && dd > 1) {
+              planet.driftVx += (ddx / (dd2 * dd)) * pull * dtF;
+              planet.driftVy += (ddy / (dd2 * dd)) * pull * dtF;
+            }
+          }
+        }
+
+        if (!planet.pCaptured) {
+          planet.driftVx *= Math.pow(0.992, dtF);
+          planet.driftVy *= Math.pow(0.992, dtF);
+          const driftSpeed = Math.hypot(planet.driftVx, planet.driftVy);
+          if (driftSpeed > DRIFT_PLANET_MAX_SPEED) {
+            const scale = DRIFT_PLANET_MAX_SPEED / driftSpeed;
+            planet.driftVx *= scale;
+            planet.driftVy *= scale;
+          }
+          planet.driftPx += planet.driftVx * dtF;
+          planet.driftPy += planet.driftVy * dtF;
+          planet.pOpacity = opacity;
+        }
+      };
 
       rings.forEach((ring) => {
         const scx = ring.cx + ring.svx;
@@ -906,22 +1042,7 @@ export default function GalaxyCanvas({ active, theme }: GalaxyCanvasProps) {
             starRenderY = swallowPos.y;
 
             ring.planets.forEach((planet) => {
-              if (bhActive) {
-                const ddx = mx - planet.driftPx;
-                const ddy = my - planet.driftPy;
-                const dd2 = ddx * ddx + ddy * ddy;
-                const dd = Math.sqrt(dd2);
-                const pull = getCursorGravityPull(dd, BH_PLANET_PULL_RADIUS, PLANET_G, 0.12, 1.9, 0.42, BH_PLANET_CORE_BOOST);
-                if (pull > 0) {
-                  planet.driftVx += (ddx / (dd2 * dd)) * pull * dtF;
-                  planet.driftVy += (ddy / (dd2 * dd)) * pull * dtF;
-                }
-              }
-              planet.driftVx *= Math.pow(0.999, dtF);
-              planet.driftVy *= Math.pow(0.999, dtF);
-              planet.driftPx += planet.driftVx * dtF;
-              planet.driftPy += planet.driftVy * dtF;
-              planet.pOpacity = 1;
+              updateDetachedPlanet(planet, 1, clamp(ring.rx * 0.12, 10, 24));
             });
           } else if (ring.sCaptureMs > S_FADEIN) {
             starFade = 0;
@@ -929,45 +1050,15 @@ export default function GalaxyCanvas({ active, theme }: GalaxyCanvasProps) {
             starRenderY = ring.sTargetY;
 
             ring.planets.forEach((planet) => {
-              if (bhActive) {
-                const ddx = mx - planet.driftPx;
-                const ddy = my - planet.driftPy;
-                const dd2 = ddx * ddx + ddy * ddy;
-                const dd = Math.sqrt(dd2);
-                const pull = getCursorGravityPull(dd, BH_PLANET_PULL_RADIUS, PLANET_G, 0.12, 1.9, 0.42, BH_PLANET_CORE_BOOST);
-                if (pull > 0) {
-                  planet.driftVx += (ddx / (dd2 * dd)) * pull * dtF;
-                  planet.driftVy += (ddy / (dd2 * dd)) * pull * dtF;
-                }
-              }
-              planet.driftVx *= Math.pow(0.999, dtF);
-              planet.driftVy *= Math.pow(0.999, dtF);
-              planet.driftPx += planet.driftVx * dtF;
-              planet.driftPy += planet.driftVy * dtF;
-              planet.pOpacity = 1;
+              updateDetachedPlanet(planet, 1, clamp(ring.rx * 0.12, 10, 24));
             });
           } else {
             const prog = ring.sCaptureMs / S_FADEIN;
             starFade = 0;
             ring.planets.forEach((planet) => {
-              if (bhActive) {
-                const ddx = mx - planet.driftPx;
-                const ddy = my - planet.driftPy;
-                const dd2 = ddx * ddx + ddy * ddy;
-                const dd = Math.sqrt(dd2);
-                const pull = getCursorGravityPull(dd, BH_PLANET_PULL_RADIUS, PLANET_G, 0.12, 1.9, 0.42, BH_PLANET_CORE_BOOST);
-                if (pull > 0) {
-                  planet.driftVx += (ddx / (dd2 * dd)) * pull * dtF;
-                  planet.driftVy += (ddy / (dd2 * dd)) * pull * dtF;
-                }
-              }
-              planet.driftVx *= Math.pow(0.999, dtF);
-              planet.driftVy *= Math.pow(0.999, dtF);
-              planet.driftPx += planet.driftVx * dtF;
-              planet.driftPy += planet.driftVy * dtF;
               planet.pvx = 0;
               planet.pvy = 0;
-              planet.pOpacity = prog;
+              updateDetachedPlanet(planet, prog, clamp(ring.rx * 0.12, 10, 24));
             });
           }
 
@@ -980,7 +1071,9 @@ export default function GalaxyCanvas({ active, theme }: GalaxyCanvasProps) {
             ring.planets.forEach((planet) => {
               planet.pvx = 0;
               planet.pvy = 0;
-              planet.pOpacity = 1;
+              if (!planet.pCaptured) {
+                planet.pOpacity = 1;
+              }
             });
             starFade = 0;
             respawnFade = 0;
@@ -1005,21 +1098,7 @@ export default function GalaxyCanvas({ active, theme }: GalaxyCanvasProps) {
             }
 
             if (planet.pCaptured) {
-              planet.pCaptureMs -= dt;
-              if (planet.pCaptureMs > P_TOTAL - P_FADEOUT) {
-                planet.pOpacity = 1 - (P_TOTAL - planet.pCaptureMs) / P_FADEOUT;
-              } else if (planet.pCaptureMs > P_FADEIN) {
-                planet.pOpacity = 0;
-              } else {
-                planet.pvx = 0;
-                planet.pvy = 0;
-                planet.pOpacity = 1 - planet.pCaptureMs / P_FADEIN;
-              }
-              if (planet.pCaptureMs <= 0) {
-                planet.pCaptured = false;
-                planet.pCaptureMs = 0;
-                planet.pOpacity = 1;
-              }
+              updatePlanetCapture(planet);
             } else {
               const { ox, oy } = getBoundOrbitState(scx, scy, ring, planet);
               const pcx = ox + planet.pvx;
@@ -1033,15 +1112,7 @@ export default function GalaxyCanvas({ active, theme }: GalaxyCanvasProps) {
 
                 if (pd < BH_PLANET_PULL_RADIUS) {
                   if (pd < EV_PLANET) {
-                    planet.pCaptured = true;
-                    planet.pCaptureMs = P_TOTAL;
-                    planet.pCapturePx = pcx;
-                    planet.pCapturePy = pcy;
-                    planet.pTargetX = mx;
-                    planet.pTargetY = my;
-                    planet.pCaptureArc = clamp(ring.rx * 0.12, 10, 24) * (0.8 + Math.random() * 0.5);
-                    planet.pSpin = Math.random() < 0.5 ? -1 : 1;
-                    planet.pOpacity = 1;
+                    startPlanetCapture(planet, pcx, pcy, mx, my, clamp(ring.rx * 0.12, 10, 24));
                   } else {
                     const pull = getCursorGravityPull(
                       pd,
@@ -1092,8 +1163,9 @@ export default function GalaxyCanvas({ active, theme }: GalaxyCanvasProps) {
                 planet.driftPy = currentPy;
                 planet.driftVx = currentVx;
                 planet.driftVy = currentVy;
-                planet.pCaptured = false;
-                planet.pOpacity = 1;
+                if (!planet.pCaptured) {
+                  planet.pOpacity = 1;
+                }
               });
               anyPlanetDrift = true;
             } else {
@@ -1362,7 +1434,11 @@ export default function GalaxyCanvas({ active, theme }: GalaxyCanvasProps) {
 
           if (obj.orbitingBlackHole) {
             if (bhActive) {
-              updateBlackHoleOrbit(obj, mx, my, dtF);
+              if (shouldReleaseBlackHoleOrbit(obj, mx, my, cursorVx, cursorVy)) {
+                releaseBlackHoleOrbit(obj, mx, my, cursorVx, cursorVy);
+              } else {
+                updateBlackHoleOrbit(obj, mx, my, dtF);
+              }
             } else {
               obj.orbitingBlackHole = false;
             }
@@ -1643,8 +1719,18 @@ export default function GalaxyCanvas({ active, theme }: GalaxyCanvasProps) {
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
       if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
+        const now = performance.now();
+        if (S.mouse.x !== OFFSCREEN && S.mouse.lastMoveTs > 0) {
+          const dtF = Math.max((now - S.mouse.lastMoveTs) / 16.67, 0.25);
+          S.mouse.vx = (x - S.mouse.x) / dtF;
+          S.mouse.vy = (y - S.mouse.y) / dtF;
+        } else {
+          S.mouse.vx = 0;
+          S.mouse.vy = 0;
+        }
         S.mouse.x = x;
         S.mouse.y = y;
+        S.mouse.lastMoveTs = now;
       } else {
         resetMouse();
       }

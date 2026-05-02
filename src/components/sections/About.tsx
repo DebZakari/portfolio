@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState, useEffect, useCallback, useRef } from "react";
+import { useTheme } from "next-themes";
 import { useExperience } from "@/hooks/useExperience";
 import { lockScroll, unlockScroll } from "@/utils/scrollLock";
 import SectionLabel from "@/components/SectionLabel";
@@ -39,12 +40,21 @@ const STATS_ROW = [
 export default function About() {
   const { mode } = useExperience();
   const immersive = mode === "immersive";
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  const [isTouch, setIsTouch] = useState(false);
+  const isLight = mounted && resolvedTheme === "light";
   const [modalOpen, setModalOpen] = useState(false);
   const [imageHovered, setImageHovered] = useState(false);
   const [cardHovered, setCardHovered] = useState(false);
   const [cardFlipped, setCardFlipped] = useState(false);
   const [drawerType, setDrawerType] = useState<"years" | "systems" | null>(null);
   const [domainsOpen, setDomainsOpen] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    setIsTouch(window.matchMedia("(hover: none) and (pointer: coarse)").matches);
+  }, []);
   const modalCloseRef = useRef<HTMLButtonElement>(null);
   const portraitTriggerRef = useRef<HTMLDivElement>(null);
 
@@ -441,11 +451,11 @@ export default function About() {
                     borderRadius: 8,
                     padding: "4px 10px",
                     fontSize: 11,
-                    color: "var(--text)",
+                    color: "rgba(255,255,255,0.9)",
                     fontFamily: "var(--font-jetbrains-mono), monospace",
                     letterSpacing: "0.06em",
                     pointerEvents: "none",
-                    opacity: imageHovered ? 1 : 0,
+                    opacity: imageHovered ? 1 : isTouch ? 0.5 : 0,
                     transition: "opacity 180ms ease",
                   }}
                 >
@@ -524,16 +534,16 @@ export default function About() {
                         position: "absolute",
                         top: 12,
                         right: 12,
-                        background: "rgba(0,0,0,0.55)",
-                        backdropFilter: "blur(4px)",
+                        background: "var(--surface2)",
+                        border: "1px solid var(--border)",
                         borderRadius: 8,
                         padding: "4px 10px",
                         fontFamily: "var(--font-jetbrains-mono), monospace",
                         fontSize: 10,
-                        color: "var(--text-dim)",
+                        color: "var(--text-muted)",
                         letterSpacing: "0.06em",
                         pointerEvents: "none",
-                        opacity: cardHovered && !cardFlipped ? 1 : 0,
+                        opacity: cardHovered && !cardFlipped ? 1 : !cardFlipped && isTouch ? 0.5 : 0,
                         transition: "opacity 180ms ease",
                       }}
                     >
@@ -574,7 +584,9 @@ export default function About() {
                     style={{
                       position: "absolute",
                       inset: 0,
-                      background: "var(--bg)",
+                      background: isLight && immersive
+                        ? "radial-gradient(ellipse at 93% 5%, #ebebeb 0%, #cecece 28%, #b0b0b0 100%)"
+                        : "var(--bg)",
                       border: `1px solid ${cardHovered ? "var(--accent)" : "var(--border)"}`,
                       borderRadius: 16,
                       padding: "20px 22px",
@@ -597,7 +609,9 @@ export default function About() {
                           right: -40,
                           width: 160,
                           height: 160,
-                          background: "var(--accent-glow)",
+                          background: isLight && immersive
+                            ? "rgba(255,255,255,0.35)"
+                            : "var(--accent-glow)",
                           borderRadius: "50%",
                           filter: "blur(50px)",
                           pointerEvents: "none",
@@ -702,7 +716,7 @@ export default function About() {
                           style={{
                             fontSize: 10,
                             color: "var(--text-dim)",
-                            opacity: cardHovered ? 1 : 0,
+                            opacity: cardHovered ? 1 : isTouch ? 0.5 : 0,
                             transition: "opacity 180ms ease",
                           }}
                         >

@@ -74,9 +74,17 @@ function FourPointStar({ x, y, r = 5, op = 0.55 }: { x: number; y: number; r?: n
   return <path d={d} fill="currentColor" opacity={op} />;
 }
 
-function NovelVerseIllustration() {
+function NovelVerseIllustration({ active }: { active: boolean }) {
   const bhx = 160, bhy = 44, bhR = 24, bhIn = 13;
   const outsidePath = `M0 0 H320 V160 H0 Z M${bhx - bhR - 1},${bhy} a${bhR + 1},${bhR + 1} 0 1,0 ${(bhR + 1) * 2},0 a${bhR + 1},${bhR + 1} 0 1,0 -${(bhR + 1) * 2},0 Z`;
+  const bookLiftStyle: React.CSSProperties = {
+    transform: active ? "translateY(-3px)" : "translateY(0)",
+    transition: "transform 0.28s ease-out, opacity 0.28s ease-out",
+  };
+  const orbitStyle: React.CSSProperties = {
+    transform: active ? "translateY(-2px)" : "translateY(0)",
+    transition: "transform 0.28s ease-out, opacity 0.28s ease-out",
+  };
 
   return (
     <svg
@@ -102,67 +110,94 @@ function NovelVerseIllustration() {
       <FourPointStar x={130} y={10} r={3} op={0.4} />
       <FourPointStar x={190} y={12} r={2.5} op={0.38} />
 
-      {/* Orbital ring — behind circle */}
-      <ellipse
-        cx={bhx} cy={bhy} rx={42} ry={9}
-        transform={`rotate(-32, ${bhx}, ${bhy})`}
-        stroke="currentColor" strokeWidth="3.5"
-        clipPath="url(#nv-clip-in)"
-        opacity="0.28"
-      />
+      <g style={orbitStyle}>
+        {/* Orbital ring — behind circle */}
+        <ellipse
+          cx={bhx} cy={bhy} rx={42} ry={9}
+          transform={`rotate(-32, ${bhx}, ${bhy})`}
+          stroke="currentColor" strokeWidth="3.5"
+          clipPath="url(#nv-clip-in)"
+          opacity="0.28"
+        />
 
-      {/* Black hole outer ring */}
-      <circle cx={bhx} cy={bhy} r={bhR} stroke="currentColor" strokeWidth="1.5" opacity="0.72" />
+        {/* Black hole outer ring */}
+        <circle cx={bhx} cy={bhy} r={bhR} stroke="currentColor" strokeWidth="1.5" opacity="0.72" />
 
-      {/* Black hole inner ring */}
-      <circle cx={bhx} cy={bhy} r={bhIn} stroke="currentColor" strokeWidth="1" opacity="0.42" />
+        {/* Black hole inner ring */}
+        <circle cx={bhx} cy={bhy} r={bhIn} stroke="currentColor" strokeWidth="1" opacity="0.42" />
 
-      {/* Orbital ring — in front of circle */}
-      <ellipse
-        cx={bhx} cy={bhy} rx={42} ry={9}
-        transform={`rotate(-32, ${bhx}, ${bhy})`}
-        stroke="currentColor" strokeWidth="3.5"
-        clipPath="url(#nv-clip-out)"
-        opacity="0.75"
-      />
+        {/* Orbital ring — in front of circle */}
+        <ellipse
+          cx={bhx} cy={bhy} rx={42} ry={9}
+          transform={`rotate(-32, ${bhx}, ${bhy})`}
+          stroke="currentColor" strokeWidth="3.5"
+          clipPath="url(#nv-clip-out)"
+          opacity="0.75"
+        />
+      </g>
 
-      {/* Book — flat open book */}
-      <g opacity="0.6" stroke="currentColor" strokeWidth="1">
-        {/* Left page */}
+      <g
+        opacity={active ? 0.12 : 0}
+        stroke="currentColor"
+        strokeWidth="1"
+        style={{
+          transform: active ? "translate(5px, 6px)" : "translate(0, 0)",
+          transition: "transform 0.28s ease-out, opacity 0.28s ease-out",
+        }}
+      >
         <path d="M72 82 Q72 80 74 80 L153 80 L153 150 Q153 152 151 152 L74 152 Q72 152 72 150 Z" />
-        {/* Right page */}
         <path d="M167 80 L246 80 Q248 80 248 82 L248 150 Q248 152 246 152 L169 152 Q167 152 167 150 Z" />
-        {/* Spine */}
         <line x1="160" y1="80" x2="160" y2="152" strokeWidth="1.5" />
-        {/* Book base curve */}
         <path d="M72 152 Q160 158 248 152" />
       </g>
 
-      {/* Text lines — left page */}
-      <g opacity="0.22" stroke="currentColor" strokeWidth="0.75">
-        <line x1="83" y1="94" x2="144" y2="94" />
-        <line x1="83" y1="102" x2="138" y2="102" />
-        <line x1="83" y1="110" x2="144" y2="110" />
-        <line x1="83" y1="118" x2="134" y2="118" />
-        <line x1="83" y1="126" x2="144" y2="126" />
-        <line x1="83" y1="134" x2="140" y2="134" />
-      </g>
+      <g style={bookLiftStyle}>
+        {/* Book — flat open book */}
+        <g opacity={active ? 0.68 : 0.6} stroke="currentColor" strokeWidth="1">
+          {/* Left page */}
+          <path d="M72 82 Q72 80 74 80 L153 80 L153 150 Q153 152 151 152 L74 152 Q72 152 72 150 Z" />
+          {/* Right page */}
+          <path d="M167 80 L246 80 Q248 80 248 82 L248 150 Q248 152 246 152 L169 152 Q167 152 167 150 Z" />
+          {/* Spine */}
+          <line x1="160" y1="80" x2="160" y2="152" strokeWidth="1.5" />
+          {/* Book base curve */}
+          <path d="M72 152 Q160 158 248 152" />
+        </g>
 
-      {/* Text lines — right page */}
-      <g opacity="0.22" stroke="currentColor" strokeWidth="0.75">
-        <line x1="176" y1="94" x2="237" y2="94" />
-        <line x1="176" y1="102" x2="231" y2="102" />
-        <line x1="176" y1="110" x2="237" y2="110" />
-        <line x1="176" y1="118" x2="228" y2="118" />
-        <line x1="176" y1="126" x2="237" y2="126" />
-        <line x1="176" y1="134" x2="232" y2="134" />
+        {/* Text lines — left page */}
+        <g opacity={active ? 0.28 : 0.22} stroke="currentColor" strokeWidth="0.75">
+          <line x1="83" y1="94" x2="144" y2="94" />
+          <line x1="83" y1="102" x2="138" y2="102" />
+          <line x1="83" y1="110" x2="144" y2="110" />
+          <line x1="83" y1="118" x2="134" y2="118" />
+          <line x1="83" y1="126" x2="144" y2="126" />
+          <line x1="83" y1="134" x2="140" y2="134" />
+        </g>
+
+        {/* Text lines — right page */}
+        <g opacity={active ? 0.28 : 0.22} stroke="currentColor" strokeWidth="0.75">
+          <line x1="176" y1="94" x2="237" y2="94" />
+          <line x1="176" y1="102" x2="231" y2="102" />
+          <line x1="176" y1="110" x2="237" y2="110" />
+          <line x1="176" y1="118" x2="228" y2="118" />
+          <line x1="176" y1="126" x2="237" y2="126" />
+          <line x1="176" y1="134" x2="232" y2="134" />
+        </g>
       </g>
     </svg>
   );
 }
 
-function EnrollmentIllustration() {
+function EnrollmentIllustration({ active }: { active: boolean }) {
   const xs = [54, 118, 182, 246];
+  const liftStyle: React.CSSProperties = {
+    transform: active ? "translateY(-4px)" : "translateY(0)",
+    transition: "transform 0.28s ease-out, opacity 0.28s ease-out",
+  };
+  const progressStyle: React.CSSProperties = {
+    transform: active ? "translateY(-2px)" : "translateY(0)",
+    transition: "transform 0.28s ease-out, opacity 0.28s ease-out",
+  };
 
   return (
     <svg
@@ -171,69 +206,89 @@ function EnrollmentIllustration() {
       fill="none"
       aria-hidden="true"
     >
-      {/* Progress track */}
-      <line x1="54" y1="46" x2="246" y2="46" stroke="currentColor" strokeWidth="1" opacity="0.2" />
-      {/* Filled segment — steps 1 and 2 done */}
-      <line x1="54" y1="46" x2="182" y2="46" stroke="currentColor" strokeWidth="1.5" opacity="0.5" />
-
-      {/* Step nodes */}
-      {xs.map((x, i) => {
-        const done = i < 2;
-        const current = i === 2;
-        const op = done ? 0.7 : current ? 0.55 : 0.25;
-        return (
-          <g key={i} opacity={op}>
-            <circle cx={x} cy={46} r={done ? 8 : 7} stroke="currentColor" strokeWidth={done ? 1.5 : 1} />
-            {done && (
-              <path
-                d={`M${x - 3.5},46 L${x - 1},48.5 L${x + 3.5},42`}
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            )}
-            {!done && (
-              <circle cx={x} cy={46} r={2.5} fill="currentColor" />
-            )}
-          </g>
-        );
-      })}
-
-      {/* Step label stubs */}
-      <g opacity="0.18" fill="currentColor">
-        {xs.map((x, i) => (
-          <g key={i}>
-            <rect x={x - 20} y={60} width={40} height={4} rx={2} />
-            <rect x={x - 14} y={67} width={28} height={3} rx={1.5} />
-          </g>
-        ))}
-      </g>
-
-      {/* Form fields */}
-      <g opacity="0.38" stroke="currentColor" strokeWidth="1">
+      {/* Hover-only offset layers create depth without changing the drawing language. */}
+      <g
+        opacity={active ? 0.16 : 0}
+        stroke="currentColor"
+        strokeWidth="1"
+        style={{
+          transform: active ? "translate(5px, 6px)" : "translate(0, 0)",
+          transition: "transform 0.28s ease-out, opacity 0.28s ease-out",
+        }}
+      >
         <rect x="40" y="84" width="108" height="16" rx="3" />
         <rect x="158" y="84" width="122" height="16" rx="3" />
         <rect x="40" y="108" width="240" height="16" rx="3" />
+        <rect x="100" y="134" width="120" height="20" rx="10" />
       </g>
 
-      {/* Field inner lines */}
-      <g opacity="0.2" stroke="currentColor" strokeWidth="0.75">
-        <line x1="50" y1="92" x2="108" y2="92" />
-        <line x1="168" y1="92" x2="262" y2="92" />
-        <line x1="50" y1="116" x2="212" y2="116" />
+      <g style={progressStyle}>
+        {/* Progress track */}
+        <line x1="54" y1="46" x2="246" y2="46" stroke="currentColor" strokeWidth="1" opacity="0.2" />
+        {/* Filled segment — steps 1 and 2 done */}
+        <line x1="54" y1="46" x2="182" y2="46" stroke="currentColor" strokeWidth="1.5" opacity="0.5" />
+
+        {/* Step nodes */}
+        {xs.map((x, i) => {
+          const done = i < 2;
+          const current = i === 2;
+          const op = done ? 0.7 : current ? 0.55 : 0.25;
+          return (
+            <g key={i} opacity={op}>
+              <circle cx={x} cy={46} r={done ? 8 : 7} stroke="currentColor" strokeWidth={done ? 1.5 : 1} />
+              {done && (
+                <path
+                  d={`M${x - 3.5},46 L${x - 1},48.5 L${x + 3.5},42`}
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              )}
+              {!done && (
+                <circle cx={x} cy={46} r={2.5} fill="currentColor" />
+              )}
+            </g>
+          );
+        })}
+
+        {/* Step label stubs */}
+        <g opacity="0.18" fill="currentColor">
+          {xs.map((x, i) => (
+            <g key={i}>
+              <rect x={x - 20} y={60} width={40} height={4} rx={2} />
+              <rect x={x - 14} y={67} width={28} height={3} rx={1.5} />
+            </g>
+          ))}
+        </g>
       </g>
 
-      {/* Submit button */}
-      <g opacity="0.48">
-        <rect x="100" y="134" width="120" height="20" rx="10" stroke="currentColor" strokeWidth="1.5" />
-        <line x1="130" y1="144" x2="190" y2="144" stroke="currentColor" strokeWidth="1" />
+      <g style={liftStyle}>
+        {/* Form fields */}
+        <g opacity={active ? 0.48 : 0.38} stroke="currentColor" strokeWidth="1">
+          <rect x="40" y="84" width="108" height="16" rx="3" />
+          <rect x="158" y="84" width="122" height="16" rx="3" />
+          <rect x="40" y="108" width="240" height="16" rx="3" />
+        </g>
+
+        {/* Field inner lines */}
+        <g opacity={active ? 0.28 : 0.2} stroke="currentColor" strokeWidth="0.75">
+          <line x1="50" y1="92" x2="108" y2="92" />
+          <line x1="168" y1="92" x2="262" y2="92" />
+          <line x1="50" y1="116" x2="212" y2="116" />
+        </g>
+
+        {/* Submit button */}
+        <g opacity={active ? 0.58 : 0.48}>
+          <rect x="100" y="134" width="120" height="20" rx="10" stroke="currentColor" strokeWidth="1.5" />
+          <line x1="130" y1="144" x2="190" y2="144" stroke="currentColor" strokeWidth="1" />
+        </g>
       </g>
     </svg>
   );
 }
 
-function IrisBiometricIllustration() {
+function IrisBiometricIllustration({ active }: { active: boolean }) {
   const cx = 160, cy = 80;
 
   // Neutral eye — both canthi at y=80, control points symmetric around x=160
@@ -256,6 +311,14 @@ function IrisBiometricIllustration() {
   const sqL = cx - irisR - pad, sqR = cx + irisR + pad;
   const sqT = cy - irisR - pad, sqB = cy + irisR + pad;
   const bk = 14;
+  const eyeLiftStyle: React.CSSProperties = {
+    transform: active ? "translateY(-3px)" : "translateY(0)",
+    transition: "transform 0.28s ease-out, opacity 0.28s ease-out",
+  };
+  const bracketLiftStyle: React.CSSProperties = {
+    transform: active ? "translateY(-5px)" : "translateY(0)",
+    transition: "transform 0.28s ease-out, opacity 0.28s ease-out",
+  };
 
   return (
     <svg
@@ -278,26 +341,41 @@ function IrisBiometricIllustration() {
         <line x1={sqR + 5} y1={cy} x2={292} y2={cy} />
       </g>
 
-      {/* Iris — clipped to eye opening */}
-      <g clipPath="url(#iris-eye-clip)">
-        <circle cx={cx} cy={cy} r={irisR + 10} stroke="currentColor" strokeWidth="1" opacity="0.22" />
-        <circle cx={cx} cy={cy} r={irisR} stroke="currentColor" strokeWidth="1.5" opacity="0.7" />
-        <g opacity="0.32" stroke="currentColor" strokeWidth="0.75">
-          {radials.map((r, i) => (
-            <line key={i} x1={r.x1} y1={r.y1} x2={r.x2} y2={r.y2} />
-          ))}
-        </g>
-        <circle cx={cx} cy={cy} r={pupilR} stroke="currentColor" strokeWidth="1.5" opacity="0.78" />
-        <circle cx={cx} cy={cy} r={pupilR - 5} stroke="currentColor" strokeWidth="0.5" opacity="0.3" />
-        <circle cx={cx + 9} cy={cy - 9} r={4} stroke="currentColor" strokeWidth="0.75" opacity="0.5" />
+      <g
+        opacity={active ? 0.12 : 0}
+        stroke="currentColor"
+        strokeWidth="1"
+        style={{
+          transform: active ? "translate(5px, 6px)" : "translate(0, 0)",
+          transition: "transform 0.28s ease-out, opacity 0.28s ease-out",
+        }}
+      >
+        <path d={eyePath} />
+        <circle cx={cx} cy={cy} r={irisR} />
       </g>
 
-      {/* Eyelid outline */}
-      <path d={eyePath} stroke="currentColor" strokeWidth="1.5" opacity="0.72" />
+      <g style={eyeLiftStyle}>
+        {/* Iris — clipped to eye opening */}
+        <g clipPath="url(#iris-eye-clip)">
+          <circle cx={cx} cy={cy} r={irisR + 10} stroke="currentColor" strokeWidth="1" opacity="0.22" />
+          <circle cx={cx} cy={cy} r={irisR} stroke="currentColor" strokeWidth="1.5" opacity={active ? 0.78 : 0.7} />
+          <g opacity={active ? 0.38 : 0.32} stroke="currentColor" strokeWidth="0.75">
+            {radials.map((r, i) => (
+              <line key={i} x1={r.x1} y1={r.y1} x2={r.x2} y2={r.y2} />
+            ))}
+          </g>
+          <circle cx={cx} cy={cy} r={pupilR} stroke="currentColor" strokeWidth="1.5" opacity="0.78" />
+          <circle cx={cx} cy={cy} r={pupilR - 5} stroke="currentColor" strokeWidth="0.5" opacity="0.3" />
+          <circle cx={cx + 9} cy={cy - 9} r={4} stroke="currentColor" strokeWidth="0.75" opacity="0.5" />
+        </g>
+
+        {/* Eyelid outline */}
+        <path d={eyePath} stroke="currentColor" strokeWidth="1.5" opacity={active ? 0.8 : 0.72} />
+      </g>
 
 
       {/* Detection: 4 corner brackets only, hugging iris circle */}
-      <g stroke="currentColor" strokeWidth="2.5" strokeLinecap="square" opacity="0.78">
+      <g stroke="currentColor" strokeWidth="2.5" strokeLinecap="square" opacity={active ? 0.86 : 0.78} style={bracketLiftStyle}>
         <path d={`M${sqL},${sqT + bk} V${sqT} H${sqL + bk}`} />
         <path d={`M${sqR - bk},${sqT} H${sqR} V${sqT + bk}`} />
         <path d={`M${sqL},${sqB - bk} V${sqB} H${sqL + bk}`} />
@@ -307,7 +385,16 @@ function IrisBiometricIllustration() {
   );
 }
 
-function PCBVisionIllustration() {
+function PCBVisionIllustration({ active }: { active: boolean }) {
+  const componentLiftStyle: React.CSSProperties = {
+    transform: active ? "translateY(-4px)" : "translateY(0)",
+    transition: "transform 0.28s ease-out, opacity 0.28s ease-out",
+  };
+  const bracketLiftStyle: React.CSSProperties = {
+    transform: active ? "translateY(-3px)" : "translateY(0)",
+    transition: "transform 0.28s ease-out, opacity 0.28s ease-out",
+  };
+
   return (
     <svg
       viewBox="0 0 320 160"
@@ -350,8 +437,23 @@ function PCBVisionIllustration() {
         <circle cx="238" cy="88" r="2" />
       </g>
 
+      <g
+        opacity={active ? 0.13 : 0}
+        stroke="currentColor"
+        strokeWidth="1"
+        style={{
+          transform: active ? "translate(5px, 6px)" : "translate(0, 0)",
+          transition: "transform 0.28s ease-out, opacity 0.28s ease-out",
+        }}
+      >
+        <rect x="76" y="38" width="54" height="30" rx="2" />
+        <rect x="144" y="92" width="26" height="11" rx="1.5" />
+        <rect x="80" y="108" width="20" height="9" rx="1" />
+        <rect x="192" y="76" width="16" height="7" rx="1" />
+      </g>
+
       {/* IC component + pins */}
-      <g opacity="0.45" stroke="currentColor" strokeWidth="1">
+      <g opacity={active ? 0.54 : 0.45} stroke="currentColor" strokeWidth="1" style={componentLiftStyle}>
         <rect x="76" y="38" width="54" height="30" rx="2" />
         <line x1="72" y1="44" x2="76" y2="44" />
         <line x1="72" y1="51" x2="76" y2="51" />
@@ -375,11 +477,12 @@ function PCBVisionIllustration() {
         stroke="currentColor"
         strokeWidth="1.5"
         strokeDasharray="5,3"
-        opacity="0.5"
+        opacity={active ? 0.58 : 0.5}
+        style={bracketLiftStyle}
       />
 
       {/* Corner brackets */}
-      <g stroke="currentColor" strokeWidth="2" strokeLinecap="round" opacity="0.78">
+      <g stroke="currentColor" strokeWidth="2" strokeLinecap="round" opacity={active ? 0.86 : 0.78} style={bracketLiftStyle}>
         <path d="M32,42 L32,20 L54,20" />
         <path d="M206,20 L228,20 L228,42" />
         <path d="M32,120 L32,142 L54,142" />
@@ -395,7 +498,7 @@ function PCBVisionIllustration() {
   );
 }
 
-const ILLUSTRATIONS: Record<string, () => React.ReactElement> = {
+const ILLUSTRATIONS: Record<string, (props: { active: boolean }) => React.ReactElement> = {
   novelverse: NovelVerseIllustration,
   "enrollment-v2": EnrollmentIllustration,
   "iris-biometric": IrisBiometricIllustration,
@@ -465,7 +568,7 @@ export default function ProjectMediaZone({ project, hovered, immersive, height, 
           padding: "16px 24px",
         }}
       >
-        {Illustration && <Illustration />}
+        {Illustration && <Illustration active={immersive && hovered} />}
       </div>
       {project.github && <GitHubIcon href={project.github} />}
       <Badges project={project} />
