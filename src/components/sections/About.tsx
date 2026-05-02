@@ -584,7 +584,7 @@ export default function About() {
                     style={{
                       position: "absolute",
                       inset: 0,
-                      background: isLight
+                      background: isLight && immersive
                         ? "radial-gradient(ellipse at 93% 5%, #ebebeb 0%, #cecece 28%, #b0b0b0 100%)"
                         : "var(--bg)",
                       border: `1px solid ${cardHovered ? "var(--accent)" : "var(--border)"}`,
@@ -609,7 +609,7 @@ export default function About() {
                           right: -40,
                           width: 160,
                           height: 160,
-                          background: isLight
+                          background: isLight && immersive
                             ? "rgba(255,255,255,0.35)"
                             : "var(--accent-glow)",
                           borderRadius: "50%",
