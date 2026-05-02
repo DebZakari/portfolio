@@ -28,7 +28,7 @@ export default function HeroSection() {
     return () => window.clearTimeout(id);
   }, [immersive, hasActivatedImmersive]);
   const isDark = mounted ? resolvedTheme !== "light" : true;
-  const canUseGalaxyCanvas = !isMobile;
+  const canUseGalaxyCanvas = mounted && !isMobile;
   const shouldMountGalaxyCanvas = canUseGalaxyCanvas && (immersive || hasActivatedImmersive);
   const showGalaxyCanvas = canUseGalaxyCanvas && immersive;
 
@@ -39,7 +39,7 @@ export default function HeroSection() {
         minHeight: "100svh",
         display: "flex",
         alignItems: "center",
-        overflow: "hidden",
+        overflow: "clip",
       }}
     >
       {/* Background */}
@@ -80,7 +80,7 @@ export default function HeroSection() {
           inset: 0,
           backgroundImage: `linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)`,
           backgroundSize: "60px 60px",
-          opacity: showGalaxyCanvas ? 0 : 0.3,
+          opacity: immersive ? 0 : 0.3,
           transition: "opacity 0.3s ease",
           pointerEvents: "none",
         }}
@@ -214,11 +214,11 @@ export default function HeroSection() {
         </p>
       </div>
 
-      {/* Scroll indicator — fixed so it's always in viewport; fades out on scroll */}
+      {/* Scroll indicator — anchored to the hero to avoid mobile fixed-layer jitter */}
       <div
         className={immersive ? "animate-bob" : ""}
         style={{
-          position: "fixed",
+          position: "absolute",
           bottom: 32,
           left: "50%",
           transform: "translateX(-50%)",

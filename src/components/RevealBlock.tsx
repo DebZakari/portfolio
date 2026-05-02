@@ -59,7 +59,6 @@ export default function RevealBlock({
   const transition = [
     `opacity 600ms ${EASE} ${delay}ms`,
     hasTransform ? `transform 600ms ${EASE} ${delay}ms` : null,
-    `filter 500ms ${EASE} ${delay}ms`,
   ]
     .filter(Boolean)
     .join(", ");
@@ -69,9 +68,7 @@ export default function RevealBlock({
     transform: visible
       ? visibleTransform(direction)
       : hiddenTransform(direction, distance),
-    filter: visible ? "blur(0px)" : "blur(8px)",
     transition,
-    willChange: visible ? "auto" : "opacity, transform, filter",
   };
 
   return (
