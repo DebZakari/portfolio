@@ -640,9 +640,8 @@ export default function ProjectDetail({
           {/* Back — mobile only */}
           <Link
             href="/#projects"
-            className="md:hidden"
+            className="inline-flex md:hidden"
             style={{
-              display: "inline-flex",
               alignItems: "center",
               gap: 6,
               textDecoration: "none",

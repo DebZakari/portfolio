@@ -83,7 +83,15 @@ html {
   scroll-behavior: smooth;
   background-color: var(--bg);
   color: var(--text);
-  scrollbar-gutter: stable;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Reserve scrollbar gutter only on pointer devices that show persistent scrollbars */
+@media (hover: hover) and (pointer: fine) {
+  html {
+    scrollbar-gutter: stable;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -102,6 +110,8 @@ html {
 
 body {
   min-height: 100vh;
+  width: 100%;
+  max-width: 100%;
   font-family: var(--font-space-grotesk, system-ui, sans-serif);
   background-color: var(--bg);
   color: var(--text);

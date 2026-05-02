@@ -100,6 +100,7 @@ export default function Header() {
   const { resolvedTheme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [showScrollProgress, setShowScrollProgress] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const isDark = resolvedTheme !== "light";
@@ -107,13 +108,25 @@ export default function Header() {
   const activeSection = useActiveSection();
 
   useEffect(() => {
+    const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const syncFinePointer = () => setShowScrollProgress(finePointer.matches);
     const onScroll = () => {
-      setScrolled(window.scrollY > 40);
+      const nextScrolled = window.scrollY > 80;
+      setScrolled((current) => (current === nextScrolled ? current : nextScrolled));
+
+      if (!finePointer.matches) return;
       const total = document.documentElement.scrollHeight - window.innerHeight;
-      setScrollProgress(total > 0 ? window.scrollY / total : 0);
+      setScrollProgress(nextScrolled && total > 0 ? window.scrollY / total : 0);
     };
+
+    syncFinePointer();
+    finePointer.addEventListener("change", syncFinePointer);
+    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      finePointer.removeEventListener("change", syncFinePointer);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
 
   useEffect(() => {
@@ -150,12 +163,12 @@ export default function Header() {
           transition: "background 0.4s, border-color 0.4s",
           background: scrolled
             ? isDark
-              ? "oklch(7% 0.02 265 / 0.85)"
-              : "oklch(92% 0.004 255 / 0.88)"
+              ? "oklch(7% 0.02 265 / 0.97)"
+              : "oklch(92% 0.004 255 / 0.97)"
             : "transparent",
-          backdropFilter: scrolled ? "blur(16px)" : "none",
+          backdropFilter: scrolled ? "blur(12px)" : "none",
+          WebkitBackdropFilter: scrolled ? "blur(12px)" : "none",
           borderBottom: scrolled ? "1px solid var(--border)" : "1px solid transparent",
-          transform: "translateZ(0)",
         }}
         className={scrolled ? (isDark ? "dark" : "light") : ""}
       >
@@ -296,30 +309,32 @@ export default function Header() {
         </nav>
 
         {/* Reading progress bar */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: 1,
-            pointerEvents: "none",
-            overflow: "hidden",
-          }}
-          aria-hidden="true"
-        >
+        {showScrollProgress && (
           <div
             style={{
-              height: "100%",
-              width: "100%",
-              background: "var(--accent2)",
-              transform: `scaleX(${scrollProgress})`,
-              transformOrigin: "left",
-              transition: "transform 0.1s linear",
-              opacity: scrolled ? 1 : 0,
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: 1,
+              pointerEvents: "none",
+              overflow: "hidden",
             }}
-          />
-        </div>
+            aria-hidden="true"
+          >
+            <div
+              style={{
+                height: "100%",
+                width: "100%",
+                background: "var(--accent2)",
+                transform: `scaleX(${scrollProgress})`,
+                transformOrigin: "left",
+                transition: "transform 0.1s linear",
+                opacity: scrolled ? 1 : 0,
+              }}
+            />
+          </div>
+        )}
       </header>
 
       {/* Mobile drawer overlay */}
