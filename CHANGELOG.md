@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 Changelog tracking begins at `7766696c97ea96ef40be6ef32304175f60b1d9dc`.
 
+## [0.5.4] - 2026-05-02
+
+### Changed
+- Enhanced black hole cursor mechanics in `GalaxyCanvas`: improved mouse tracking, gravitational pull, and star distortion behavior
+- Refined `About` section light mode styles and improved responsiveness across breakpoints
+- Added immersive-mode background effects to `About` section in light mode
+- Updated `ProjectMediaZone` layout and visual styles
+- Updated `HeroSection` and `Header` for light mode consistency
+
 ## [0.5.3] - 2026-05-02
 
 ### Changed
