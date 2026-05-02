@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 Changelog tracking begins at `7766696c97ea96ef40be6ef32304175f60b1d9dc`.
 
+## [0.6.0] - 2026-05-02
+
+### Added
+- Added GitHub stars count to `Footer` via new `/api/github-stars` route
+
+### Fixed
+- Fixed `HeroSection` layout shift when switching from Immersive to Focus mode
+- Fixed `Link` component class in `ProjectDetail` for consistent mobile styling
+- Improved `Header` layout and performance for responsive design
+- Removed unused animation from `RevealBlock`; updated `globals.css` for layout consistency
+
 ## [0.5.4] - 2026-05-02
 
 ### Changed
