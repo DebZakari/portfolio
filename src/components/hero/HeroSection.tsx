@@ -196,19 +196,22 @@ export default function HeroSection() {
           ))}
         </div>
 
-        {showGalaxyCanvas && (
-          <p
-            className="font-mono"
-            style={{
-              marginTop: 40,
-              fontSize: 11,
-              color: "var(--text-dim)",
-              letterSpacing: "0.05em",
-            }}
-          >
-            ↗ move cursor to interact with the star field
-          </p>
-        )}
+        <p
+          className="font-mono"
+          style={{
+            marginTop: 40,
+            fontSize: 11,
+            color: "var(--text-dim)",
+            letterSpacing: "0.05em",
+            opacity: showGalaxyCanvas ? 1 : 0,
+            transition: "opacity 0.3s ease",
+            pointerEvents: "none",
+            userSelect: "none",
+          }}
+          aria-hidden={!showGalaxyCanvas}
+        >
+          ↗ move cursor to interact with the star field
+        </p>
       </div>
 
       {/* Scroll indicator — fixed so it's always in viewport; fades out on scroll */}
