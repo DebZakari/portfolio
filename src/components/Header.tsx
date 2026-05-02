@@ -151,7 +151,7 @@ export default function Header() {
           background: scrolled
             ? isDark
               ? "oklch(7% 0.02 265 / 0.85)"
-              : "oklch(97% 0.012 75 / 0.88)"
+              : "oklch(92% 0.004 255 / 0.88)"
             : "transparent",
           backdropFilter: scrolled ? "blur(16px)" : "none",
           borderBottom: scrolled ? "1px solid var(--border)" : "1px solid transparent",

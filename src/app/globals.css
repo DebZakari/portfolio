@@ -16,7 +16,7 @@
   --text:            #f0f0f0;
   --text-secondary:  #aaaaaa;
   --text-muted:      #888888;
-  --text-dim:        #444444;
+  --text-dim:        #7e7e7e;
   --accent:          #f0f0f0;
   --accent2:         #aaaaaa;
   --accent-glow:     rgba(240, 240, 240, 0.06);
@@ -24,23 +24,23 @@
   --grad:            linear-gradient(135deg, #ffffff, #aaaaaa);
 }
 
-/* Light mode ("solar") */
+/* Light mode ("solar dawn" — silver material) */
 .light {
-  --bg:              #fafafa;
-  --bg2:             #f2f2f2;
-  --surface:         #ffffff;
-  --surface2:        #f7f7f7;
-  --border:          #dddddd;
+  --bg:              #e8e8e8;
+  --bg2:             #e2e2e2;
+  --surface:         #f0f0f0;
+  --surface2:        #f5f5f5;
+  --border:          #c8c8c8;
   --border-subtle:   rgba(0, 0, 0, 0.06);
   --text:            #0a0a0a;
   --text-secondary:  #555555;
   --text-muted:      #555555;
-  --text-dim:        #aaaaaa;
+  --text-dim:        #636363;
   --accent:          #0a0a0a;
   --accent2:         #555555;
   --accent-glow:     rgba(10, 10, 10, 0.06);
   --accent2-glow:    rgba(10, 10, 10, 0.04);
-  --grad:            linear-gradient(135deg, #000000, #555555);
+  --grad:            linear-gradient(135deg, #0a0a0a, #444444);
 }
 
 /* ─── Tailwind theme ──────────────────────────────────────────── */
